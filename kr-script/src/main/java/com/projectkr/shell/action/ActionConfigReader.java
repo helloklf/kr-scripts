@@ -5,8 +5,15 @@ import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
 import com.projectkr.shell.ExtractAssets;
+import com.projectkr.shell.simple.shell.ExecuteCommandWithOutput;
+
 import org.xmlpull.v1.XmlPullParser;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -54,7 +61,20 @@ public class ActionConfigReader {
                             if ("title".equals(parser.getName())) {
                                 action.title = parser.nextText();
                             } else if ("desc".equals(parser.getName())) {
-                                action.desc = parser.nextText();
+                                for (int i = 0; i < parser.getAttributeCount(); i++) {
+                                    switch (parser.getAttributeName(i)) {
+                                        case "su": {
+                                            action.desc = ExecuteCommandWithOutput.executeCommandWithOutput(true, parser.getAttributeValue(i));
+                                            break;
+                                        }
+                                        case "sh": {
+                                            action.desc = ExecuteCommandWithOutput.executeCommandWithOutput(false, parser.getAttributeValue(i));
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (action.desc == null || action.desc.isEmpty())
+                                    action.desc = parser.nextText();
                             } else if ("script".equals(parser.getName())) {
                                 String script = parser.nextText();
                                 if (script.trim().startsWith(ASSETS_FILE)) {
@@ -94,6 +114,10 @@ public class ActionConfigReader {
                                         }
                                         case "maxlength": {
                                             actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i));
+                                            break;
+                                        }
+                                        case "value-sh": {
+                                            actionParamInfo.valueShell = parser.getAttributeValue(i);
                                             break;
                                         }
                                         case "maxLength": {

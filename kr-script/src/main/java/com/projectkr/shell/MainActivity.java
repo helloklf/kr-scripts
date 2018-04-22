@@ -19,10 +19,12 @@ import android.widget.Toast;
 
 import com.projectkr.shell.action.ActionConfigReader;
 import com.projectkr.shell.action.ActionListConfig;
+import com.projectkr.shell.switchs.ActionInfo;
 import com.projectkr.shell.switchs.SwitchConfigReader;
 import com.projectkr.shell.switchs.SwitchListConfig;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     @Override
@@ -60,7 +62,12 @@ public class MainActivity extends AppCompatActivity {
         tabHost.addTab(tabHost.newTabSpec("tab1").setContent(R.id.main_tabhost_tab1).setIndicator("", getDrawable(R.drawable.switchs)));
 
         new ActionListConfig(this).setListData(ActionConfigReader.readActionConfigXml(this));
-        new SwitchListConfig(this).setListData(SwitchConfigReader.readActionConfigXml(this));
+        ArrayList<ActionInfo> actionInfos = SwitchConfigReader.readActionConfigXml(this);
+        if (actionInfos != null && actionInfos.size() != 0) {
+            new SwitchListConfig(this).setListData(actionInfos);
+        } else {
+            tabHost.getTabWidget().setVisibility(View.GONE);
+        }
     }
 
     @Override

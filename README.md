@@ -3,7 +3,6 @@
 2. 为了方便第三方ROM修改爱好者快速定制自己的个性化选项功能
 3. 通过界面交互的方式，允许用户在执行脚本前进行一些输入或选择操作
 4. 加入Get Set机制（分别执行两段脚本），从而在界面上显示Switch开关
-5. 现在，微工具箱已经完整移植本应用，做好配置文件以后，可在附加功能中直接使用
 
 ## 定义Action
 - 在assets下添加，actions.xml，格式如下：
@@ -155,9 +154,48 @@
 </action>
 ```
 
+### Action的Desc设置动态值（在1.0.4中实现）
+- 为Action的desc节点增加了动态取值特性，通过[sh]=[使用普通权限执行的脚本代码]或[su]=[以ROOT权限执行的脚本代码]，执行脚本过程中输出的内容将作为显示内容
+- 当然，除了设置[su]和[sh]执行脚本外，依然可以设置固定值，在脚本执行出错时，将继续显示固定值
+```xml
+<action root="true">
+    <title>调整DPI</title>
+    <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
+    <script>
+        wm size reset;
+        wm density $dpi;
+        busybox killall com.android.systemui;
+    </script>
+    <params>
+        <param name="dpi" value="440"></param>
+    </params>
+</action>
+```
+
+
+### Action的Param设置动态值（在1.0.4中实现）
+- Param的value也允许通过自定义脚本来设置默认值了，新增了一个属性在param节点上
+- 设置方式：[value-sh]=[要执行的脚本行]，执行脚本过程中输出的内容将作为显示内容
+- 类似于上面设置Desc的方式，[value-sh]和[value]可以共存，当[value-sh]的脚本执行失败，将继续使用[value]的值
+```xml
+<action root="true">
+    <title>调整DPI</title>
+    <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
+    <script>
+        wm size reset;
+        wm density $dpi;
+        busybox killall com.android.systemui;
+    </script>
+    <params>
+        <param name="dpi" value="440" value-sh="echo '410';"></param>
+    </params>
+</action>
+```
+
 ## 定义Switch（在1.0.3中实现）
 #### 定义Switch列表
 - 在assets目录下，添加 switchs.xml，格式如下
+- 如果你不定义，界面上将不会显示开关栏目（在1.0.4中改进的）
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>

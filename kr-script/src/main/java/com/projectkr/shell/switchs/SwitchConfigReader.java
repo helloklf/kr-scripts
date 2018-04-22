@@ -5,6 +5,8 @@ import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
 import com.projectkr.shell.ExtractAssets;
+import com.projectkr.shell.simple.shell.ExecuteCommandWithOutput;
+
 import org.xmlpull.v1.XmlPullParser;
 
 import java.io.BufferedReader;
@@ -90,7 +92,8 @@ public class SwitchConfigReader {
                             if (action.getState == null) {
                                 action.getState = "";
                             } else {
-                                action.selected = executeCommandWithOutput(action.root, action.getState).equals("1");
+                                String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(action.root, action.getState);
+                                action.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
                             }
                             if (action.setState == null) {
                                 action.setState = "";
@@ -110,39 +113,5 @@ public class SwitchConfigReader {
             Log.d("VTools ReadConfig Fail！", ex.getMessage());
         }
         return null;
-    }
-
-
-    public static String executeCommandWithOutput(boolean root, String command) {
-        DataOutputStream dos;
-        InputStream is;
-        try {
-            Process process;
-            process = root ? Runtime.getRuntime().exec("su") : Runtime.getRuntime().exec("sh");
-            if (process == null) return "";
-            dos = new DataOutputStream(process.getOutputStream());
-            dos.writeBytes(command + "\n");
-            dos.writeBytes("exit \n");
-            dos.writeBytes("exit \n");
-            dos.flush();
-            dos.close();
-            if (process.waitFor() == 0) {
-                is = process.getInputStream();
-                StringBuilder builder = new StringBuilder();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line;
-                while ((line = br.readLine()) != null)
-                    builder.append(line.trim()).append("\n");
-                return builder.toString().trim();
-            } else {
-                is = process.getErrorStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line;
-                while ((line = br.readLine()) != null) Log.d("error", line);
-            }
-        } catch (IOException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }

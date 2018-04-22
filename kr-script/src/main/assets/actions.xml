@@ -2,7 +2,7 @@
 <actions>
     <action root="true">
         <title>调整DPI</title>
-        <desc>快速调整手机DPI，不需要重启</desc>
+        <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
         <script>
             wm size reset;
             wm density $dpi;
@@ -37,10 +37,10 @@
         <desc>单独控制CPU核心[在线/离线]状态</desc>
         <script>file:///android_asset/scripts/core_control.sh</script>
         <params>
-            <param name="cpu5" type="bool" value="1" desc="CPU4" />
-            <param name="cpu6" type="bool" value="1" desc="CPU5" />
-            <param name="cpu7" type="bool" value="1" desc="CPU6" />
-            <param name="cpu8" type="bool" value="1" desc="CPU7" />
+            <param name="cpu5" type="bool" value="1" desc="CPU4" value-sh="cat /sys/devices/system/cpu/cpu4/online;" />
+            <param name="cpu6" type="bool" value="1" desc="CPU5" value-sh="cat /sys/devices/system/cpu/cpu5/online;" />
+            <param name="cpu7" type="bool" value="1" desc="CPU6" value-sh="cat /sys/devices/system/cpu/cpu6/online;" />
+            <param name="cpu8" type="bool" value="1" desc="CPU7" value-sh="cat /sys/devices/system/cpu/cpu7/online;" />
         </params>
     </action>
 </actions>

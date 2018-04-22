@@ -10,6 +10,7 @@ public class ActionParamInfo {
     String name;
     String desc;
     String value;
+    String valueShell;
     int maxLength = -1;
     String type;
     boolean readonly;

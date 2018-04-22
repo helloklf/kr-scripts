@@ -14,6 +14,7 @@ import android.widget.Spinner;
 import com.projectkr.shell.MainActivity;
 import com.projectkr.shell.OverScrollListView;
 import com.projectkr.shell.R;
+import com.projectkr.shell.simple.shell.ExecuteCommandWithOutput;
 import com.projectkr.shell.simple.shell.SimpleShellExecutor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,15 +102,32 @@ public class ActionListConfig {
                         ArrayList<HashMap<String, Object>> options = new ArrayList<>();
                         int selectedIndex = -1;
                         int index = 0;
-                        for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
-                            HashMap<String, Object> opt = new HashMap<>();
-                            opt.put("title", option.desc);
-                            opt.put("item", option);
-                            options.add(opt);
-                            if (actionParamInfo.value != null && option.value.equals(actionParamInfo.value)) {
-                                selectedIndex = index;
+                        ArrayList<String> valList = new ArrayList<>();
+
+                        if (actionParamInfo.valueShell !=null) {
+                            String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.valueShell);
+                            if (shellResult != null)
+                                valList.add(shellResult);
+                        }
+                        if (actionParamInfo.value !=null) {
+                            valList.add(actionParamInfo.value);
+                        }
+                        if (valList.size() > 0) {
+                            for (int j=0; j<valList.size(); j++) {
+                                for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
+                                    HashMap<String, Object> opt = new HashMap<>();
+                                    opt.put("title", option.desc);
+                                    opt.put("item", option);
+                                    options.add(opt);
+                                    if (option.value.equals(valList.get(j))) {
+                                        selectedIndex = index;
+                                        break;
+                                    }
+                                    index++;
+                                }
+                                if (selectedIndex > -1)
+                                    break;
                             }
-                            index++;
                         }
                         spinner.setAdapter(new SimpleAdapter(context, options, R.layout.string_item,new String[]{ "title" }, new int[]{ R.id.text }));
                         spinner.setTag(actionParamInfo);
@@ -127,7 +145,13 @@ public class ActionListConfig {
                         } else {
                             checkBox.setHint(actionParamInfo.name);
                         }
-                        if (actionParamInfo.value != null) {
+                        if (actionParamInfo.valueShell !=null) {
+                            String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.valueShell);
+                            if (shellResult != null)
+                                checkBox.setChecked(shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
+                            else if (actionParamInfo.value != null)
+                                checkBox.setChecked(actionParamInfo.value.equals("1") || actionParamInfo.value.toLowerCase().equals("true"));
+                        } else if (actionParamInfo.value != null) {
                             checkBox.setChecked(actionParamInfo.value.equals("1") || actionParamInfo.value.toLowerCase().equals("true"));
                         }
                         checkBox.setTag(actionParamInfo);
@@ -142,7 +166,13 @@ public class ActionListConfig {
                         } else {
                             editText.setHint(actionParamInfo.name);
                         }
-                        if (actionParamInfo.value != null) {
+                        if (actionParamInfo.valueShell !=null) {
+                            String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.valueShell);
+                            if (shellResult != null)
+                                editText.setText(shellResult);
+                            else if (actionParamInfo.value != null)
+                                editText.setText(actionParamInfo.value);
+                        } else if (actionParamInfo.value != null) {
                             editText.setText(actionParamInfo.value);
                         }
                         editText.setFilters(new ActionParamInfo.ParamInfoFilter[]{ new ActionParamInfo.ParamInfoFilter(actionParamInfo) });
