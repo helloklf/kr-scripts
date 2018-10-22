@@ -1,19 +1,16 @@
-package com.projectkr.shell.action;
+package com.projectkr.shell.switchs;
 
-import java.util.ArrayList;
-
-public class ActionInfo {
+public class SwitchInfo {
     public String title;
     public String desc;
     public String descPollingSUShell;
     public String descPollingShell;
-    //FIXME:暂时没用
-    public int polling = 0;
-    public String script;
+    public String getState;
+    public String setState;
+    public boolean selected;
     public String start;
-    public ActionScript scriptType = ActionScript.SCRIPT;
-    public ArrayList<ActionParamInfo> params;
-
+    public ActionScript getStateType = ActionScript.SCRIPT;
+    public ActionScript setStateType = ActionScript.SCRIPT;
     public boolean root;
     public boolean confirm;
 

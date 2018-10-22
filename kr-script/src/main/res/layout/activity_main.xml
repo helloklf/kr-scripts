@@ -51,6 +51,264 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/main_tabhost_tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_marginTop="56dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:paddingBottom="6dp">
+
+                        <FrameLayout
+                            android:id="@+id/home_mainview"
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_gravity="fill_vertical"
+                            android:layout_weight="1">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="true"
+                                android:focusableInTouchMode="true"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:id="@+id/home_mainview1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="130dp"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    android:paddingBottom="10dp"
+                                    android:paddingLeft="20dp"
+                                    android:paddingRight="20dp"
+                                    android:paddingTop="10dp">
+
+                                    <LinearLayout
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_width="76dp"
+                                        android:layout_height="wrap_content">
+                                        <FrameLayout
+                                            android:layout_gravity="center"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="75dp">
+                                            <TextView
+                                                android:id="@+id/home_ramstate"
+                                                style="@style/textTitle"
+                                                android:text=""
+                                                android:layout_gravity="center"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content" />
+                                            <com.projectkr.shell.ui.RamChatView
+                                                android:id="@+id/home_raminfo"
+                                                android:layout_width="75dp"
+                                                android:layout_height="75dp"
+                                                app:free="0"
+                                                app:total="1" />
+                                        </FrameLayout>
+                                        <TextView
+                                            android:layout_marginTop="5dp"
+                                            android:textSize="10dp"
+                                            android:textStyle="bold"
+                                            android:text="物理内存"
+                                            android:layout_gravity="center"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:padding="5dp"
+                                        android:id="@+id/home_clear_ram"
+                                        style="?android:buttonBarButtonStyle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="false"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="left"
+                                            android:text="可用/总共"
+                                            android:textSize="12dp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_marginBottom="15dp"
+                                            android:id="@+id/home_raminfo_text"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="left"
+                                            android:text="0/0MB"
+                                            android:textSize="12dp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:padding="5dp"
+                                        style="?android:buttonBarButtonStyle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="1"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="false"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:text="可用/总共"
+                                            android:textSize="12dp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:id="@+id/home_zramsize"
+                                            android:layout_marginBottom="15dp"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="right"
+                                            android:text="0/0MB"
+                                            android:textSize="12dp"
+                                            android:textStyle="bold" />
+                                    </LinearLayout>
+                                    <LinearLayout
+                                        android:gravity="center"
+                                        android:orientation="vertical"
+                                        android:layout_width="76dp"
+                                        android:layout_height="wrap_content">
+                                        <FrameLayout
+                                            android:layout_gravity="center"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="75dp">
+                                            <TextView
+                                                android:id="@+id/home_swapstate"
+                                                style="@style/textTitle"
+                                                android:text=""
+                                                android:layout_gravity="center"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="wrap_content" />
+                                            <com.projectkr.shell.ui.RamChatView
+                                                android:id="@+id/home_swapstate_chat"
+                                                android:layout_width="75dp"
+                                                android:layout_height="75dp"
+                                                app:free="0"
+                                                app:total="1" />
+                                        </FrameLayout>
+                                        <TextView
+                                            android:layout_marginTop="5dp"
+                                            android:textSize="10dp"
+                                            android:textStyle="bold"
+                                            android:text="交换分区"
+                                            android:layout_gravity="center"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content" />
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/home_mainview2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginLeft="30dp"
+                                        android:layout_marginRight="34dp"
+                                        android:layout_marginTop="10dp">
+
+                                        <TextView
+                                            android:id="@+id/cpu_core_count"
+                                            android:layout_width="0dp"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:layout_weight="1"
+                                            android:text="核心数：" />
+
+                                        <TextView
+                                            android:id="@+id/cpu_core_total_load"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_gravity="center_vertical"
+                                            android:text="负载：" />
+                                    </LinearLayout>
+
+                                    <GridView
+                                        android:id="@+id/cpu_core_list"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginBottom="10dp"
+                                        android:layout_marginLeft="30dp"
+                                        android:layout_marginRight="22dp"
+                                        android:layout_marginTop="6dp"
+                                        android:layout_weight="1"
+                                        android:clickable="false"
+                                        android:focusable="false"
+                                        android:focusableInTouchMode="false"
+                                        android:listSelector="@android:color/transparent"
+                                        android:numColumns="2" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </FrameLayout>
+
+                        <TableLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:showDividers="beginning"
+                            android:shrinkColumns="0,1,2"
+                            android:stretchColumns="0,1,2,3">
+
+                            <TableRow android:layout_marginTop="5dp">
+
+                                <TextView
+                                    android:id="@+id/sdfree"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_span="2"
+                                    android:background="#22888888"
+                                    android:paddingBottom="20dp"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:paddingTop="20dp"
+                                    android:textAlignment="center"
+                                    android:textSize="12dp" />
+
+                                <TextView
+                                    android:id="@+id/datafree"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="5dp"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_marginRight="5dp"
+                                    android:layout_span="2"
+                                    android:background="#22888888"
+                                    android:paddingBottom="20dp"
+                                    android:paddingLeft="10dp"
+                                    android:paddingRight="10dp"
+                                    android:paddingTop="20dp"
+                                    android:textAlignment="center"
+                                    android:textSize="12dp" />
+                            </TableRow>
+                        </TableLayout>
+                    </LinearLayout>
+                </FrameLayout>
             </FrameLayout>
 
             <TabWidget

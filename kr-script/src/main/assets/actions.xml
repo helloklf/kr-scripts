@@ -1,23 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <action root="true">
+    <action>
         <title>调整DPI</title>
-        <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
+        <desc su="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
         <script>
             wm size reset;
             wm density $dpi;
             busybox killall com.android.systemui;
         </script>
         <params>
-            <param name="dpi" value="440">
-                <option val="480">默认（480）</option>
-                <option val="440">适中（440）</option>
-                <option val="410">较小（410）</option>
-                <option val="380">很小（380）</option>
-            </param>
+            <param name="dpi" value="440" options-sh="echo '380|很小（380）';echo '410|较小（410）';echo '440|适中（440）';echo '480|较大（480）';" />
         </params>
     </action>
-    <action root="true">
+    <action>
         <title>自定义DPI、分辨率</title>
         <desc>输入无效的设置会导致系统界面奔溃，可能需要重置手机才能恢复，请谨慎操作！</desc>
         <script>file:///android_asset/scripts/display.sh</script>
@@ -27,12 +22,12 @@
             <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
         </params>
     </action>
-    <action root="true" confirm="true">
+    <action confirm="true">
         <title>大核开关</title>
         <desc>开启/关闭 S835四个大核(重启后失效)</desc>
         <script>file:///android_asset/scripts/off.sh</script>
     </action>
-    <action root="true" confirm="false">
+    <action confirm="false">
         <title>开关核心</title>
         <desc>单独控制CPU核心[在线/离线]状态</desc>
         <script>file:///android_asset/scripts/core_control.sh</script>
@@ -42,5 +37,12 @@
             <param name="cpu7" type="bool" value="1" desc="CPU6" value-sh="cat /sys/devices/system/cpu/cpu6/online;" />
             <param name="cpu8" type="bool" value="1" desc="CPU7" value-sh="cat /sys/devices/system/cpu/cpu7/online;" />
         </params>
+    </action>
+    <action root="false">
+        <title>测试</title>
+        <desc sh="getprop 'test.test.test';">当时间</desc>
+        <script>
+            setprop test.test.test $(date +%s);
+        </script>
     </action>
 </actions>

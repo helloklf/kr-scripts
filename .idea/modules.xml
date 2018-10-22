@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/kr-script/kr-script.iml" filepath="$PROJECT_DIR$/kr-script/kr-script.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kr-scripts-open-source.iml" filepath="$PROJECT_DIR$/kr-scripts-open-source.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kr-scripts.iml" filepath="$PROJECT_DIR$/kr-scripts.iml" />
     </modules>
   </component>
 </project>

@@ -7,11 +7,11 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
-
 import com.projectkr.shell.R;
 
 public class SimpleShellHandler extends ShellHandler {
     Context context;
+
     public SimpleShellHandler(TextView textView) {
         this.textView = textView;
         context = textView.getContext();
@@ -20,17 +20,22 @@ public class SimpleShellHandler extends ShellHandler {
     @Override
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
-        switch (msg.what)
-        {
-            case -2: onExit(msg.obj);break;
+        switch (msg.what) {
+            case -2:
+                onExit(msg.obj);
+                break;
             case 0: {
-                //onStart(msg.obj);
+                onStart(msg.obj);
                 break;
             }
-            case 2: onReader(msg.obj);break;
-            case 4: onError(msg.obj);break;
+            case 2:
+                onReader(msg.obj);
+                break;
+            case 4:
+                onError(msg.obj);
+                break;
             case 6: {
-                //onWrite(msg.obj);
+                onWrite(msg.obj);
                 break;
             }
         }
@@ -49,11 +54,11 @@ public class SimpleShellHandler extends ShellHandler {
     }
 
     private void onExit(Object msg) {
-        if (msg!=null &&  msg instanceof Integer ) {
-            if ((Integer)msg == 0)
-                updateLog("\n\n" + context.getString(R.string.execute_success), "#5500cc");
+        if (msg != null && msg instanceof Integer) {
+            if ((Integer) msg == 0)
+                updateLog("\n\n" + context.getString(R.string.execute_success), "#138ed6");
             else
-                updateLog("\n\nexit value: " + msg, "#5500cc");
+                updateLog("\n\nexit value: " + msg, "#138ed6");
         } else
             updateLog(msg, "#5500cc");
     }
@@ -64,6 +69,7 @@ public class SimpleShellHandler extends ShellHandler {
 
     /**
      * 输出指定颜色的内容
+     *
      * @param msg
      * @param color
      */
@@ -71,17 +77,18 @@ public class SimpleShellHandler extends ShellHandler {
         if (msg != null) {
             String msgStr = msg.toString();
             SpannableString spannableString = new SpannableString(msgStr);
-            spannableString.setSpan(new ForegroundColorSpan(Color.parseColor(color)),0, msgStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spannableString.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, msgStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             updateLog(spannableString);
         }
     }
 
     /**
      * 输出格式化内容
+     *
      * @param msg
      */
     private void updateLog(final SpannableString msg) {
-        if (this.textView!=null && msg != null) {
+        if (this.textView != null && msg != null) {
             this.textView.post(new Runnable() {
                 @Override
                 public void run() {
@@ -93,14 +100,15 @@ public class SimpleShellHandler extends ShellHandler {
 
     /**
      * 无格式输出
+     *
      * @param msg
      */
     private void updateLog(final String msg) {
-        if (this.textView!=null && msg != null) {
+        if (this.textView != null && msg != null) {
             this.textView.post(new Runnable() {
                 @Override
                 public void run() {
-                    textView.append((CharSequence)msg);
+                    textView.append(msg);
                 }
             });
         }

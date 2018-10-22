@@ -18,7 +18,7 @@
     <TextView
         android:layout_marginTop="18dp"
         android:textAlignment="center"
-        android:text="Project Kr"
+        android:text="嘟嘟Ski"
         android:textColor="#332200"
         android:textSize="36dp"
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
     <TextView
         android:layout_marginTop="12dp"
         android:layout_gravity="center"
-        android:text="（原Project BugMi）团队创作"
+        android:text="瞎几把写的"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
     <TextView
@@ -34,7 +34,7 @@
         android:textAlignment="textEnd"
         android:textSize="11dp"
         android:textColor="#aaaaaa"
-        android:text="version 1.0.3"
+        android:text="version 2.0.0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

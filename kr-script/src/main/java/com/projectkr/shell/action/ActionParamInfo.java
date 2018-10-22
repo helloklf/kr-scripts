@@ -2,19 +2,25 @@ package com.projectkr.shell.action;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActionParamInfo {
-    String name;
-    String desc;
-    String value;
-    String valueShell;
-    int maxLength = -1;
-    String type;
-    boolean readonly;
-    ArrayList<ActionParamOption> options;
+    public String name;
+    public String desc;
+    public String value;
+    public String valueShell;
+    public String valueSUShell;
+    public String valueFromShell;
+    public int maxLength = -1;
+    public String type;
+    public boolean readonly;
+    public ArrayList<ActionParamOption> options;
+    //FIXME: 这是新增的，后面要把获取options的脚本放到这里，在执行时获取选项，而不是在读取配置时直接获取options
+    public String optionsSh = "";
+    public String optionsSU = "";
 
     public static class ParamInfoFilter implements InputFilter {
         private ActionParamInfo paramInfo;
@@ -25,7 +31,7 @@ public class ActionParamInfo {
 
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            if (source!=null && source.toString().contains("\"")) {
+            if (source != null && source.toString().contains("\"")) {
                 return "";
             }
 
@@ -41,13 +47,13 @@ public class ActionParamInfo {
                 if (paramInfo.type.equals("int")) {
                     Pattern regex = Pattern.compile("^[0-9]{0,}$");
                     Matcher matcher = regex.matcher(source.toString());
-                    if(!matcher.matches()) {
+                    if (!matcher.matches()) {
                         return "";
                     }
                 } else if (paramInfo.type.equals("number")) {
                     Pattern regex = Pattern.compile("^[\\-.,0-9]{0,}$");
                     Matcher matcher = regex.matcher(source.toString());
-                    if(!matcher.matches()) {
+                    if (!matcher.matches()) {
                         return "";
                     }
                 }
@@ -57,7 +63,7 @@ public class ActionParamInfo {
     }
 
     public static class ActionParamOption {
-        String value;
-        String desc;
+        public String value;
+        public String desc;
     }
 }

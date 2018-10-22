@@ -3,19 +3,24 @@ package com.projectkr.shell.simple.shell;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
+import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.projectkr.shell.R;
-
+import com.omarea.shared.FileWrite;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import com.projectkr.shell.R;
 
 /**
  * Created by Hello on 2018/04/01.
@@ -24,50 +29,89 @@ import java.io.OutputStream;
 public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
+
     public SimpleShellExecutor(Context context) {
         this.context = context;
     }
 
     /**
      * 执行脚本
+     *
      * @param root
      * @param cmds
      * @param startPath
      */
-    public boolean execute(Boolean root, StringBuilder cmds, String startPath) {
+    public boolean execute(Boolean root, String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+        boolean rootOnlt = true;
         if (started) {
             return false;
         }
         Process process = null;
+        final File dir = context.getFilesDir();
+        final String dirUri = dir.getAbsolutePath();
+        ArrayList<String> envp = new ArrayList<>();
+        if (params != null) {
+            for (String item : params.keySet()) {
+                String value = params.get(item);
+                if (value == null) {
+                    value = "";
+                }
+                envp.add(item + "=" + value);
+            }
+        }
+        envp.add("TEMP_DIR=" + dirUri + "/temp");
+        envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
+        envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
+        envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
+        envp.add("BUSYBOX=" + FileWrite.INSTANCE.getPrivateFilePath(context, "busybox"));
+
         try {
-            //process = Runtime.getRuntime().exec(root ? "su" : "bash");
-            process = Runtime.getRuntime().exec(root ? "su" : "sh");
+
+            process = Runtime.getRuntime().exec("su");
+            if (root || rootOnlt) {
+                process = Runtime.getRuntime().exec("su");
+            } else {
+                process = Runtime.getRuntime().exec("sh", envp.toArray(new String[envp.size()]));
+            }
         } catch (Exception ex) {
-            Toast.makeText(context, R.string.cannot_get_root_access, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            if (onExit != null)
+                onExit.run();
         }
 
         if (process != null) {
-            TextView textView = setLogView();
+            TextView textView = setLogView(title);
 
             final ShellHandler shellHandler = new SimpleShellHandler(textView);
-            setHandler(process, shellHandler);
+            setHandler(process, shellHandler, onExit);
 
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
                 String start = startPath;
-                if (startPath!=null) {
+                if (startPath != null) {
                     start = startPath;
                 } else {
                     start = context.getFilesDir().getAbsolutePath();
                 }
+
+                if (root || rootOnlt) {
+                    StringBuilder envpCmds = new StringBuilder();
+                    if (envp.size() > 0) {
+                        for (String param : envp) {
+                            envpCmds.append("export ").append(param).append("\n");
+                        }
+                    }
+                    dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
+                }
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
-                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" +start + " $\n\n"));
-                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
+                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
+                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
+                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:\n\n"));
 
                 dataOutputStream.writeBytes("sleep 0.2;\n");
-                dataOutputStream.write(cmds.toString().getBytes("UTF-8"));
+                dataOutputStream.write(cmds.toString().replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
                 dataOutputStream.writeBytes("\n\n");
                 dataOutputStream.writeBytes("sleep 0.2;\n");
                 dataOutputStream.writeBytes("exit\n");
@@ -83,18 +127,23 @@ public class SimpleShellExecutor {
 
     /**
      * 创建并获取日志输出界面
+     *
      * @return
      */
-    private TextView setLogView() {
+    private TextView setLogView(String title) {
+        if (title == null) {
+            title = context.getString(R.string.shell_executor);
+        }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.dialog_shell_executor, null);
-        TextView textView = (TextView) view.findViewById(R.id.shell_output);
+        TextView textView = view.findViewById(R.id.shell_output);
         new AlertDialog.Builder(context)
-                .setTitle(R.string.shell_executor)
+                .setTitle(title)
                 .setView(view)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {  }
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 })
                 .create()
                 .show();
@@ -103,10 +152,11 @@ public class SimpleShellExecutor {
 
     /**
      * 设置日志处理Handler
-     * @param process Runtime进程
+     *
+     * @param process      Runtime进程
      * @param shellHandler ShellHandler
      */
-    private void setHandler(Process process, final ShellHandler shellHandler) {
+    private void setHandler(Process process, final ShellHandler shellHandler, final Runnable onExit) {
         final InputStream inputStream = process.getInputStream();
         final InputStream errorStream = process.getErrorStream();
         final Thread reader = new Thread(new Runnable() {
@@ -154,6 +204,7 @@ public class SimpleShellExecutor {
                     if (readerError.isAlive()) {
                         readerError.interrupt();
                     }
+                    onExit.run();
                 }
             }
         });
