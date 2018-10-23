@@ -145,15 +145,6 @@ object SwitchConfigReader {
         return null
     }
 
-    private fun executeResult(context: Context, scriptIn: String): String {
-        var script = scriptIn
-        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 0755 $path\n$path"
-        }
-        return KeepShellPublic.doCmdSync(script)
-    }
-
     private fun executeResultRoot(context: Context, scriptIn: String): String {
         var script = scriptIn
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {

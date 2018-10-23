@@ -7,6 +7,6 @@ import android.os.Environment
  */
 
 object CommonCmds {
-    const val PACKAGE_NAME = "com.omarea.vtools"
+    const val PACKAGE_NAME = "com.projectkr.shell"
     val SDCardDir: String = Environment.getExternalStorageDirectory().absolutePath
 }

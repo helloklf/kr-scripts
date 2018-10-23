@@ -28,30 +28,6 @@
                 android:layout_height="match_parent">
 
                 <FrameLayout
-                    android:id="@+id/main_tabhost_tab0"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.projectkr.shell.OverScrollListView
-                        android:layout_marginTop="56dp"
-                        android:id="@+id/list_actions"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/main_tabhost_tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.projectkr.shell.OverScrollListView
-                        android:layout_marginTop="56dp"
-                        android:id="@+id/list_switchs"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-                <FrameLayout
                     android:id="@+id/main_tabhost_tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -308,6 +284,30 @@
                             </TableRow>
                         </TableLayout>
                     </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/main_tabhost_tab0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.projectkr.shell.OverScrollListView
+                        android:layout_marginTop="56dp"
+                        android:id="@+id/list_actions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/main_tabhost_tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.projectkr.shell.OverScrollListView
+                        android:layout_marginTop="56dp"
+                        android:id="@+id/list_switchs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
                 </FrameLayout>
             </FrameLayout>
 

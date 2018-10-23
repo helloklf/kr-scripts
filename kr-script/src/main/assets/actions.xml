@@ -1,48 +1,216 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <action>
+    <action root="true">
         <title>调整DPI</title>
-        <desc su="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
+        <desc>快速调整手机DPI，不需要重启。请根据你的手机实际分辨率选！</desc>
         <script>
             wm size reset;
             wm density $dpi;
-            busybox killall com.android.systemui;
+            $BUSYBOX killall com.android.systemui;
         </script>
         <params>
-            <param name="dpi" value="440" options-sh="echo '380|很小（380）';echo '410|较小（410）';echo '440|适中（440）';echo '480|较大（480）';" />
+            <param name="dpi" value="reset">
+                <option val="reset">默认</option>
+                <option val="640">2K 小屏（640）</option>
+                <option val="560">2K 中屏（560）</option>
+                <option val="520">2K 大屏（520）</option>
+                <option val="480">1080P 小屏（480）</option>
+                <option val="440">1080P 中屏（440）</option>
+                <option val="410">1080P 大屏（410）</option>
+                <option val="380">1080P 巨屏（380）</option>
+                <option val="320">720P 小屏（320）</option>
+                <option val="280">720P 中屏（280）</option>
+                <option val="240">640P~480P（280）</option>
+            </param>
         </params>
     </action>
-    <action>
-        <title>自定义DPI、分辨率</title>
-        <desc>输入无效的设置会导致系统界面奔溃，可能需要重置手机才能恢复，请谨慎操作！</desc>
-        <script>file:///android_asset/scripts/display.sh</script>
+    <action root="true">
+        <title>王者荣耀配置修改</title>
+        <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
+        <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
         <params>
-            <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
-            <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
-            <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
+            <param name="render"
+                options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
+            <param name="thread" value="0">
+                <option val="1">多线程优化</option>
+                <option val="3">默认</option>
+            </param>
         </params>
     </action>
-    <action confirm="true">
-        <title>大核开关</title>
-        <desc>开启/关闭 S835四个大核(重启后失效)</desc>
-        <script>file:///android_asset/scripts/off.sh</script>
-    </action>
-    <action confirm="false">
-        <title>开关核心</title>
-        <desc>单独控制CPU核心[在线/离线]状态</desc>
-        <script>file:///android_asset/scripts/core_control.sh</script>
-        <params>
-            <param name="cpu5" type="bool" value="1" desc="CPU4" value-sh="cat /sys/devices/system/cpu/cpu4/online;" />
-            <param name="cpu6" type="bool" value="1" desc="CPU5" value-sh="cat /sys/devices/system/cpu/cpu5/online;" />
-            <param name="cpu7" type="bool" value="1" desc="CPU6" value-sh="cat /sys/devices/system/cpu/cpu6/online;" />
-            <param name="cpu8" type="bool" value="1" desc="CPU7" value-sh="cat /sys/devices/system/cpu/cpu7/online;" />
-        </params>
-    </action>
-    <action root="false">
-        <title>测试</title>
-        <desc sh="getprop 'test.test.test';">当时间</desc>
+    <action root="true">
+        <title>HAL3【启用\禁用】</title>
+        <desc su="file:///android_asset/custom/actions/gcm_get.sh" />
         <script>
-            setprop test.test.test $(date +%s);
+            setprop persist.camera.HAL3.enabled $gcm;
+            echo '已修改，可能需要重启才能生效！';
+            result=`getprop persist.camera.HAL3.enabled`
+            echo "persist.camera.HAL3.enabled=${result}"
         </script>
+        <params>
+            <param name="gcm">
+                <option value="1">启用Camera2 API</option>
+                <option value="0">禁用Camera2 API</option>
+            </param>
+        </params>
+    </action>
+    <!--<action root="false">
+        <title>环境变量</title>
+        <desc>了解Scene提供的环境变量</desc>
+        <script>
+            echo "action=$action"
+            echo "TEMP_DIR=$TEMP_DIR"
+            echo "ANDROID_UID=$ANDROID_UID"
+            echo "ANDROID_SDK=$ANDROID_SDK"
+            echo "SDCARD_PATH=$SDCARD_PATH"
+        </script>
+        <params>
+            <param name="action" value="12123123" />
+        </params>
+    </action>-->
+    <action root="true">
+        <title>Performance Boost Config【启用\禁用】</title>
+        <desc su="file:///android_asset/custom/actions/msm_booster_get.sh" />
+        <script>file:///android_asset/custom/actions/msm_booster_set.sh</script>
+        <params>
+            <param name="config">
+                <option value="1">启用</option>
+                <option value="0">禁用</option>
+            </param>
+        </params>
+    </action>
+    <action root="true">
+        <title>perfd【启用\禁用】</title>
+        <desc su="file:///android_asset/custom/actions/msm_perfd_get.sh" />
+        <script>file:///android_asset/custom/actions/msm_perfd_set.sh</script>
+        <params>
+            <param name="config">
+                <option value="1">启用</option>
+                <option value="0">禁用</option>
+            </param>
+        </params>
+    </action>
+    <action root="true">
+        <title>修改dex2oat线程数</title>
+        <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
+        <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
+        <params>
+            <param name="boot" desc="启动时(boot-dex2oat-threads)"
+                value-sh="getprop dalvik.vm.boot-dex2oat-threads">
+                <option value="">自动（根据核心数）</option>
+                <option value="1">1 个线程</option>
+                <option value="2">2 个线程</option>
+                <option value="3">3 个线程</option>
+                <option value="4">4 个线程</option>
+                <option value="5">5 个线程</option>
+                <option value="6">6 个线程</option>
+                <option value="7">7 个线程</option>
+                <option value="8">8 个线程</option>
+            </param>
+            <param name="dex2oat" desc="启动后(dex2oat-threads)"
+                value-sh="getprop dalvik.vm.dex2oat-threads">
+                <option value="">自动（根据核心数）</option>
+                <option value="1">1 个线程</option>
+                <option value="2">2 个线程</option>
+                <option value="3">3 个线程</option>
+                <option value="4">4 个线程</option>
+                <option value="5">5 个线程</option>
+                <option value="6">6 个线程</option>
+                <option value="7">7 个线程</option>
+                <option value="8">8 个线程</option>
+            </param>
+            <param name="image" desc="编译启动映像(image-dex2oat-threads)"
+                value-sh="getprop dalvik.vm.image-dex2oat-threads">
+                <option value="">自动（根据核心数）</option>
+                <option value="1">1 个线程</option>
+                <option value="2">2 个线程</option>
+                <option value="3">3 个线程</option>
+                <option value="4">4 个线程</option>
+                <option value="5">5 个线程</option>
+                <option value="6">6 个线程</option>
+                <option value="7">7 个线程</option>
+                <option value="8">8 个线程</option>
+            </param>
+            <param name="other" desc="dex2oat_thread_count" readonly="readonly">
+                <option value="">默认</option>
+            </param>
+        </params>
+    </action>
+    <action root="true">
+        <title>清理电池优化白名单</title>
+        <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，从而导致这些应用无法被休眠！）</desc>
+        <script>file:///android_asset/custom/actions/doze_clear.sh</script>
+    </action>
+    <action root="true">
+        <title>查看已挂载分区</title>
+        <desc>通过简单的命令，查看当前已挂载的分区</desc>
+        <script>df -h</script>
+    </action>
+    <action root="true">
+        <title>优化编译系统应用</title>
+        <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统（或者进行过deodex的）刷完开机后进行此操作，从而提高整体流畅度！</desc>
+        <script>file:///android_asset/custom/actions/sys_compile.sh</script>
+    </action>
+    <action root="true">
+        <title>磁盘测速</title>
+        <desc>使用简单的命令检测磁盘连续读写速度</desc>
+        <script>file:///android_asset/custom/actions/disk_test.sh</script>
+    </action>
+    <action root="true">
+        <title>过渡动画缩放</title>
+        <desc>按比率调整过渡动画时长</desc>
+        <params>
+            <param desc="窗口动画缩放" name="window_animation_scale" value="1"
+                value-sh="settings get global window_animation_scale"
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" />
+            <param desc="过渡动画缩放" name="transition_animation_scale" value="1"
+                value-sh="settings get global transition_animation_scale"
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh">
+            </param>
+            <param desc="动画程序时长缩放" name="animator_duration_scale" value="1"
+                value-sh="settings get global animator_duration_scale"
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh">
+            </param>
+        </params>
+        <script>
+            settings put global window_animation_scale $window_animation_scale
+            settings put global transition_animation_scale $transition_animation_scale
+            settings put global animator_duration_scale $animator_duration_scale
+            echo 'OK!'
+        </script>
+    </action>
+    <action root="true">
+        <title>开启MIUI9、MIUI10的隐藏温控选项</title>
+        <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
+        <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
+    </action>
+    <action root="true">
+        <title>清理淘宝优酷热更新文件</title>
+        <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
+        <script>file:///android_asset/custom/actions/app_simple.sh</script>
+    </action>
+    <action root="true">
+        <title>低电量级别</title>
+        <desc>设置低电量级别，以及触发低电量模式的级别</desc>
+        <params>
+            <param name="level" desc="低电量模式触发级别" value-sh="settings get global low_power_trigger_level">
+                <option value="null">默认</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="30">30%</option>
+            </param>
+            <param name="levelmax" desc="低电量模式触发最大级别" value-sh="settings get global low_power_trigger_level_max">
+                <option value="null">默认</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="30">30%</option>
+            </param>
+        </params>
+        <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
     </action>
 </actions>

@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
         main_tabhost.setup()
         main_tabhost.setOnTabChangedListener {
-            if ((main_tabhost).currentTab == 2) {
+            if ((main_tabhost).currentTab == 0) {
                 startTimer()
             } else {
                 stopTimer()
@@ -89,13 +89,15 @@ class MainActivity : AppCompatActivity() {
             val actionInfos = ActionConfigReader.readActionConfigXml(mainActivity)
             val switchInfos = SwitchConfigReader.readActionConfigXml(mainActivity)
             handler.post {
-                ActionListConfig(mainActivity).setListData(actionInfos)
-                main_tabhost.addTab(main_tabhost.newTabSpec("tab0").setContent(R.id.main_tabhost_tab0).setIndicator("", getDrawable(R.drawable.shell)))
+                main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_tab2).setIndicator("", getDrawable(R.drawable.cpu)))
+                if (actionInfos != null && actionInfos.size != 0) {
+                    ActionListConfig(mainActivity).setListData(actionInfos)
+                    main_tabhost.addTab(main_tabhost.newTabSpec("tab0").setContent(R.id.main_tabhost_tab0).setIndicator("", getDrawable(R.drawable.shell)))
+                }
                 if (switchInfos != null && switchInfos.size != 0) {
                     SwitchListConfig(mainActivity).setListData(switchInfos)
+                    main_tabhost.addTab(main_tabhost.newTabSpec("tab1").setContent(R.id.main_tabhost_tab1).setIndicator("", getDrawable(R.drawable.switchs)))
                 }
-                main_tabhost.addTab(main_tabhost.newTabSpec("tab1").setContent(R.id.main_tabhost_tab1).setIndicator("", getDrawable(R.drawable.switchs)))
-                main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_tab2).setIndicator("", getDrawable(R.drawable.cpu)))
                 progressBarDialog.hideDialog()
             }
         }).start()
@@ -156,7 +158,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer () {
-        if (main_tabhost.currentTab == 2) {
+        if (main_tabhost.currentTab == 0) {
             stopTimer()
             timer = Timer()
             timer!!.schedule(object : TimerTask() {
