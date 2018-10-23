@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 public class ActionAdapter extends BaseAdapter {
     private ArrayList<ActionInfo> actionInfos;
+    private Timer timer;
 
     public ActionAdapter(ArrayList<ActionInfo> actionInfos) {
         this.actionInfos = actionInfos;
@@ -34,7 +35,6 @@ public class ActionAdapter extends BaseAdapter {
     public int getCount() {
         return actionInfos != null ? actionInfos.size() : 0;
     }
-
 
     public void update(int index, ListView listview) {
         //得到第一个可见item项的位置
@@ -119,13 +119,6 @@ public class ActionAdapter extends BaseAdapter {
         return true;
     }
 
-    protected class ViewHolder {
-        TextView itemTitle = null;
-        TextView itemText = null;
-    }
-
-    private Timer timer;
-
     public void startPolling() {
         stopPolling();
         timer = new Timer();
@@ -141,5 +134,10 @@ public class ActionAdapter extends BaseAdapter {
             timer.cancel();
             timer = null;
         }
+    }
+
+    protected class ViewHolder {
+        TextView itemTitle = null;
+        TextView itemText = null;
     }
 }

@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/option_menu_reboot"
+        android:icon="@drawable/power"
+        android:orderInCategory="100"
         android:title=""
         android:visible="true"
-        android:icon="@drawable/power"
-        android:id="@+id/option_menu_reboot"
-        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
+        android:id="@+id/option_menu_info"
+        android:icon="@drawable/info"
+        android:orderInCategory="100"
         android:title=""
         android:visible="true"
-        android:icon="@drawable/info"
-        android:id="@+id/option_menu_info"
-        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

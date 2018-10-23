@@ -7,17 +7,18 @@
 
     <ProgressBar
         android:id="@+id/dialog_app_details_progress"
-        android:indeterminate="false"
-        android:max="100"
-        android:layout_margin="30dp"
-        android:layout_gravity="center_horizontal"
         android:layout_width="60dp"
-        android:layout_height="60dp" />
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_margin="30dp"
+        android:indeterminate="false"
+        android:max="100" />
+
     <TextView
-        android:textSize="16dp"
         android:id="@+id/dialog_app_details_pkgname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="请稍等"
         android:textAlignment="center"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:textSize="16dp" />
 </LinearLayout>

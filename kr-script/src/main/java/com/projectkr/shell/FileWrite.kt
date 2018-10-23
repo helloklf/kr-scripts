@@ -1,10 +1,8 @@
 package com.omarea.shared
 
 import android.content.Context
-import android.content.res.AssetManager
 import android.util.Log
 import java.io.File
-import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -20,6 +18,7 @@ object FileWrite {
     fun getPrivateFilePath(context: Context, outName: String): String {
         return getPrivateFileDir(context) + (if (outName.startsWith("/")) outName.substring(1, outName.length) else outName)
     }
+
     fun writePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
         try {
             val dir = File(getPrivateFileDir(context))

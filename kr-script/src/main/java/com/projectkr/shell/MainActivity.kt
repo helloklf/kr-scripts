@@ -12,7 +12,6 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.*
-import android.widget.TabHost
 import android.widget.Toast
 import com.omarea.scripts.action.ActionListConfig
 import com.omarea.shell.Files
@@ -22,12 +21,12 @@ import com.omarea.ui.ProgressBarDialog
 import com.projectkr.shell.action.ActionConfigReader
 import com.projectkr.shell.switchs.SwitchConfigReader
 import com.projectkr.shell.switchs.SwitchListConfig
+import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.math.BigDecimal
 import java.math.RoundingMode
-import kotlin.collections.HashMap
-import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
+import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
     internal var handler = Handler()
@@ -40,8 +39,7 @@ class MainActivity : AppCompatActivity() {
                     .setTitle("需要ROOT权限")
                     .setMessage("请在Magisk或SuperSU等ROOT权限管理器中，设置本应用允许使用ROOT权限！")
                     .setCancelable(false)
-                    .setPositiveButton("确定", {
-                        _, _ ->
+                    .setPositiveButton("确定", { _, _ ->
                         System.exit(0)
                     })
                     .create()
@@ -157,7 +155,7 @@ class MainActivity : AppCompatActivity() {
         return bd.toString()
     }
 
-    private fun startTimer () {
+    private fun startTimer() {
         if (main_tabhost.currentTab == 0) {
             stopTimer()
             timer = Timer()
@@ -226,10 +224,12 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: Exception) {
         }
     }
+
     override fun onPause() {
         stopTimer()
         super.onPause()
     }
+
     private fun stopTimer() {
         if (this.timer != null) {
             timer!!.cancel()
@@ -244,7 +244,8 @@ class MainActivity : AppCompatActivity() {
             myHandler.post {
                 try {
                     cpu_core_count.text = "核心数：$coreCount"
-                } catch (ex: Exception) {}
+                } catch (ex: Exception) {
+                }
             }
         }
         val cores = ArrayList<CpuCoreInfo>()

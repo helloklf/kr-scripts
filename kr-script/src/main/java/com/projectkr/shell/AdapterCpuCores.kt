@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-import com.projectkr.shell.R
 import com.projectkr.shell.CpuCoreInfo
+import com.projectkr.shell.R
 import com.projectkr.shell.ui.CpuChatView
 import java.util.*
 

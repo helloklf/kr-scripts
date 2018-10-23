@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:padding="20dp"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:padding="20dp">
+
     <TextView
-        android:textSize="11dp"
-        android:textColor="#aaaaaa"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="关于 · Kr - Scripts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="4dp"
-        android:text="本应用中所使用的脚本由"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="18dp"
-        android:textAlignment="center"
-        android:text="嘟嘟Ski"
-        android:textColor="#332200"
-        android:textSize="36dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="12dp"
-        android:layout_gravity="center"
-        android:text="瞎几把写的"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:layout_marginTop="24dp"
-        android:textAlignment="textEnd"
-        android:textSize="11dp"
         android:textColor="#aaaaaa"
-        android:text="version 2.0.0"
+        android:textSize="11dp" />
+
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="本应用中所使用的脚本由" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:text="嘟嘟Ski"
+        android:textAlignment="center"
+        android:textColor="#332200"
+        android:textSize="36dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
+        android:text="瞎几把写的" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="version 2.0.0"
+        android:textAlignment="textEnd"
+        android:textColor="#aaaaaa"
+        android:textSize="11dp" />
 </LinearLayout>

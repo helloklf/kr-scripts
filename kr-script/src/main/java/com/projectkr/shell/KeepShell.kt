@@ -1,7 +1,6 @@
 package com.omarea.shell
 
 import android.util.Log
-import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.OutputStream
@@ -57,7 +56,7 @@ class KeepShell(private var rootMode: Boolean = true) {
                     "exit 1\n" +
                     "fi;\n"
 
-    fun checkRoot (): Boolean {
+    fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             return false
@@ -128,7 +127,7 @@ class KeepShell(private var rootMode: Boolean = true) {
             try {
                 mLock.lockInterruptibly()
 
-                val out =  p!!.outputStream
+                val out = p!!.outputStream
                 if (out != null) {
                     try {
                         out.write(br)

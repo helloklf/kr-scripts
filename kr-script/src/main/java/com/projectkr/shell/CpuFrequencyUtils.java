@@ -1,15 +1,12 @@
 package com.projectkr.shell;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.widget.Toast;
 
 import com.omarea.shell.KernelProrp;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 
 public class CpuFrequencyUtils {
     private static ArrayList<String[]> cpuClusterInfo;
