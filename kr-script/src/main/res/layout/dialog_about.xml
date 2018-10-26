@@ -8,11 +8,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="关于 · Kr - Scripts"
+        android:text="关于 · PIO"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />
 
     <TextView
+        android:textSize="11dp"
+        android:textColor="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -32,13 +34,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
-        android:text="瞎几把写的" />
+        android:text="随手复制黏贴" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="version 2.0.0"
+        android:text="Version 2.0.0"
         android:textAlignment="textEnd"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />

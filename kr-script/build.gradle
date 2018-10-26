@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion '28.0.2'
+    buildToolsVersion '28.0.3'
 
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 26
-        versionCode 11
-        versionName "2.0.1"
+        versionCode 13
+        versionName "2.0.3"
     }
     buildTypes {
         release {
