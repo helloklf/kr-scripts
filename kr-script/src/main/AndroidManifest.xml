@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.projectkr.shell">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <meta-data
         android:name="android.max_aspect"
         android:value="2.5" />

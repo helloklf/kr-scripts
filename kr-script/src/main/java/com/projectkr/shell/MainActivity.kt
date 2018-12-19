@@ -4,10 +4,12 @@ import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -18,6 +20,7 @@ import com.omarea.shell.Files
 import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.action.ActionConfigReader
 import com.projectkr.shell.switchs.SwitchConfigReader
 import com.projectkr.shell.switchs.SwitchListConfig
@@ -131,6 +134,30 @@ class MainActivity : AppCompatActivity() {
                         .setNegativeButton(R.string.no) { dialog, which -> }
                         .create()
                         .show()
+            }
+            R.id.action_graph -> {
+                if (FloatMonitor.isShown == true) {
+                    FloatMonitor(this).hidePopupWindow()
+                    return false
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(this)) {
+                        FloatMonitor(this).showPopupWindow()
+                        Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                    } else {
+                        //若没有权限，提示获取
+                        //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        //startActivity(intent);
+                        val intent = Intent()
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                        intent.data = Uri.fromParts("package", this.packageName, null)
+                        Toast.makeText(applicationContext, "请授权显示悬浮窗权限！", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    FloatMonitor(this).showPopupWindow()
+                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
