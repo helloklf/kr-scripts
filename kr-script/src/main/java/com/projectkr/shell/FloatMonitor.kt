@@ -20,6 +20,7 @@ import com.projectkr.shell.CpuFrequencyUtils
 import com.projectkr.shell.GpuUtils
 import com.projectkr.shell.R
 import com.projectkr.shell.ui.CpuChatView
+import java.lang.Exception
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -166,11 +167,15 @@ class FloatMonitor (context: Context) {
             }
             cores.add(core)
         }
-        var cpuFreq = ""
+        var cpuFreq = 0
         cores.forEach { item ->
             run {
-                if (item.currentFreq > cpuFreq) {
-                    cpuFreq = item.currentFreq
+                try {
+                    val freq = item.currentFreq.toInt()
+                    if (freq > cpuFreq) {
+                        cpuFreq = freq
+                    }
+                } catch (ex: Exception) {
                 }
             }
         }
@@ -185,14 +190,12 @@ class FloatMonitor (context: Context) {
 
             if (loads.containsKey(-1)) {
                 cpuChat!!.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
-                cpuFreqView!!.text = subFreqStr(cpuFreq) + "Mhz"
+                cpuFreqView!!.text = subFreqStr(cpuFreq.toString()) + "Mhz"
             }
             if (gpuLoad > -1) {
                 gpuChat!!.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 gpuFreqView!!.text = gpuFreq
             }
-            val layoutParams = view!!.layoutParams
-            view!!.layoutParams = layoutParams
         }
     }
 
@@ -231,16 +234,18 @@ class FloatMonitor (context: Context) {
 
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
-        view!!.setOnTouchListener { v, event ->
+        view!!.setOnClickListener {
             view!!.visibility = View.GONE
             myHandler.postDelayed({
-                view!!.visibility = View.VISIBLE
+                if (mView != null) {
+                    view!!.visibility = View.VISIBLE
+                }
             }, 5000)
-            false
+            true
         }
         view!!.setOnLongClickListener {
             hidePopupWindow()
-            false
+            true
         }
         return view!!
     }
