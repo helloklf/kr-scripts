@@ -6,8 +6,8 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.projectkr.shell.OverScrollListView;
-import com.projectkr.shell.SwitchAdapter;
+import com.projectkr.shell.ui.OverScrollListView;
+import com.projectkr.shell.ui.SwitchAdapter;
 import com.projectkr.shell.simple.shell.SimpleShellExecutor;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +96,6 @@ public class SwitchListConfig {
     }
 
     private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
-        new SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit, params);
+        new SimpleShellExecutor(context).execute(title, cmds, startPath, onExit, params);
     }
 }

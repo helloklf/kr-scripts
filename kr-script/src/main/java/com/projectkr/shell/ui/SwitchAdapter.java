@@ -1,4 +1,4 @@
-package com.projectkr.shell;
+package com.projectkr.shell.ui;
 
 import android.database.DataSetObserver;
 import android.view.View;
@@ -7,9 +7,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.projectkr.shell.simple.shell.ExecuteCommandWithOutput;
+import com.projectkr.shell.R;
 import com.projectkr.shell.switchs.SwitchInfo;
+import com.projectkr.shell.utils.KeepShellPublic;
 
 import java.util.ArrayList;
 
@@ -41,21 +41,16 @@ public class SwitchAdapter implements ListAdapter {
     }
 
     public void update(int index, ListView listview) {
-        //得到第一个可见item项的位置
         int visiblePosition = listview.getFirstVisiblePosition();
-        //得到指定位置的视图，对listview的缓存机制不清楚的可以去了解下
         View view = listview.getChildAt(index - visiblePosition);
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionInfo.descPollingShell);
-        }
-        if (actionInfo.descPollingSUShell != null && !actionInfo.descPollingSUShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(true, actionInfo.descPollingSUShell);
+            actionInfo.desc =  KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
-            String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(actionInfo.root, actionInfo.getState);
-            actionInfo.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
+            String shellResult = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.getState);
+            actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
         }
         holder.itemSwitch.setChecked(actionInfo.selected);
         holder.itemText.setText(actionInfo.desc);
@@ -132,3 +127,4 @@ public class SwitchAdapter implements ListAdapter {
         TextView itemText = null;
     }
 }
+

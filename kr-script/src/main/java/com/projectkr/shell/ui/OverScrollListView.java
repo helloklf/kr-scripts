@@ -1,4 +1,4 @@
-package com.projectkr.shell;
+package com.projectkr.shell.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

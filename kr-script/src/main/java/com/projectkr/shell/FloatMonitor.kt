@@ -16,8 +16,8 @@ import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import com.projectkr.shell.CpuCoreInfo
-import com.projectkr.shell.CpuFrequencyUtils
-import com.projectkr.shell.GpuUtils
+import com.projectkr.shell.utils.CpuFrequencyUtils
+import com.projectkr.shell.utils.GpuUtils
 import com.projectkr.shell.R
 import com.projectkr.shell.ui.CpuChatView
 import java.lang.Exception

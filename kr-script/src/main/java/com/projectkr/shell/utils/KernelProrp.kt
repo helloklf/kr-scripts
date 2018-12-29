@@ -1,4 +1,4 @@
-package com.omarea.shell
+package com.projectkr.shell.utils
 
 /**
  * 操作内核参数节点

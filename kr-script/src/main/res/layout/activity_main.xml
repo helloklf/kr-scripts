@@ -301,7 +301,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.projectkr.shell.OverScrollListView
+                    <com.projectkr.shell.ui.OverScrollListView
                         android:id="@+id/list_actions"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -314,7 +314,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.projectkr.shell.OverScrollListView
+                    <com.projectkr.shell.ui.OverScrollListView
                         android:id="@+id/list_switchs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"

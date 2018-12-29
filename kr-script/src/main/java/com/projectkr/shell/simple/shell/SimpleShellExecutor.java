@@ -37,12 +37,10 @@ public class SimpleShellExecutor {
     /**
      * 执行脚本
      *
-     * @param root
      * @param cmds
      * @param startPath
      */
-    public boolean execute(Boolean root, String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
-        boolean rootOnlt = true;
+    public boolean execute(String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
         if (started) {
             return false;
         }
@@ -73,11 +71,6 @@ public class SimpleShellExecutor {
         try {
 
             process = Runtime.getRuntime().exec("su");
-            if (root || rootOnlt) {
-                process = Runtime.getRuntime().exec("su");
-            } else {
-                process = Runtime.getRuntime().exec("sh", envp.toArray(new String[envp.size()]));
-            }
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
             if (onExit != null)
@@ -93,22 +86,15 @@ public class SimpleShellExecutor {
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
-                String start = startPath;
-                if (startPath != null) {
-                    start = startPath;
-                } else {
-                    start = context.getFilesDir().getAbsolutePath();
-                }
+                String start = context.getFilesDir().getAbsolutePath();
 
-                if (root || rootOnlt) {
-                    StringBuilder envpCmds = new StringBuilder();
-                    if (envp.size() > 0) {
-                        for (String param : envp) {
-                            envpCmds.append("export ").append(param).append("\n");
-                        }
+                StringBuilder envpCmds = new StringBuilder();
+                if (envp.size() > 0) {
+                    for (String param : envp) {
+                        envpCmds.append("export ").append(param).append("\n");
                     }
-                    dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
                 }
+                dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
                 //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));

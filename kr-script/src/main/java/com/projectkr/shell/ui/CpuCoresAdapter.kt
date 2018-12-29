@@ -11,7 +11,7 @@ import com.projectkr.shell.R
 import com.projectkr.shell.ui.CpuChatView
 import java.util.*
 
-class AdapterCpuCores(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
+class CpuCoresAdapter(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
 
     override fun getCount(): Int {
         return list?.size ?: 0
@@ -38,7 +38,7 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         }
     }
 
-    fun setData(list: ArrayList<CpuCoreInfo>): AdapterCpuCores {
+    fun setData(list: ArrayList<CpuCoreInfo>): CpuCoresAdapter {
         this.list!!.clear();
         this.list.addAll(list)
         notifyDataSetChanged()

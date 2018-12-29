@@ -4,8 +4,8 @@ import android.content.Context
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
-import com.omarea.shell.KeepShellPublic
-import com.projectkr.shell.ExtractAssets
+import com.projectkr.shell.utils.ExtractAssets
+import com.projectkr.shell.utils.KeepShellPublic
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.*

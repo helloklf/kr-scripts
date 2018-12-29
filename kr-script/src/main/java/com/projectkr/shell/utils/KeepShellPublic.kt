@@ -1,4 +1,4 @@
-package com.omarea.shell
+package com.projectkr.shell.utils
 
 /**
  * Created by Hello on 2018/01/23.
@@ -7,7 +7,7 @@ object KeepShellPublic {
     private var keepShell: KeepShell? = null
 
     //执行脚本
-    internal fun doCmdSync(cmd: String): String {
+    fun doCmdSync(cmd: String): String {
         if (keepShell == null) {
             keepShell = KeepShell()
         }
@@ -15,14 +15,14 @@ object KeepShellPublic {
     }
 
     //执行脚本
-    internal fun checkRoot(): Boolean {
+    fun checkRoot(): Boolean {
         if (keepShell == null) {
             keepShell = KeepShell()
         }
         return keepShell!!.checkRoot()
     }
 
-    internal fun tryExit() {
+    fun tryExit() {
         if (keepShell != null) {
             keepShell!!.tryExit()
             keepShell = null

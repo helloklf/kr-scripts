@@ -1,4 +1,4 @@
-package com.projectkr.shell;
+package com.projectkr.shell.utils;
 
 import android.content.Context;
 

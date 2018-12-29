@@ -5,10 +5,10 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.*
-import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.ProgressBarDialog
-import com.projectkr.shell.ActionAdapter
-import com.projectkr.shell.OverScrollListView
+import com.projectkr.shell.ui.ActionAdapter
+import com.projectkr.shell.utils.KeepShellPublic
+import com.projectkr.shell.ui.OverScrollListView
 import com.projectkr.shell.action.ActionInfo
 import com.projectkr.shell.action.ActionParamInfo
 import com.projectkr.shell.simple.shell.SimpleShellExecutor
@@ -29,7 +29,7 @@ class ActionListConfig(private val context: FragmentActivity) {
             assert(listView != null)
             listView!!.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             listView!!.adapter = ActionAdapter(actionInfos)
-            listView!!.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            listView!!.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
                 onActionClick(parent.adapter.getItem(position) as ActionInfo, Runnable {
                     if (listView != null) {
                         listView!!.post { (listView!!.adapter as ActionAdapter).update(position, listView) }
@@ -44,8 +44,8 @@ class ActionListConfig(private val context: FragmentActivity) {
             AlertDialog.Builder(context)
                     .setTitle(action.title)
                     .setMessage(action.desc)
-                    .setPositiveButton("执行") { _, _ -> executeScript(action, onExit) }
-                    .setNegativeButton("取消") { _, _ -> }
+                    .setPositiveButton("执行") { dialog, which -> executeScript(action, onExit) }
+                    .setNegativeButton("取消") { dialog, which -> }
                     .create()
                     .show()
         } else {
@@ -83,7 +83,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                     handler.post {
                         progressBarDialog.hideDialog()
                         for (actionParamInfo in actionParamInfos) {
-                            if (actionParamInfo.options != null && actionParamInfo.options.size > 0 || actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty() || actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty()) {
+                            if (actionParamInfo.options != null && actionParamInfo.options.size > 0 || actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
                                 if (actionParamInfo.options == null)
                                     actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
                                 val spinner = Spinner(context)
@@ -92,12 +92,10 @@ class ActionListConfig(private val context: FragmentActivity) {
                                 var index = 0
                                 val valList = ArrayList<String>()
 
-                                if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty() || actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty()) {
-                                    var shellResult: String? = ""
+                                if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
+                                    var shellResult = ""
                                     if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
                                         shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSh)
-                                    } else {
-                                        shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSU)
                                     }
                                     if (shellResult != "error" && shellResult != "null" && !shellResult.isEmpty()) {
                                         for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
@@ -227,10 +225,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                         AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
-                                .setPositiveButton("确定", {
-                                    _, _ ->
-                                    executeScript(action.title, action.root, cmds, finalStartPath, onExit, readInput(actionParamInfos, linearLayout, cmds, action))
-                                })
+                                .setPositiveButton("确定") { dialog, which -> executeScript(action.title, cmds, finalStartPath, onExit, readInput(actionParamInfos, linearLayout, cmds, action)) }
                                 .create()
                                 .show()
                     }
@@ -241,7 +236,7 @@ class ActionListConfig(private val context: FragmentActivity) {
             }
         }
         cmds.append("\n\n")
-        executeScript(action.title, action.root, cmds, startPath, onExit, null)
+        executeScript(action.title, cmds, startPath, onExit, null)
     }
 
     private fun readInput(actionParamInfos: ArrayList<ActionParamInfo>, linearLayout: LinearLayout, cmds: StringBuilder, actionInfo: ActionInfo): HashMap<String, String> {
@@ -255,7 +250,7 @@ class ActionListConfig(private val context: FragmentActivity) {
             } else if (view is Spinner) {
                 val item = view.selectedItem
                 if (item is HashMap<*, *>) {
-                    val opt = (item as HashMap<String, Any>)["item"] as ActionParamInfo.ActionParamOption
+                    val opt = item["item"] as ActionParamInfo.ActionParamOption
                     actionParamInfo.value = opt.value
                 } else
                     actionParamInfo.value = item.toString()
@@ -271,7 +266,7 @@ class ActionListConfig(private val context: FragmentActivity) {
         return params
     }
 
-    private fun executeScript(title: String, root: Boolean?, cmds: StringBuilder, startPath: String, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit, params)
+    private fun executeScript(title: String, cmds: StringBuilder, startPath: String, onExit: Runnable, params: HashMap<String, String>?) {
+        SimpleShellExecutor(context).execute(title, cmds, startPath, onExit, params)
     }
 }

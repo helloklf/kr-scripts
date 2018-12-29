@@ -1,8 +1,6 @@
-package com.projectkr.shell;
+package com.projectkr.shell.utils;
 
 import android.annotation.SuppressLint;
-
-import com.omarea.shell.KernelProrp;
 
 import java.io.File;
 import java.util.ArrayList;

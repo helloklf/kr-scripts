@@ -1,6 +1,4 @@
-package com.projectkr.shell;
-
-import com.omarea.shell.KernelProrp;
+package com.projectkr.shell.utils;
 
 public class GpuUtils {
     public static String getGpuFreq() {

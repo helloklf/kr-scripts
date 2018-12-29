@@ -1,4 +1,4 @@
-package com.omarea.shell
+package com.projectkr.shell.utils
 
 import android.util.Log
 import java.io.BufferedReader

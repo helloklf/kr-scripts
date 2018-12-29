@@ -17,13 +17,14 @@ import android.view.*
 import android.widget.Toast
 import com.omarea.scripts.action.ActionListConfig
 import com.omarea.shell.Files
-import com.omarea.shell.KeepShellPublic
-import com.omarea.ui.AdapterCpuCores
+import com.omarea.ui.CpuCoresAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.action.ActionConfigReader
 import com.projectkr.shell.switchs.SwitchConfigReader
 import com.projectkr.shell.switchs.SwitchListConfig
+import com.projectkr.shell.utils.CpuFrequencyUtils
+import com.projectkr.shell.utils.KeepShellPublic
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
 import java.math.BigDecimal
@@ -302,9 +303,9 @@ class MainActivity : AppCompatActivity() {
                     cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
                 }
                 if (cpu_core_list.adapter == null) {
-                    cpu_core_list.adapter = AdapterCpuCores(this, cores)
+                    cpu_core_list.adapter = CpuCoresAdapter(this, cores)
                 } else {
-                    (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
+                    (cpu_core_list.adapter as CpuCoresAdapter).setData(cores)
                 }
             } catch (ex: Exception) {
 
