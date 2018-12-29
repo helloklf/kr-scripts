@@ -4,46 +4,148 @@
 3. 通过界面交互的方式，允许用户在执行脚本前进行一些输入或选择操作
 4. 加入Get Set机制（分别执行两段脚本），从而在界面上显示Switch开关
 
-## 定义Action
+## **注意：本说明仅适用于2.0.4 及以后的版本！**
+
+
+## 使用脚本
+- 在配置文件中你有两种方式来定义脚本
+- 适用场景：所有定义脚本的位置（sh、value-sh、script、options-sh、getstate、setstate 等）
+
+> 1 脚本内嵌（不推荐）
+```
+echo '1'
+```
+- 不适合大段的代码
+
+> 2 脚本文件（推荐）
+```
+file:///android_asset/test.sh
+```
+- 将你的脚本独立保存为 test.sh，放到apk 的 assets目录下
+- 应用启动时会自动提取，并在需要时执行
+
+## Action
+- 点击执行
+
+### 定义Action
 - 在assets下添加，actions.xml，格式如下：
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <action>...</action>
+    <action>
+        <title>行为1</title>
+        <desc>行为1的说明</desc>
+        <script># 点击行为1要执行的脚本</script>
+    </action>
     <action>...</action>
     ...
 </actions>
 ```
 
-### action基本定义（在1.0.0中实现）
+### 入门：Hello world！
+
 ```xml
 <!--action
-        [root]=[true/false]，是否以root权限执行，默认为false。
         [confirm]=[true/false]，操作是否需要二次确认，避免误操作，默认为false
         [start]=[dir]，执行脚本时的起始位置，将在执行script前cd到起始位置，默认位置为/cache
 -->
-<action root="true" confirm="false">
+<action confirm="false">
     <title>功能标题</title>
     <desc>功能说明</desc>
     <!--script 点击后要执行的脚本（可以直接要执行的文件路径、或要执行的代码）
-            内容将支持三种方式
-            1.脚本文件或程序路径，如：/system/etc/init.d/00test
-            2.要执行的代码内容（不需要#!/xbin/sh等类似标头），如：echo 'hello world！'; echo '执行完毕！';
-            3.assets内嵌资源文件，路径以file:///android_asset开头，如：file:///android_asset/scripts/test.sh，执行时会自动提取并运行-->
+            内容将支持两种方式
+            1.要执行的代码内容 如：echo 'hello world！'; echo '执行完毕！';
+            2.assets内嵌资源文件，路径以file:///android_asset开头，如：file:///android_asset/test.sh，执行时会自动从 apk文件 的assets目录自动提取-->
     <script>echo 'hello world！'</scripts>
 </action>
 ```
 
-### action定义 示例
+### 入门 action 属性
+| 属性 | 作用 | 有效值 | 必需 | 示例 |
+| - | - | - | :-: | :- |
+| confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
+| start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
+| support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
+
+> 示例
+```xml
+<action confirm="true" start="/cache">
+    <!-- 此处省略 -->
+</action>
+```
+
+#### 入门 action > title
+- 设置Action的标题，不支持动态值
+
+> 示例
+```xml
+<action>
+    <title>标题</title>
+</action>
+```
+
+#### 入门 action > desc
+- 设置Action的描述
+- 方式1：静态值，示例
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+</action>
+```
+
+- 方式2：动态值，示例
+```xml
+<action>
+    <title>标题</title>
+    <desc sh="echo '这是描述信息'"></desc>
+</action>
+```
+
+- 方式3：动态值，示例
+```xml
+<action>
+    <title>标题</title>
+    <desc sh="file:///android_asset/MyScript.sh"></desc>
+</action>
+```
+> 将要执行的脚本单独写入一个脚本文件，这很适合需要执行大段代码的场景
+> 如上例子，你只需将脚本MyScript.sh 放在apk文件 的assets目录下
+
+
+#### 入门 action > script
+- 设置Action被点击时要执行的脚本
+- 方式1：直接在配置文件里写脚本
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+    <script>
+        echo '我被执行了'
+    </script>
+</action>
+```
+
+- 方式2：使用单独的脚本文件
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+    <script>file:///android_asset/MyScript.sh</script>
+</action>
+```
+
+
+#### 入门 简单的action示例
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <action root="true">
+    <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，执行内嵌的脚本文件</desc>
         <script>file:///android_asset/scripts/test.sh</script>
     </action>
-    <action root="true">
+    <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，直接执行代码段</desc>
         <script>
@@ -56,49 +158,85 @@
 </actions>
 ```
 
-### 定义action参数（在1.0.1中实现）
+### 参数 定义Action执行的参数
+- 用于需要用户“输入内容” 或 “作出选择”的场景
+
+#### action > params > param 属性
+
+| 属性 | 用途 | 必须 | 示例 |
+| - | - | :-: | - |
+| name | 参数名 | 是 | `param0` |
+| value | 初始值 | 否 | ` ` |
+| value-sh | 使用脚本通过echo输出设置参数初始值 | 否 | ` ` |
+| options-sh | 使用脚本通过echo输出来生成 option | 否 | ` ` |
+| desc | 参数的描述（标题） | 否 | `请选择` |
+| type | 输入类型，空表示为普通文本（默认），可配置为`int`(数字) `bool`(勾选框) | 否 | `int` |
+| readonly | 只读，默认为"" | 否 | `readonly` | 
+| maxlength | 最大输入长度（位） | 否 | `10` |
+
+- 基本示例：
+
 ```xml
-<action root="true">
+<action>
     <title>自定义DPI</title>
     <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
     <script>wm density $dpi;</script>
     <!--通过params定义脚本执行参数-->
     <params>
-        <param name="dpi" />
+        <param name="dpi" desc="请输入DPI" type="int" value="480" />
     </params>
 </action>
 ```
 
-### 定义和使用参数
-#### 1、通过单选列表指定参数
+#### action > prams > param 动态获取value
+- 例如，你需要在用户输入前动态获取当前已设置的值
+
 ```xml
-<action root="true">
+<action>
+    <title>自定义DPI</title>
+    <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
+    <script>wm density $dpi;</script>
+    <!--通过params定义脚本执行参数-->
+    <params>
+        <param name="dpi" desc="请输入DPI" type="int" value-sh="echo '480'" />
+    </params>
+</action>
+```
+
+
+#### action > params > param > option
+- 通过在param 下定义 option，实现单选操作
+
+```xml
+<action>
     <title>切换状态栏风格</title>
     <desc>选择状态栏布局，[时间居中/默认]</desc>
     <!--可以在script中使用定义的参数-->
     <script>
         echo "mode参数的值：$mode"
-        if [ "$mode" = "time_center" ]; then echo '刚刚点了 时间居中' fi;
+        if [ "$mode" = "time_center" ]; then
+            echo '刚刚点了 时间居中'
+        else
+            echo '刚刚点击了 默认布局'
+        fi;
     </script>
     <!--params 用于在执行脚本前，先通过用户交互的方式定义变量，参数数量不限于一个，但不建议定义太多-->
     <params>
-        <!--param 定义单个参数
-            [name]=[参数名]，指定参数名称，这是必需的！！！
-            [value]=[默认值]，设置参数默认值（默认选中项）
-            [val]=[默认值]，设置参数默认值（默认选中项），value的简写，作用等同-->
-        <param name="mode" value="default">
+        <param name="mode" value="default" desc="请选择布局">
             <!--通过option 自定义选项
                 [value]=[当前选项的值] 如果不写这个属性，则默认使用显示文字作为值-->
-            <option val="default">默认布局</option>
-            <option val="time_center">时间居中</option>
+            <option value="default">默认布局</option>
+            <option value="time_center">时间居中</option>
         </param>
     </params>
 </action>
 ```
 
-#### 2、通过文本框录入参数
+
+#### action > params > param 文本输入的长度限制
+
 ```xml
-<action root="true">
+<action>
     <title>自定义DPI</title>
     <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
     <script>
@@ -106,16 +244,6 @@
         wm size ${width}x${height};
     </script>
     <params>
-        <!--如果不在param节点下定义option，则会直接在界面上显示文本输入框，让用户直接输入值，从而达到更灵活的配置
-            [name],[value] 同上
-            [desc]=[提示信息] 将显示在文本框底部作为提示
-            [type]=[int] 限制输入类型，目前支持的类型有：
-                            int 整数
-                            bool 布尔值，用数字 1 或 0 表示 true 或 false
-                            * 如果不设置此项则默认为不限制输入类型
-                [readonly]=[readonly] 设置属性值不可修改，不需要则不谢
-            [maxlength]=[最大输入长度] 限制可以输入几个字（包括空格和标点），不限制则不写（不推荐）
-            注意：文本输入框不支持输入英文双引号（"）-->
         <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
         <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
         <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
@@ -123,81 +251,14 @@
 </action>
 ```
 
-#### 3、为脚本文件或程序传参
-- 可参考 https://blog.csdn.net/czyt1988/article/details/79110450
-```xml
-<action root="true">
-    <title>自定义DPI</title>
-    <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
-    <!--通过这种方式传参，则可以在脚本内通过 $1 $2...按顺序取得参数-->
-    <script>/system/etc/init.d/00test $dpi $width $height</script>
-    <params>
-        <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
-        <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
-        <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
-    </params>
-</action>
-```
-
-#### 4、为内嵌脚本传参
-```xml
-<action root="true">
-    <title>自定义DPI</title>
-    <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
-    <!--通过file:///android_asset协议调用内置脚本时，会自动按顺序传递参数到脚本，直接在脚本内通过 $1 $2...按顺序取得参数即可-->
-    <script>file:///android_asset/scripts/test.sh</script>
-    <params>
-        <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
-        <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
-        <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
-    </params>
-</action>
-```
-
-### Action的Desc设置动态值（在1.0.4中实现）
-- 为Action的desc节点增加了动态取值特性，通过[sh]=[使用普通权限执行的脚本代码]或[su]=[以ROOT权限执行的脚本代码]，执行脚本过程中输出的内容将作为显示内容
-- 当然，除了设置[su]和[sh]执行脚本外，依然可以设置固定值，在脚本执行出错时，将继续显示固定值
-```xml
-<action root="true">
-    <title>调整DPI</title>
-    <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
-    <script>
-        wm size reset;
-        wm density $dpi;
-        busybox killall com.android.systemui;
-    </script>
-    <params>
-        <param name="dpi" value="440"></param>
-    </params>
-</action>
-```
-
-
-### Action的Param设置动态值（在1.0.4中实现）
-- Param的value也允许通过自定义脚本来设置默认值了，新增了一个属性在param节点上
-- 设置方式：[value-sh]=[要执行的脚本行]，执行脚本过程中输出的内容将作为显示内容
-- 类似于上面设置Desc的方式，[value-sh]和[value]可以共存，当[value-sh]的脚本执行失败，将继续使用[value]的值
-```xml
-<action root="true">
-    <title>调整DPI</title>
-    <desc su="echo '快速调整手机DPI，不需要重启，当前设置：`wm density`';">快速调整手机DPI，不需要重启</desc>
-    <script>
-        wm size reset;
-        wm density $dpi;
-        busybox killall com.android.systemui;
-    </script>
-    <params>
-        <param name="dpi" value="440" value-sh="echo '410';"></param>
-    </params>
-</action>
-```
-
-### Action的Param设置动态Options（在1.0.5中实现）
+### action > params > param > option 动态选项列表
 - 现在允许更灵活的定义Param的option列表了，通过使用脚本代码输出内，即可实现
-- 设置方式：在param上定义[options-sh]=[脚本]，同样支持file:///assets_file 方式的脚本文件
-- 脚本的执行过程中的输出内容，每一行将作为一个选项。如果你需要将选项的value（值）和label（显示文字）分开，用“|”分隔value和label即可，如：echo '380|很小（380）';
+- 脚本的执行过程中的输出内容，每一个each将作为一个选项，如 echo '很小'; echo '适中';
+- 如果你需要将选项的value（值）和label（显示文字）分开
+- 用“|”分隔value和label即可，如：echo '380|很小'
+
 ```xml
-<action root="true">
+<action>
     <title>调整DPI</title>
     <desc su="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
     <script>
@@ -206,45 +267,56 @@
         busybox killall com.android.systemui;
     </script>
     <params>
-        <param name="dpi" value="440" options-sh="echo '380|很小（380）';echo '410|较小（410）';echo '440|适中（440）';echo '480|较大（480）';" />
+        <param name="dpi" value="440" options-sh="echo '380|很小';echo '410|较小';echo '440|适中';echo '480|较大';" />
     </params>
 </action>
 ```
 
 
-## 定义Switch（在1.0.3中实现）
+## Switch
+- 开关项
+
+### 入门 Switch 属性
+| 属性 | 作用 | 有效值 | 必需 | 示例 |
+| - | - | - | :-: | :- |
+| confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
+| start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
+| support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
+
 #### 定义Switch列表
 - 在assets目录下，添加 switchs.xml，格式如下
-- 如果你不定义，界面上将不会显示开关栏目（在1.0.4中改进的）
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
-    <switch>...</switch>
+    <switch>
+        <!--开关标题-->
+        <title>流畅模式</title>
+        <!--开关说明，同样支持动态设置内容，可参考Action的Desc设置-->
+        <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
+        <!--在应用启动时获取状态，用于设定开关显示状态，确保执行时间不会太长，避免启动时界面未响应-->
+        <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
+        <!--设置状态，直接脚本时通过$state读取参数，file:///assets_file 方式的脚本文件，则通过 $1 获取参数-->
+        <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
+    </switch>
     <switch>...</switch>
     ...
 </switchs>
 ```
 
-#### switch定义规范
-```xml
-<!--
-    [root]=[true/false] 是否使用ROOT权限执行脚本
-    [confirm]=[true/false]执行脚本前是否需要确认
--->
-<switch root="true">
-    <!--开关标题-->
-    <title>流畅模式</title>
-    <!--开关说明，同样支持动态设置内容，可参考Action的Desc设置-->
-    <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
-    <!--在应用启动时获取状态，用于设定开关显示状态，确保执行时间不会太长，避免启动时界面未响应-->
-    <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
-    <!--设置状态，直接脚本时通过$state读取参数，file:///assets_file 方式的脚本文件，则通过 $1 获取参数-->
-    <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
-</switch>
-```
+#### switch > desc
+- 配置方式与 Action 的 desc相同，不再重复描述
+
+#### switch > getstate
+- 自定义一段脚本，通过echo输出结果，（1或0，1表示选中），如 echo '1'
+
+#### switch > setstate
+- 自定义一段脚本，用户切换选中状态时传入1或0，并执行代码
+- 你可以通过参数 $state来获取当前是否选中（1或0，1表示选中）
+
+#### 示例
 
 ```xml
-<switch root="true">
+<switch>
     <title>模拟全面屏</title>
     <desc>显示设置中的“全面屏”选项</desc>
     <getstate>
