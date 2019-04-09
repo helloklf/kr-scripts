@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (!KeepShellPublic.checkRoot()) {
-            AlertDialog.Builder(this)
+            val dialogInstance = AlertDialog.Builder(this)
                     .setTitle("需要ROOT权限")
                     .setMessage("请在Magisk或SuperSU等ROOT权限管理器中，设置本应用允许使用ROOT权限！")
                     .setCancelable(false)
@@ -47,7 +47,8 @@ class MainActivity : AppCompatActivity() {
                         System.exit(0)
                     })
                     .create()
-                    .show()
+            dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
+            dialogInstance.show()
             return
         }
 
@@ -133,15 +134,16 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.option_menu_info -> {
                 val layoutInflater = LayoutInflater.from(this)
-                AlertDialog.Builder(this)
+                val dialogInstance = AlertDialog.Builder(this)
                         //.setTitle("关于")
                         //.setMessage("以下脚本，均出自Kr-Yaodao Rom")
                         .setView(layoutInflater.inflate(R.layout.dialog_about, null))
                         .create()
-                        .show()
+                dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
+                dialogInstance.show()
             }
             R.id.option_menu_reboot -> {
-                AlertDialog.Builder(this)
+                val dialogInstance = AlertDialog.Builder(this)
                         .setTitle(R.string.reboot_confirm)
                         .setPositiveButton(R.string.yes) { dialog, which ->
                             try {
@@ -153,7 +155,8 @@ class MainActivity : AppCompatActivity() {
                         }
                         .setNegativeButton(R.string.no) { dialog, which -> }
                         .create()
-                        .show()
+                dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
+                dialogInstance.show()
             }
             R.id.action_graph -> {
                 if (FloatMonitor.isShown == true) {

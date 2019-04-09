@@ -33,6 +33,7 @@ open class ProgressBarDialog(private var context: Context) {
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         textView.text = text
         alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+        alert!!.window!!.setWindowAnimations(R.style.windowAnim)
         alert!!.show()
         return alert
     }
