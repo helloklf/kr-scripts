@@ -260,7 +260,7 @@ file:///android_asset/test.sh
 ```xml
 <action>
     <title>调整DPI</title>
-    <desc su="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
+    <desc sh="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
     <script>
         wm size reset;
         wm density $dpi;

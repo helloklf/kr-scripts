@@ -3,7 +3,6 @@ package com.projectkr.shell.switchs;
 public class SwitchInfo {
     public String title;
     public String desc;
-    public String descPollingSUShell;
     public String descPollingShell;
     public String getState;
     public String setState;

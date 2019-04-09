@@ -69,25 +69,14 @@ object SwitchConfigReader {
                         } else if ("desc" == parser.name) {
                             for (i in 0 until parser.attributeCount) {
                                 val attrValue = parser.getAttributeValue(i)
-                                when (parser.getAttributeName(i)) {
-                                    "su" -> {
-                                        if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingSUShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            action.descPollingSUShell = attrValue
-                                        }
-                                        action.desc = executeResultRoot(context, action.descPollingSUShell)
+                                if (parser.getAttributeName(i) == "su" || parser.getAttributeName(i) == "sh") {
+                                    if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
+                                        val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
+                                        action.descPollingShell = "chmod 0755 $path\n$path"
+                                    } else {
+                                        action.descPollingShell = attrValue
                                     }
-                                    "sh" -> {
-                                        if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            action.descPollingShell = attrValue
-                                        }
-                                        action.desc = executeResultRoot(context, action.descPollingShell)
-                                    }
+                                    action.desc = executeResultRoot(context, action.descPollingShell)
                                 }
                             }
                             if (action.desc == null || action.desc.isEmpty())
