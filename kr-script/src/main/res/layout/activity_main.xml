@@ -29,7 +29,7 @@
                 android:layout_weight="1">
 
                 <FrameLayout
-                    android:id="@+id/main_tabhost_tab2"
+                    android:id="@+id/main_tabhost_cpu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
@@ -297,7 +297,7 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/main_tabhost_tab0"
+                    android:id="@+id/main_tabhost_actions"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -309,7 +309,7 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/main_tabhost_tab1"
+                    android:id="@+id/main_tabhost_switchs"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">

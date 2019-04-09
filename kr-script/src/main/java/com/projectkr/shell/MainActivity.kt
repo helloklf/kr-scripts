@@ -76,33 +76,52 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: Exception) {
         }
         main_tabhost.setup()
+
+        val mainActivity = this
+        val progressBarDialog = ProgressBarDialog(mainActivity)
+        var actionsLoaded = false
+        var switchsLoaded = false
+
         main_tabhost.setOnTabChangedListener {
             if ((main_tabhost).currentTab == 0) {
                 startTimer()
             } else {
+                if ((main_tabhost).currentTab == 1) {
+                    if (!actionsLoaded) {
+                        progressBarDialog.showDialog("请稍等")
+                        Thread(Runnable {
+                            val actionInfos = ActionConfigReader.readActionConfigXml(mainActivity)
+                            handler.post {
+                                if (actionInfos != null && actionInfos.size != 0) {
+                                    ActionListConfig(mainActivity).setListData(actionInfos)
+                                }
+                                progressBarDialog.hideDialog()
+                            }
+                            actionsLoaded = true
+                        }).start()
+                    }
+                } else if ((main_tabhost).currentTab == 2) {
+                    if (!switchsLoaded) {
+                        progressBarDialog.showDialog("请稍等")
+                        Thread(Runnable {
+                            val switchInfos = SwitchConfigReader.readActionConfigXml(mainActivity)
+                            handler.post {
+                                if (switchInfos != null && switchInfos.size != 0) {
+                                    SwitchListConfig(mainActivity).setListData(switchInfos)
+                                }
+                                progressBarDialog.hideDialog()
+                            }
+                            switchsLoaded = true
+                        }).start()
+                    }
+                }
                 stopTimer()
             }
         }
 
-        val mainActivity = this
-        val progressBarDialog = ProgressBarDialog(mainActivity)
-        progressBarDialog.showDialog("请稍等")
-        Thread(Runnable {
-            val actionInfos = ActionConfigReader.readActionConfigXml(mainActivity)
-            val switchInfos = SwitchConfigReader.readActionConfigXml(mainActivity)
-            handler.post {
-                main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_tab2).setIndicator("", getDrawable(R.drawable.cpu)))
-                if (actionInfos != null && actionInfos.size != 0) {
-                    ActionListConfig(mainActivity).setListData(actionInfos)
-                    main_tabhost.addTab(main_tabhost.newTabSpec("tab0").setContent(R.id.main_tabhost_tab0).setIndicator("", getDrawable(R.drawable.shell)))
-                }
-                if (switchInfos != null && switchInfos.size != 0) {
-                    SwitchListConfig(mainActivity).setListData(switchInfos)
-                    main_tabhost.addTab(main_tabhost.newTabSpec("tab1").setContent(R.id.main_tabhost_tab1).setIndicator("", getDrawable(R.drawable.switchs)))
-                }
-                progressBarDialog.hideDialog()
-            }
-        }).start()
+        main_tabhost.addTab(main_tabhost.newTabSpec("cpu").setContent(R.id.main_tabhost_cpu).setIndicator("", getDrawable(R.drawable.cpu)))
+        main_tabhost.addTab(main_tabhost.newTabSpec("actions").setContent(R.id.main_tabhost_actions).setIndicator("", getDrawable(R.drawable.shell)))
+        main_tabhost.addTab(main_tabhost.newTabSpec("switchs").setContent(R.id.main_tabhost_switchs).setIndicator("", getDrawable(R.drawable.switchs)))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -162,10 +181,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private var coreCount = -1;
