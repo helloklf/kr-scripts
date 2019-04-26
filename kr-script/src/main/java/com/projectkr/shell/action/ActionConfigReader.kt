@@ -128,6 +128,15 @@ object ActionConfigReader {
                             if (option.value == null)
                                 option.value = option.desc
                             actionParamInfo.options.add(option)
+                        } else if ("resource" == parser.name) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "file") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResource(file)
+                                    }
+                                }
+                            }
                         }
                     }
                     XmlPullParser.END_TAG -> if ("action" == parser.name && actions != null && action != null) {

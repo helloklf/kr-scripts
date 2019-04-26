@@ -1,6 +1,7 @@
 package com.omarea.shared
 
 import android.content.Context
+import android.content.res.AssetManager
 import android.util.Log
 import java.io.File
 import java.io.FileOutputStream
@@ -17,6 +18,36 @@ object FileWrite {
 
     fun getPrivateFilePath(context: Context, outName: String): String {
         return getPrivateFileDir(context) + (if (outName.startsWith("/")) outName.substring(1, outName.length) else outName)
+    }
+
+    fun writePrivateFile(file: String, outName: String, context: Context): String? {
+        try {
+            val inputStream = context.assets.open(file)
+            val datas = ByteArray(2 * 1024 * 1024)
+            //inputStream.available()
+            val len = inputStream.read(datas)
+            val dir = File(getPrivateFileDir(context))
+            if (!dir.exists())
+                dir.mkdirs()
+            val filePath = getPrivateFilePath(context, outName)
+            val fileDir = File(filePath).parentFile
+            if (!fileDir.exists())
+                fileDir.mkdirs()
+
+            val fileOutputStream = FileOutputStream(filePath)
+            fileOutputStream.write(datas, 0, len)
+            fileOutputStream.close()
+            inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
+            return filePath
+            //getApplicationContext().getClassLoader().getResourceAsStream("");
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     fun writePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {

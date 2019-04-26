@@ -58,7 +58,7 @@ class ActionListConfig(private val context: FragmentActivity) {
         val cmds = StringBuilder()
         cmds.append(script)
 
-        var startPath = context.filesDir.absolutePath
+        var startPath:String? = null
         if (action.start != null) {
             startPath = action.start
         }
@@ -266,7 +266,7 @@ class ActionListConfig(private val context: FragmentActivity) {
         return params
     }
 
-    private fun executeScript(title: String, cmds: StringBuilder, startPath: String, onExit: Runnable, params: HashMap<String, String>?) {
+    private fun executeScript(title: String, cmds: StringBuilder, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
         SimpleShellExecutor(context).execute(title, cmds, startPath, onExit, params)
     }
 }

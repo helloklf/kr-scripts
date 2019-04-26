@@ -13,7 +13,7 @@
             </param>
         </params>
     </action>
-    <!--<action root="false">
+    <action root="false">
         <title>环境变量</title>
         <desc>了解Scene提供的环境变量</desc>
         <script>
@@ -26,7 +26,7 @@
         <params>
             <param name="action" value="12123123" />
         </params>
-    </action>-->
+    </action>
     <action>
         <title>修改dex2oat线程数</title>
         <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>

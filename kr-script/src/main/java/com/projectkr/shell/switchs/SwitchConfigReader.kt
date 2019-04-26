@@ -99,6 +99,15 @@ object SwitchConfigReader {
                             } else {
                                 action.setState = script
                             }
+                        } else if ("resource" == parser.name) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "file") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResource(file)
+                                    }
+                                }
+                            }
                         }
                     }
                     XmlPullParser.END_TAG -> if ("switch" == parser.name && actions != null && action != null) {

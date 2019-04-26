@@ -80,7 +80,7 @@ public class SwitchListConfig {
         final StringBuilder cmds = new StringBuilder();
         cmds.append(script);
 
-        String startPath = context.getFilesDir().getAbsolutePath();
+        String startPath = null;
         if (action.start != null) {
             startPath = action.start;
         }

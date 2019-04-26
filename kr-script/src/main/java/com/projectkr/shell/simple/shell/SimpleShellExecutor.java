@@ -86,7 +86,12 @@ public class SimpleShellExecutor {
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
-                String start = context.getFilesDir().getAbsolutePath();
+                String start = null;
+                if (startPath != null && !startPath.isEmpty()) {
+                    start = startPath;
+                } else {
+                    start = FileWrite.INSTANCE.getPrivateFileDir(context);
+                }
 
                 StringBuilder envpCmds = new StringBuilder();
                 if (envp.size() > 0) {
