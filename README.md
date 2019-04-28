@@ -341,3 +341,39 @@ file:///android_asset/test.sh
 </switch>
 ```
 
+#### 公共资源
+- 在actions和switchs下，通过resource标签定义公共资源
+- 如果，你需要将一些公共的函数提取到单独的脚本中
+- 或者，你的某个脚本需要一些静态资源文件，而你希望将静态资源集成到apk中
+- 那你可以试试这个，例如：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <resource file="file:///android_asset/resource/common.sh" />
+    <resource file="file:///android_asset/resource/test_file.zip" />
+    <action>
+        <title>测试使用resource</title>
+        <desc>试试使用resource导入公共函数库，并使用静态文件</desc>
+        <script>
+            # 点击action后执行的脚本
+            # source是Linux shell自身语法，并非本应用所定制，因此其工作原理也不会有什么不同
+            source ./resource/common.sh
+
+            if [[ -f './resource/test_file.zip' ]]
+            then
+                echo '提取静态资源文件成功'
+            else
+                echo '资源文件丢失...'
+            fi
+
+            echo '>>> 测试完毕'
+        </script>
+    </action>
+</actions>
+```
+
+- 上面的例子中，是通过相对位置来使用resource的
+- 如果你定义了`action`或`switch`的`[start]`属性，那么你可能需要通过绝对路径来访问`resource`
+- `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下（仅供参考）
+- 绝对路径可能不如相对路径稳妥~

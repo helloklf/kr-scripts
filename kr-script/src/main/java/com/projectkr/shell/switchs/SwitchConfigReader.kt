@@ -71,7 +71,7 @@ object SwitchConfigReader {
                                 val attrValue = parser.getAttributeValue(i)
                                 if (parser.getAttributeName(i) == "su" || parser.getAttributeName(i) == "sh") {
                                     if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                        val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
+                                        val path = ExtractAssets(context).extractScript(attrValue.trim { it <= ' ' })
                                         action.descPollingShell = "chmod 0755 $path\n$path"
                                     } else {
                                         action.descPollingShell = attrValue
@@ -85,7 +85,7 @@ object SwitchConfigReader {
                             val script = parser.nextText()
                             if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                 action.getStateType = SwitchInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
+                                val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
                                 action.getState = "chmod 0755 $path\n$path"
                             } else {
                                 action.getState = script
@@ -94,7 +94,7 @@ object SwitchConfigReader {
                             val script = parser.nextText()
                             if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                 action.setStateType = SwitchInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
+                                val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
                                 action.setState = "chmod 0755 $path\n$path"
                             } else {
                                 action.setState = script
@@ -146,7 +146,7 @@ object SwitchConfigReader {
     private fun executeResultRoot(context: Context, scriptIn: String): String {
         var script = scriptIn
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
+            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
             script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)
