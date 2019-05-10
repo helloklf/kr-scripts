@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import com.projectkr.shell.ScriptEnvironmen
 import com.projectkr.shell.utils.ExtractAssets
 import com.projectkr.shell.utils.KeepShellPublic
 import org.xmlpull.v1.XmlPullParser
@@ -30,7 +31,25 @@ object ActionConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> if ("actions" == parser.name) {
                         actions = ArrayList()
-                    } else if ("action" == parser.name) {
+                    } else if ("separator" == parser.name) {
+                        if (actions != null) {
+                            val separator = ActionInfo()
+                            separator.separator = parser.nextText()
+                            actions.add(separator)
+                        }
+                    } else if ("group" == parser.name) {
+                        if (actions != null) {
+                            for (i in 0 until parser.attributeCount) {
+                                val attrName = parser.getAttributeName(i)
+                                if (attrName == "title") {
+                                    val separator = ActionInfo()
+                                    separator.separator = parser.getAttributeValue(i)
+                                    actions.add(separator)
+                                    break
+                                }
+                            }
+                        }
+                    }  else if ("action" == parser.name) {
                         action = ActionInfo()
                         for (i in 0 until parser.attributeCount) {
                             if (action == null) {
@@ -46,6 +65,15 @@ object ActionConfigReader {
                                 }
                             }
                         }
+                    } else if ("resource" == parser.name) {
+                        for (i in 0 until parser.attributeCount) {
+                            if (parser.getAttributeName(i) == "file") {
+                                val file = parser.getAttributeValue(i).trim()
+                                if (file.startsWith(ASSETS_FILE)) {
+                                    ExtractAssets(context).extractResource(file)
+                                }
+                            }
+                        }
                     } else if (action != null) {
                         if ("title" == parser.name) {
                             action.title = parser.nextText()
@@ -53,13 +81,7 @@ object ActionConfigReader {
                             for (i in 0 until parser.attributeCount) {
                                 val attrName = parser.getAttributeName(i)
                                 if (attrName == "su" || attrName == "sh") {
-                                    val attrValue = parser.getAttributeValue(i)
-                                    if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                        val path = ExtractAssets(context).extractScript(attrValue.trim { it <= ' ' })
-                                        action.descPollingShell = "chmod 0755 $path\n$path"
-                                    } else {
-                                        action.descPollingShell = attrValue
-                                    }
+                                    action.descPollingShell = parser.getAttributeValue(i)
                                     action.desc = executeResultRoot(context, action.descPollingShell)
                                 }
                             }
@@ -67,13 +89,7 @@ object ActionConfigReader {
                                 action.desc = parser.nextText()
                         } else if ("script" == parser.name) {
                             val script = parser.nextText()
-                            if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                action.scriptType = ActionInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                action.script = "chmod 0755 $path\n$path"
-                            } else {
-                                action.script = script
-                            }
+                            action.script = script
                         } else if ("param" == parser.name) {
                             if (actionParamInfos == null) {
                                 actionParamInfos = ArrayList()
@@ -88,25 +104,12 @@ object ActionConfigReader {
                                     attrName == "type" -> actionParamInfo.type = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' }
                                     attrName == "readonly" -> actionParamInfo.readonly = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' } == "readonly"
                                     attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i))
-                                    attrName == "value-sh" || attrName == "value-su" -> {
-                                        val script = parser.getAttributeValue(i)
-                                        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                            actionParamInfo.valueShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            actionParamInfo.valueShell = script
-                                        }
-                                    }
+                                    attrName == "value-sh" || attrName == "value-su" -> actionParamInfo.valueShell = parser.getAttributeValue(i)
                                     attrName == "options-sh" || attrName == "options-su" -> {
                                         if (actionParamInfo.options == null)
                                             actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
                                         val script = parser.getAttributeValue(i)
-                                        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                            actionParamInfo.optionsSh = "chmod 0755 $path\n$path"
-                                        } else {
-                                            actionParamInfo.optionsSh = script
-                                        }
+                                        actionParamInfo.optionsSh = script
                                     }
                                 }
                             }
@@ -128,15 +131,6 @@ object ActionConfigReader {
                             if (option.value == null)
                                 option.value = option.desc
                             actionParamInfo.options.add(option)
-                        } else if ("resource" == parser.name) {
-                            for (i in 0 until parser.attributeCount) {
-                                if (parser.getAttributeName(i) == "file") {
-                                    val file = parser.getAttributeValue(i).trim()
-                                    if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResource(file)
-                                    }
-                                }
-                            }
                         }
                     }
                     XmlPullParser.END_TAG -> if ("action" == parser.name && actions != null && action != null) {
@@ -181,11 +175,6 @@ object ActionConfigReader {
     }
 
     private fun executeResultRoot(context: Context, script: String): String {
-        var script = script
-        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-            script = "chmod 0755 $path\n$path"
-        }
-        return KeepShellPublic.doCmdSync(script)
+        return ScriptEnvironmen.executeResultRoot(context, script);
     }
 }

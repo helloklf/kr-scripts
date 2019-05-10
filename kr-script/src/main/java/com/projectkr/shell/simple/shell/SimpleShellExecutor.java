@@ -21,6 +21,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import com.projectkr.shell.R;
+import com.projectkr.shell.utils.ExtractAssets;
 
 /**
  * Created by Hello on 2018/04/01.
@@ -30,20 +31,20 @@ public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
 
+    private static final String ASSETS_FILE = "file:///android_asset/";
+
     public SimpleShellExecutor(Context context) {
         this.context = context;
     }
 
     /**
      * 执行脚本
-     *
-     * @param cmds
-     * @param startPath
      */
-    public boolean execute(String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+    public boolean execute(String title, String cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
         if (started) {
             return false;
         }
+
         Process process = null;
         final File dir = context.getFilesDir();
         final String dirUri = dir.getAbsolutePath();
@@ -61,15 +62,14 @@ public class SimpleShellExecutor {
         envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
         envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
         envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
-        String busybox = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
-        if (new File(busybox).exists()) {
-            envp.add("BUSYBOX=" + busybox);
+        String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
+        if (new File(FileWrite.INSTANCE.getPrivateFilePath(context, "busybox")).exists()) {
+            envp.add("BUSYBOX=" + busyboxPath);
         } else {
             envp.add("BUSYBOX=busybox");
         }
 
         try {
-
             process = Runtime.getRuntime().exec("su");
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
@@ -102,12 +102,20 @@ public class SimpleShellExecutor {
                 dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
-                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
-                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
                 shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:\n\n"));
 
                 dataOutputStream.writeBytes("sleep 0.2;\n");
-                dataOutputStream.write(cmds.toString().replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
+                if (cmds.startsWith(ASSETS_FILE)) {
+                    String path = new ExtractAssets(context).extractScript(cmds);
+                    String scripts = "chmod 755 \"" + path +
+                            "\"\n" +
+                            "sh \"" +
+                            path +
+                            "\"\n";
+                    dataOutputStream.write((scripts).getBytes("UTF-8"));
+                } else {
+                    dataOutputStream.write(cmds.replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
+                }
                 dataOutputStream.writeBytes("\n\n");
                 dataOutputStream.writeBytes("sleep 0.2;\n");
                 dataOutputStream.writeBytes("exit\n");

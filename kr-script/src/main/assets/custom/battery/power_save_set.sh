@@ -3,6 +3,12 @@ state=$1
 settings put global low_power $1;
 settings put global low_power_sticky $1;
 
+function killproc()
+{
+    stop "$1" 2> /dev/null
+    killall -9 "$1" 2> /dev/null
+}
+
 # Whether or not app auto restriction is enabled. When it is enabled, settings app will  auto restrict the app if it has bad behavior(e.g. hold wakelock for long time).
 # [app_auto_restriction_enabled]
 
@@ -44,46 +50,46 @@ then
     settings put global low_power_sticky 1
 
     echo "关闭调试服务和日志进程"
-    stop cnss_diag 2> /dev/null
-    killall -9 cnss_diag 2> /dev/null
-    stop subsystem_ramdump 2> /dev/null
+    killproc cnss_diag
+    killproc subsystem_ramdump
+    killproc tcpdump
+    # killproc logd
+    # killproc adbd
     #stop thermal-engine 2> /dev/null
-    stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
     #killall -9 magiskd 2> /dev/null
-    killall -9 magisklogd 2> /dev/null
     if [[ -e /sys/zte_power_debug/switch ]]; then
         echo 0 > /sys/zte_power_debug/switch
     fi
     if [[ -e /sys/zte_power_debug/debug_enabled ]]; then
         echo N > /sys/kernel/debug/debug_enabled
     fi
-    stop cnss_diag 2> /dev/null
-    killall -9 cnss_diag 2> /dev/null
-    stop subsystem_ramdump 2> /dev/null
-    #stop thermal-engine 2> /dev/null
-    stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
     #killall -9 magiskd 2> /dev/null
     killall -9 magisklogd 2> /dev/null
 
     echo "清理后台休眠白名单"
+    echo "请稍等..."
     for item in `dumpsys deviceidle whitelist`
     do
         app=`echo "$item" | cut -f2 -d ','`
         #echo "deviceidle whitelist -$app"
-        r=`dumpsys deviceidle whitelist -$app | grep Removed`
-        if [[ -n "$r" ]]
-        then
-            am set-inactive $app true 2> /dev/null
-        fi
+        dumpsys deviceidle whitelist -$app 2>&1 >/dev/null
+        am set-inactive $app true 2>&1 >/dev/null
+        am set-idle $app true 2>&1 >/dev/null
+        # 9.0 让后台应用立即进入闲置状态
+        am make-uid-idle --user current $app 2>&1 >/dev/null
+    done
+    for app in `pm list packages -3  | cut -f2 -d ':'`
+    do
+        am set-inactive $app true 2>&1 > /dev/null
+        am set-idle $app true 2>&1 > /dev/null
+        am make-uid-idle --user current $app 2>&1 > /dev/null
     done
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
+
+    echo 3 > /proc/sys/vm/drop_caches
 
     echo '注意：开启省电模式后，Scene可能会无法保持后台'
     echo '并且，可能会收不到后台消息推送！'

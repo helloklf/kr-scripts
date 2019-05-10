@@ -8,8 +8,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import com.projectkr.shell.R;
+import com.projectkr.shell.ScriptEnvironmen;
 import com.projectkr.shell.switchs.SwitchInfo;
-import com.projectkr.shell.utils.KeepShellPublic;
 
 import java.util.ArrayList;
 
@@ -46,11 +46,11 @@ public class SwitchAdapter implements ListAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc =  KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
+            actionInfo.desc =  ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
-            String shellResult = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.getState);
-            actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
+            String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
+            actionInfo.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
         }
         holder.itemSwitch.setChecked(actionInfo.selected);
         holder.itemText.setText(actionInfo.desc);
@@ -69,32 +69,53 @@ public class SwitchAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        SwitchInfo item = (SwitchInfo) getItem(position);
+
         View convertView = view;
         ViewHolder viewHolder;
-        SwitchInfo item = (SwitchInfo) getItem(position);
+
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
                 convertView = View.inflate(parent.getContext(), R.layout.switch_row_item, null);
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
-                viewHolder.itemSwitch.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setTag(item);
-                convertView.setTag(viewHolder);
+                viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
-                viewHolder.itemSwitch.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setTag(item);
             }
-        } catch (Exception ignored) {
 
+            if (isNullOrEmpty(item.desc)) {
+                viewHolder.itemText.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemText.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.title)) {
+                viewHolder.itemSwitch.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSwitch.setText(item.title);
+                viewHolder.itemSwitch.setChecked(item.selected);
+                viewHolder.itemSwitch.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.separator)) {
+                viewHolder.itemSeparator.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSeparator.setText(item.separator);
+                viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+            }
+            convertView.setTag(viewHolder);
+            viewHolder.itemSwitch.setTag(item);
+        } catch (Exception ignored) {
         }
 
         return convertView;
+    }
+
+    private boolean isNullOrEmpty(String text) {
+        return text == null || text.trim().equals("");
     }
 
     @Override
@@ -123,6 +144,7 @@ public class SwitchAdapter implements ListAdapter {
     }
 
     protected class ViewHolder {
+        TextView itemSeparator = null;
         Switch itemSwitch = null;
         TextView itemText = null;
     }

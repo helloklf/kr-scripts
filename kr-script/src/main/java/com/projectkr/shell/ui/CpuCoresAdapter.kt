@@ -8,10 +8,10 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.projectkr.shell.CpuCoreInfo
 import com.projectkr.shell.R
-import com.projectkr.shell.ui.CpuChatView
+import com.projectkr.shell.ui.CpuChartView
 import java.util.*
 
-class CpuCoresAdapter(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
+class AdapterCpuCores(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
 
     override fun getCount(): Int {
         return list?.size ?: 0
@@ -38,7 +38,7 @@ class CpuCoresAdapter(private val context: Context, private val list: ArrayList<
         }
     }
 
-    fun setData(list: ArrayList<CpuCoreInfo>): CpuCoresAdapter {
+    fun setData(list: ArrayList<CpuCoreInfo>): AdapterCpuCores {
         this.list!!.clear();
         this.list.addAll(list)
         notifyDataSetChanged()
@@ -52,9 +52,9 @@ class CpuCoresAdapter(private val context: Context, private val list: ArrayList<
             convertView = View.inflate(context, R.layout.cpu_core_item, null)
         }
         val coreInfo = getItem(position)
-        val cpuChatView = convertView!!.findViewById<CpuChatView>(R.id.core_cpu_loading_chat)
-        cpuChatView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
-        cpuChatView.invalidate()
+        val cpuChartView = convertView!!.findViewById<CpuChartView>(R.id.core_cpu_loading_chart)
+        cpuChartView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
+        cpuChartView.invalidate()
 
         val index = convertView.findViewById<TextView>(R.id.cpu_core_load)
         index.text = coreInfo.loadRatio.toInt().toString() + "%"

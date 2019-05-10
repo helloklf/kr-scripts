@@ -3,46 +3,52 @@ package com.omarea.vtools
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.os.Handler
 import android.provider.Settings
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
-import com.projectkr.shell.CpuCoreInfo
-import com.projectkr.shell.utils.CpuFrequencyUtils
-import com.projectkr.shell.utils.GpuUtils
+import com.omarea.shell.units.BatteryUnit
+import com.projectkr.shell.ui.FloatMonitorBatteryView
+import com.projectkr.shell.ui.FloatMonitorChartView
 import com.projectkr.shell.R
-import com.projectkr.shell.ui.CpuChatView
-import java.lang.Exception
-import java.math.BigDecimal
-import java.math.RoundingMode
+import com.projectkr.shell.ui.CpuChartView
+import com.projectkr.shell.utils.CpuFrequencyUtils
+import com.projectkr.shell.utils.CpuLoadUtils
+import com.projectkr.shell.utils.GpuUtils
 import java.util.*
 
-/**
- * 弹窗辅助类
- *
- * @ClassName WindowUtils
- */
-class FloatMonitor (context: Context) {
+class FloatMonitor(context: Context) {
     private var mContext: Context? = context
     private var timer: Timer? = null
+    private var startMonitorTime = 0L
+    private var gpuLoadAvg = HashMap<Int, Int>()
+    private var postionMode = 1
+    private var cpuLoadUtils = CpuLoadUtils()
+    private var postionModes = arrayOf(
+            Gravity.START or Gravity.TOP,
+            Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+            Gravity.TOP or Gravity.END,
+            Gravity.END or Gravity.BOTTOM,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+            Gravity.BOTTOM or Gravity.START
+    )
 
     /**
      * 显示弹出框
-     *
      * @param context
      */
     fun showPopupWindow() {
         if (isShown!!) {
             return
         }
+        startMonitorTime = System.currentTimeMillis()
+
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
             Toast.makeText(mContext, "未授予“显示悬浮窗/在应用上层显示”权限", Toast.LENGTH_LONG).show()
             return
@@ -54,40 +60,27 @@ class FloatMonitor (context: Context) {
 
         mView = setUpView(mContext!!)
 
-        val params = WindowManager.LayoutParams()
+        val params = LayoutParams()
 
         // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        params.type = LayoutParams.TYPE_SYSTEM_ALERT
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            params.type = LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {
-            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+            params.type = LayoutParams.TYPE_SYSTEM_ALERT
         }
-        // WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-
-        // 设置flag
-
-        //val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
-        //params.flags = flags
-        // 不设置这个弹出框的透明遮罩显示为黑色
         params.format = PixelFormat.TRANSLUCENT
-        // FLAG_NOT_TOUCH_MODAL不阻塞事件传递到后面的窗口
-        // 设置 FLAG_NOT_FOCUSABLE 悬浮窗口较小时，后面的应用图标由不可长按变为可长按
-        // 不设置这个flag的话，home页的划屏会有问题
 
         params.width = LayoutParams.WRAP_CONTENT
         params.height = LayoutParams.WRAP_CONTENT
 
-        params.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or
+        params.gravity = Gravity.TOP or Gravity.LEFT
+        params.x = 0
+        params.y = 0
 
-        val navHeight = 0 // (getNavBarHeight(mContext!!))
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE
+
+        val navHeight = 0
         if (navHeight > 0) {
             val display = mWindowManager!!.getDefaultDisplay()
             val p = Point()
@@ -97,6 +90,62 @@ class FloatMonitor (context: Context) {
         } else {
         }
         mWindowManager!!.addView(mView, params)
+
+        // 添加触摸事件
+        mView!!.setOnTouchListener(object : View.OnTouchListener {
+            private var isTouchDown = false
+            private var touchStartX = 0f
+            private var touchStartY = 0f
+            private var touchStartRawX = 0f
+            private var touchStartRawY = 0f
+            private var touchStartTime = 0L
+            private var lastClickTime = 0L
+
+            private fun onClick() {
+                if (System.currentTimeMillis() - lastClickTime < 300) {
+                    Toast.makeText(mContext, "已通过双击关闭悬浮窗", Toast.LENGTH_SHORT).show()
+                    hidePopupWindow()
+                } else {
+                    lastClickTime = System.currentTimeMillis()
+                }
+            }
+
+            @SuppressLint("ClickableViewAccessibility")
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                if (event != null) {
+                    when(event.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            touchStartX = event.getX()
+                            touchStartY = event.getY()
+                            touchStartRawX = event.rawX
+                            touchStartRawY = event.rawY
+                            isTouchDown = true
+                            touchStartTime = System.currentTimeMillis()
+                        }
+                        MotionEvent.ACTION_MOVE -> {
+                            if (isTouchDown) {
+                                params.x = (event.rawX - touchStartX).toInt()
+                                params.y = (event.rawY - touchStartY).toInt()
+                                mWindowManager!!.updateViewLayout(v, params)
+                            }
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            if (System.currentTimeMillis() - touchStartTime < 300) {
+                                if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
+                                    onClick()
+                                }
+                            }
+                            isTouchDown = false
+                        }
+                        MotionEvent.ACTION_OUTSIDE,
+                        MotionEvent.ACTION_CANCEL -> {
+                            isTouchDown = false
+                        }
+                    }
+                }
+                return false
+            }
+        })
 
         startTimer()
     }
@@ -121,85 +170,129 @@ class FloatMonitor (context: Context) {
         }
     }
 
-    private var coreCount = -1;
-
     private var view: View? = null
-    private var minFreqs = HashMap<Int, String>()
-    private var maxFreqs = HashMap<Int, String>()
-    private var cpuChat : CpuChatView? = null
-    private var cpuFreqView: TextView? = null
-    private var gpuChat : CpuChatView? = null
-    private var gpuFreqView: TextView? = null
-    private var ramChat : CpuChatView? = null
-    private var ramUseView: TextView? = null
-    private var activityManager:ActivityManager? = null
-    private var myHandler = Handler()
+    private var cpuChart: CpuChartView? = null
+    private var cpuFreqText: TextView? = null
+    private var gpuChart: FloatMonitorChartView? = null
+    private var gpuPanel: View? = null
+    private var gpuFreqText: TextView? = null
+    private var ramChart: FloatMonitorChartView? = null
+    private var ramUseText: TextView? = null
+    private var temperaturePanel: View? = null
+    private var temperatureChart: FloatMonitorBatteryView? = null
+    private var temperatureText: TextView? = null
+    private var batteryLevelText: TextView? = null
 
-    fun format1(value: Double): String {
-        var bd = BigDecimal(value)
-        bd = bd.setScale(1, RoundingMode.HALF_UP)
-        return bd.toString()
-    }
-    private fun updateInfo() {
-        if (coreCount < 1) {
-            coreCount = CpuFrequencyUtils.getCoreCount()
+    private var activityManager: ActivityManager? = null
+    private var myHandler = Handler()
+    private var batteryUnit = BatteryUnit()
+    val info = ActivityManager.MemoryInfo()
+
+    var sum = -1
+    var totalMem = 0
+    var availMem = 0
+    private fun getGpuLoadAvg(): Int {
+        try {
+            var total = 0L
+            var items = 0L
+            for (item in gpuLoadAvg) {
+                total += (item.key * item.value)
+                items += item.value
+            }
+            return (total / items).toInt()
+        } catch (ex: java.lang.Exception) {
         }
-        val cores = ArrayList<CpuCoreInfo>()
-        val loads = CpuFrequencyUtils.getCpuLoad()
+        return 0
+    }
+
+    private fun updateInfo() {
+        val cpuFreq = CpuFrequencyUtils.getCurrentFrequency()
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()
-        for (coreIndex in 0 until coreCount) {
-            val core = CpuCoreInfo()
 
-            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
-            if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
-                maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
-            }
-            core.maxFreq = maxFreqs.get(coreIndex)
+        activityManager!!.getMemoryInfo(info)
 
-            if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs.get(coreIndex).isNullOrEmpty())) {
-                minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
-            }
-            core.minFreq = minFreqs.get(coreIndex)
-
-            if (loads.containsKey(coreIndex)) {
-                core.loadRatio = loads.get(coreIndex)!!
-            }
-            cores.add(core)
+        var cpuLoad = cpuLoadUtils.cpuLoadSum
+        if (cpuLoad < 0) {
+            cpuLoad = 0.toDouble();
         }
-        var cpuFreq = 0
-        cores.forEach { item ->
-            run {
-                try {
-                    val freq = item.currentFreq.toInt()
-                    if (freq > cpuFreq) {
-                        cpuFreq = freq
-                    }
-                } catch (ex: Exception) {
+
+        val batteryStatus = batteryUnit.getBatteryTemperature()
+
+        myHandler.post {
+            /*
+            // 内存使用显示似乎不重要，去掉吧
+            if (sum < 0) {
+                totalMem = (info.totalMem / 1024 / 1024f).toInt()
+                availMem = (info.availMem / 1024 / 1024f).toInt()
+                ramUseText!!.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
+                ramChart!!.setData(totalMem.toFloat(), availMem.toFloat())
+                sum = 5
+            } else {
+                sum--
+            }
+            */
+
+            cpuChart!!.setData(100f, (100 - cpuLoad).toFloat())
+            cpuFreqText!!.text = subFreqStr(cpuFreq.toString()) + "Mhz"
+
+            gpuFreqText!!.text = gpuFreq
+            if (gpuLoad > -1) {
+                gpuChart!!.setData(100f, (100f - gpuLoad))
+                if (gpuLoadAvg.containsKey(gpuLoad)) {
+                    gpuLoadAvg[gpuLoad]!!.plus(1)
+                } else {
+                    gpuLoadAvg.put(gpuLoad, 1)
                 }
             }
-        }
 
-        val info = ActivityManager.MemoryInfo()
-        activityManager!!.getMemoryInfo(info)
-        val totalMem = (info.totalMem / 1024 / 1024f).toInt()
-        val availMem = (info.availMem / 1024 / 1024f).toInt()
-        myHandler.post {
-            ramUseView!!.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
-            ramChat!!.setData(totalMem.toFloat(), availMem.toFloat())
+            /*
+            var value = batteryStatus.temperature - 10
+            if (value > 45) {
+                value = 45.0f
+            } else if (value < 0) {
+                value = 0.0f
+            }
+            temperatureChart!!.setData(45f, 45f - value)
+            */
+            temperatureChart!!.setData(100f, 100f - batteryStatus.level)
+            temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
+            batteryLevelText!!.setText(batteryStatus.level.toString() + "%")
 
-            if (loads.containsKey(-1)) {
-                cpuChat!!.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
-                cpuFreqView!!.text = subFreqStr(cpuFreq.toString()) + "Mhz"
+            if (batteryStatus.temperature >= 54) {
+                temperatureText!!.setTextColor(Color.rgb(255, 15, 0))
+            } else if (batteryStatus.temperature >= 49) {
+                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_veryhight))
+            } else if (batteryStatus.temperature >= 44) {
+                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_hight))
+            } else if (batteryStatus.temperature > 34) {
+                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_mid))
+            } else {
+                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_low))
             }
-            if (gpuLoad > -1) {
-                gpuChat!!.setData(100.toFloat(), (100 - gpuLoad).toFloat())
-                gpuFreqView!!.text = gpuFreq
-            }
+
+            val layoutParams = view!!.layoutParams
+            view!!.layoutParams = layoutParams
         }
+        /*
+        view!!.setOnClickListener {
+            view!!.visibility = View.GONE
+            myHandler.postDelayed({
+                if (mView != null) {
+                    view!!.visibility = View.VISIBLE
+                }
+            }, 2000)
+            true
+        }
+        // val opt = view!!.findViewById(R.id.fw_monitor_opt)
+        view!!.setOnLongClickListener {
+            hidePopupWindow()
+            true
+        }
+        */
     }
 
-    private fun startTimer () {
+    private fun startTimer() {
         stopTimer()
         timer = Timer()
         timer!!.schedule(object : TimerTask() {
@@ -215,8 +308,21 @@ class FloatMonitor (context: Context) {
      */
     fun hidePopupWindow() {
         stopTimer()
+        try {
+            val loads = cpuLoadUtils.cpuLoad
+            if (loads != null && loads.containsKey(-1)) {
+                val time = String.format("%.1f", System.currentTimeMillis() - startMonitorTime / 1000 / 60.0)
+                val timeMinute = String.format("%.1f", time)
+                val gpuLoadAvg = getGpuLoadAvg()
+                Toast.makeText(mContext, "${timeMinute}分钟，\n平均负载\n\nCPU: ${loads.get(-1)!!.toInt()}%\nGPU: ${gpuLoadAvg}%", Toast.LENGTH_LONG).show()
+            }
+            gpuLoadAvg.clear()
+        } catch (ex: java.lang.Exception) {
+
+        }
         if (isShown!! && null != mView) {
             mWindowManager!!.removeView(mView)
+            mView = null
             isShown = false
         }
     }
@@ -224,29 +330,21 @@ class FloatMonitor (context: Context) {
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
     private fun setUpView(context: Context): View {
         view = LayoutInflater.from(context).inflate(R.layout.fw_monitor, null)
-        cpuChat = view!!.findViewById(R.id.fw_cpu_load)
-        gpuChat = view!!.findViewById(R.id.fw_gpu_load)
-        ramChat = view!!.findViewById(R.id.fw_ram_load)
+        gpuPanel = view!!.findViewById(R.id.fw_gpu)
+        temperaturePanel = view!!.findViewById(R.id.fw_battery)
 
-        cpuFreqView = view!!.findViewById(R.id.fw_cpu_freq)
-        gpuFreqView = view!!.findViewById(R.id.fw_gpu_freq)
-        ramUseView = view!!.findViewById(R.id.fw_ram_use)
+        cpuChart = view!!.findViewById(R.id.fw_cpu_load)
+        gpuChart = view!!.findViewById(R.id.fw_gpu_load)
+        ramChart = view!!.findViewById(R.id.fw_ram_load)
+        temperatureChart = view!!.findViewById(R.id.fw_battery_chart)
+
+        cpuFreqText = view!!.findViewById(R.id.fw_cpu_freq)
+        gpuFreqText = view!!.findViewById(R.id.fw_gpu_freq)
+        ramUseText = view!!.findViewById(R.id.fw_ram_use)
+        temperatureText = view!!.findViewById(R.id.fw_battery_temp)
+        batteryLevelText = view!!.findViewById<TextView>(R.id.fw_battery_level)
 
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-
-        view!!.setOnClickListener {
-            view!!.visibility = View.GONE
-            myHandler.postDelayed({
-                if (mView != null) {
-                    view!!.visibility = View.VISIBLE
-                }
-            }, 5000)
-            true
-        }
-        view!!.setOnLongClickListener {
-            hidePopupWindow()
-            true
-        }
         return view!!
     }
 

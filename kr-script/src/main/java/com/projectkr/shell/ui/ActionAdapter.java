@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.projectkr.shell.ScriptEnvironmen;
 import com.projectkr.shell.action.ActionInfo;
-import com.projectkr.shell.utils.KeepShellPublic;
 import com.projectkr.shell.R;
 import java.util.ArrayList;
 
@@ -38,7 +38,7 @@ public class ActionAdapter extends BaseAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         ActionInfo actionInfo = ((ActionInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
+            actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         holder.itemText.setText(actionInfo.desc);
     }
@@ -69,19 +69,41 @@ public class ActionAdapter extends BaseAdapter {
                 convertView = View.inflate(parent.getContext(), R.layout.action_row_item, null);
                 viewHolder.itemTitle = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
-                convertView.setTag(viewHolder);
-                viewHolder.itemTitle.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
-                viewHolder.itemTitle.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
             }
-        } catch (Exception ignored) {
 
+            if (isNullOrEmpty(item.desc)) {
+                viewHolder.itemText.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemText.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.title)) {
+                viewHolder.itemTitle.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemTitle.setText(item.title);
+                viewHolder.itemTitle.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.separator)) {
+                viewHolder.itemSeparator.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSeparator.setText(item.separator);
+                viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+            }
+            convertView.setTag(viewHolder);
+            viewHolder.itemTitle.setTag(item);
+        } catch (Exception ignored) {
         }
 
         return convertView;
+    }
+
+    private boolean isNullOrEmpty(String text) {
+        return text == null || text.trim().equals("");
     }
 
     @Override
@@ -110,6 +132,7 @@ public class ActionAdapter extends BaseAdapter {
     }
 
     protected class ViewHolder {
+        TextView itemSeparator = null;
         TextView itemTitle = null;
         TextView itemText = null;
     }

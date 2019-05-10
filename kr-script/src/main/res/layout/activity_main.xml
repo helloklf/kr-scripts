@@ -15,7 +15,8 @@
     <TabHost
         android:id="@+id/main_tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,273 +29,297 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1">
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/main_tabhost_cpu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
                     android:orientation="vertical">
 
-                    <LinearLayout
+                    <android.support.v7.widget.CardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="56dp"
-                        android:orientation="vertical"
-                        android:paddingBottom="6dp">
+                        android:layout_height="wrap_content"
+                        android:layout_margin="10dp">
 
-                        <FrameLayout
-                            android:id="@+id/home_mainview"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_gravity="fill_vertical"
-                            android:layout_weight="1">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <LinearLayout
+                            <TextView
+                                android:id="@+id/home_title_mem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:focusable="true"
-                                android:focusableInTouchMode="true"
-                                android:orientation="vertical">
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="系统内存"
+                                android:textAlignment="center"
+                                android:textSize="12dp" />
 
-                                <LinearLayout
-                                    android:id="@+id/home_mainview1"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="130dp"
-                                    android:gravity="center_vertical"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="20dp"
-                                    android:paddingTop="10dp"
-                                    android:paddingRight="20dp"
-                                    android:paddingBottom="10dp">
+                            <LinearLayout
+                                android:id="@+id/home_clear_ram"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
 
-                                    <LinearLayout
-                                        android:layout_width="76dp"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:orientation="vertical">
+                                <FrameLayout
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp">
 
-                                        <FrameLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="75dp"
-                                            android:layout_gravity="center">
-
-                                            <TextView
-                                                android:id="@+id/home_ramstate"
-                                                style="@style/textTitle"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_gravity="center"
-                                                android:text="" />
-
-                                            <com.projectkr.shell.ui.RamChatView
-                                                android:id="@+id/home_raminfo"
-                                                android:layout_width="75dp"
-                                                android:layout_height="75dp"
-                                                app:free="0"
-                                                app:total="1" />
-                                        </FrameLayout>
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginTop="5dp"
-                                            android:text="物理内存"
-                                            android:textSize="10dp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/home_clear_ram"
-                                        style="?android:buttonBarButtonStyle"
+                                    <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:focusable="false"
-                                        android:focusableInTouchMode="false"
-                                        android:orientation="vertical"
-                                        android:padding="5dp">
+                                        android:layout_gravity="center"
+                                        android:text="RAM"
+                                        android:textSize="11dp" />
 
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="left"
-                                            android:text="可用/总共"
-                                            android:textSize="12dp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:id="@+id/home_raminfo_text"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="left"
-                                            android:layout_marginBottom="15dp"
-                                            android:text="0/0MB"
-                                            android:textSize="12dp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        style="?android:buttonBarButtonStyle"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_weight="1"
-                                        android:focusable="false"
-                                        android:focusableInTouchMode="false"
-                                        android:orientation="vertical"
-                                        android:padding="5dp">
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="right"
-                                            android:text="可用/总共"
-                                            android:textSize="12dp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:id="@+id/home_zramsize"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="right"
-                                            android:layout_marginBottom="15dp"
-                                            android:text="0/0MB"
-                                            android:textSize="12dp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:layout_width="76dp"
-                                        android:layout_height="wrap_content"
-                                        android:gravity="center"
-                                        android:orientation="vertical">
-
-                                        <FrameLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="75dp"
-                                            android:layout_gravity="center">
-
-                                            <TextView
-                                                android:id="@+id/home_swapstate"
-                                                style="@style/textTitle"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="wrap_content"
-                                                android:layout_gravity="center"
-                                                android:text="" />
-
-                                            <com.projectkr.shell.ui.RamChatView
-                                                android:id="@+id/home_swapstate_chat"
-                                                android:layout_width="75dp"
-                                                android:layout_height="75dp"
-                                                app:free="0"
-                                                app:total="1" />
-                                        </FrameLayout>
-
-                                        <TextView
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center"
-                                            android:layout_marginTop="5dp"
-                                            android:text="交换分区"
-                                            android:textSize="10dp"
-                                            android:textStyle="bold" />
-                                    </LinearLayout>
-                                </LinearLayout>
+                                    <com.projectkr.shell.ui.RamChatView
+                                        android:id="@+id/home_raminfo"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        app:free="0"
+                                        app:total="1" />
+                                </FrameLayout>
 
                                 <LinearLayout
-                                    android:id="@+id/home_mainview2"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_gravity="center_vertical"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
                                     android:layout_weight="1"
                                     android:orientation="vertical">
 
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_marginLeft="30dp"
-                                        android:layout_marginTop="10dp"
-                                        android:layout_marginRight="34dp">
+                                        android:layout_gravity="left"
+                                        android:text="物理内存"
+                                        android:textSize="12dp" />
 
-                                        <TextView
-                                            android:id="@+id/cpu_core_count"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center_vertical"
-                                            android:layout_weight="1"
-                                            android:text="核心数：" />
-
-                                        <TextView
-                                            android:id="@+id/cpu_core_total_load"
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center_vertical"
-                                            android:text="负载：" />
-                                    </LinearLayout>
-
-                                    <GridView
-                                        android:id="@+id/cpu_core_list"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="0dp"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_marginLeft="30dp"
-                                        android:layout_marginTop="6dp"
-                                        android:layout_marginRight="22dp"
-                                        android:layout_marginBottom="10dp"
-                                        android:layout_weight="1"
-                                        android:clickable="false"
-                                        android:focusable="false"
-                                        android:focusableInTouchMode="false"
-                                        android:listSelector="@android:color/transparent"
-                                        android:numColumns="2" />
+                                    <TextView
+                                        android:id="@+id/home_raminfo_text"
+                                        style="@style/textSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="left"
+                                        android:text=""
+                                        android:textSize="12dp" />
                                 </LinearLayout>
-                            </LinearLayout>
-                        </FrameLayout>
 
-                        <TableLayout
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginRight="10dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:textAlignment="viewEnd">
+
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:text="交换分区"
+                                        android:textSize="12dp" />
+
+                                    <TextView
+                                        android:id="@+id/home_zramsize"
+                                        style="@style/textSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="right"
+                                        android:text="0% (0MB)"
+                                        android:textSize="12dp" />
+                                </LinearLayout>
+
+                                <FrameLayout
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:text="SWAP"
+                                        android:textSize="10dp" />
+
+                                    <com.projectkr.shell.ui.RamChatView
+                                        android:id="@+id/home_swapstate_chat"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        app:free="0"
+                                        app:total="1" />
+                                </FrameLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginRight="20dp"
-                            android:showDividers="beginning"
-                            android:shrinkColumns="0,1,2"
-                            android:stretchColumns="0,1,2,3">
+                            android:orientation="vertical">
 
-                            <TableRow android:layout_marginTop="5dp">
+                            <TextView
+                                android:id="@+id/home_title_sum"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="整体负载"
+                                android:textAlignment="center"
+                                android:textSize="12dp" />
 
-                                <TextView
-                                    android:id="@+id/sdfree"
-                                    android:layout_width="match_parent"
+                            <LinearLayout
+                                android:id="@+id/home_gpuview"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:padding="10dp">
+
+                                <FrameLayout
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp">
+
+                                    <com.projectkr.shell.ui.RamChatView
+                                        android:id="@+id/home_gpu_chat"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        app:free="0"
+                                        app:total="100" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:text="GPU"
+                                        android:textSize="12dp" />
+                                </FrameLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginBottom="5dp"
-                                    android:layout_span="2"
-                                    android:background="#22888888"
-                                    android:paddingLeft="10dp"
-                                    android:paddingTop="20dp"
-                                    android:paddingRight="10dp"
-                                    android:paddingBottom="20dp"
-                                    android:textAlignment="center"
-                                    android:textSize="12dp" />
+                                    android:layout_marginLeft="10dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                                <TextView
-                                    android:id="@+id/datafree"
-                                    android:layout_width="match_parent"
+                                    <TextView
+                                        android:id="@+id/home_gpu_freq"
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:text="- Mhz" />
+
+                                    <TextView
+                                        android:id="@+id/home_gpu_load"
+                                        style="@style/textSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginTop="3dp"
+                                        android:text="- %" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginLeft="5dp"
-                                    android:layout_marginRight="5dp"
-                                    android:layout_marginBottom="5dp"
-                                    android:layout_span="2"
-                                    android:background="#22888888"
-                                    android:paddingLeft="10dp"
-                                    android:paddingTop="20dp"
-                                    android:paddingRight="10dp"
-                                    android:paddingBottom="20dp"
-                                    android:textAlignment="center"
-                                    android:textSize="12dp" />
-                            </TableRow>
-                        </TableLayout>
-                    </LinearLayout>
-                </FrameLayout>
+                                    android:layout_marginRight="10dp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:textAlignment="viewEnd">
+
+                                    <TextView
+                                        android:id="@+id/cpu_core_count"
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical|end"
+                                        android:text="核心数" />
+
+                                    <TextView
+                                        android:id="@+id/cpu_core_total_load"
+                                        style="@style/textSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center_vertical|end"
+                                        android:layout_marginTop="3dp"
+                                        android:text="- %" />
+                                </LinearLayout>
+
+                                <FrameLayout
+                                    android:layout_width="60dp"
+                                    android:layout_height="60dp">
+
+                                    <com.projectkr.shell.ui.RamChatView
+                                        android:id="@+id/home_cpu_chat"
+                                        android:layout_width="60dp"
+                                        android:layout_height="60dp"
+                                        app:free="0"
+                                        app:total="100" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_gravity="center"
+                                        android:text="CPU"
+                                        android:textSize="12dp" />
+                                </FrameLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/home_mainview2"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/home_title_cores"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginBottom="10dp"
+                                android:text="核心详细"
+                                android:textAlignment="center"
+                                android:textSize="12dp" />
+
+                            <com.projectkr.shell.ui.OverScrollGridView
+                                android:scrollbars="none"
+                                android:id="@+id/cpu_core_list"
+                                android:layout_width="match_parent"
+                                android:layout_height="0dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_margin="5dp"
+                                android:layout_weight="1"
+                                android:clickable="false"
+                                android:focusable="false"
+                                android:focusableInTouchMode="false"
+                                android:listSelector="@android:color/transparent"
+                                android:numColumns="4" />
+                        </LinearLayout>
+                    </android.support.v7.widget.CardView>
+                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/main_tabhost_actions"
@@ -305,7 +330,8 @@
                         android:id="@+id/list_actions"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="56dp" />
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="0dp" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -318,7 +344,8 @@
                         android:id="@+id/list_switchs"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginTop="56dp" />
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="0dp" />
                 </FrameLayout>
             </FrameLayout>
 

@@ -1,7 +1,7 @@
 #!/system/bin/sh
-state=$1
-settings put global low_power $1;
-settings put global low_power_sticky $1;
+
+settings put global low_power $state;
+settings put global low_power_sticky $state;
 
 # Whether or not app auto restriction is enabled. When it is enabled, settings app will  auto restrict the app if it has bad behavior(e.g. hold wakelock for long time).
 # [app_auto_restriction_enabled]
@@ -14,6 +14,12 @@ settings put global low_power_sticky $1;
 
 # Whether or not to enable the User Absent, Radios Off feature on small battery devices.         * Type: int (0 for false, 1 for true)
 # user_absent_radios_off_for_small_battery_enabled
+
+function killproc()
+{
+    stop "$1" 2> /dev/null
+    killall -9 "$1" 2> /dev/null
+}
 
 echo '充电状态下可能无法使用省电模式'
 echo '-'
@@ -44,12 +50,12 @@ then
     settings put global low_power_sticky 1
 
     echo "关闭调试服务和日志进程"
-    stop woodpeckerd 2> /dev/null
-    stop debuggerd 2> /dev/null
-    stop debuggerd64 2> /dev/null
-    stop atfwd 2> /dev/null
-    stop perfd 2> /dev/null
-    stop logd 2> /dev/null
+    killproc woodpeckerd
+    # killproc debuggerd
+    # killproc debuggerd64
+    killproc atfwd
+    killproc perfd
+
     if [[ -e /sys/zte_power_debug/switch ]]; then
         echo 0 > /sys/zte_power_debug/switch
     fi
@@ -61,21 +67,31 @@ then
     stop subsystem_ramdump 2> /dev/null
     #stop thermal-engine 2> /dev/null
     stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
-    #killall -9 magiskd 2> /dev/null
-    killall -9 magisklogd 2> /dev/null
+    # killproc logd
+    # killproc adbd
+    # killproc magiskd
+    killproc magisklogd
 
     echo "清理后台休眠白名单"
+    echo "请稍等..."
     for item in `dumpsys deviceidle whitelist`
     do
         app=`echo "$item" | cut -f2 -d ','`
         #echo "deviceidle whitelist -$app"
-        r=`dumpsys deviceidle whitelist -$app | grep Removed`
-        if [[ -n "$r" ]]
-        then
-            am set-inactive $app true 2> /dev/null
-        fi
+        dumpsys deviceidle whitelist -$app
+        # r=`dumpsys deviceidle whitelist -$app | grep Removed`
+        # if [[ -n "$r" ]]; then
+            am set-inactive $app true 2>&1 > /dev/null
+            am set-idle $app true 2>&1 > /dev/null
+            # 9.0 让后台应用立即进入闲置状态
+            am make-uid-idle --user current $app 2>&1 > /dev/null
+        # fi
+    done
+    for app in `pm list packages -3  | cut -f2 -d ':'`
+    do
+        am set-inactive $app true 2>&1 > /dev/null
+        am set-idle $app true 2>&1 > /dev/null
+        am make-uid-idle --user current $app 2>&1 > /dev/null
     done
     dumpsys deviceidle step
     dumpsys deviceidle step

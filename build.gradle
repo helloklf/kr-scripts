@@ -10,17 +10,22 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
 allprojects {
     repositories {
-        jcenter()
+        //maven {
+        //    url 'https://maven.google.com/'
+        //    name 'Google'
+        //}
+        maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
         maven {
-            url 'https://maven.google.com/'
-            name 'Google'
+            url 'https://jitpack.io'
         }
+        google()
+        jcenter()
     }
 }

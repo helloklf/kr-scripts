@@ -34,13 +34,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
-        android:text="随手复制黏贴" />
+        android:text="从Scene移植" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Version 2.0.0"
+        android:text="Version 2.5.0"
         android:textAlignment="textEnd"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />

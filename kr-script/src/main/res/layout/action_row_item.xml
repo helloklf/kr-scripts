@@ -3,26 +3,59 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="20dp"
-    android:paddingTop="8dp"
-    android:paddingRight="20dp"
-    android:paddingBottom="8dp">
+    android:paddingLeft="15dp"
+    android:paddingTop="6dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="0dp">
 
     <TextView
-        android:id="@+id/Title"
+        android:visibility="gone"
+        android:id="@+id/Separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:text="标题"
-        android:textColor="#555555"
-        android:textSize="16dp" />
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="0dp"
+        android:alpha="0.5"
+        android:clickable="false"
+        android:focusable="false"
+        android:text="分组"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="13dp" />
 
-    <TextView
-        android:id="@+id/Desc"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明-说明"
-        android:textColor="#aaaaaa"
-        android:textSize="11dp" />
+        android:orientation="vertical"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp">
+
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="这只是测试文本，这只是测试文本"
+            android:textColor="?android:attr/textColorPrimary"
+            android:alpha="0.8"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="10dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="10dp"
+            android:alpha="0.4"
+            android:background="@android:color/darker_gray" />
+    </LinearLayout>
 </LinearLayout>

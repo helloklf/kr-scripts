@@ -3,6 +3,7 @@ package com.projectkr.shell.action;
 import java.util.ArrayList;
 
 public class ActionInfo {
+    public String separator;
     public String title;
     public String desc;
     public String descPollingShell;

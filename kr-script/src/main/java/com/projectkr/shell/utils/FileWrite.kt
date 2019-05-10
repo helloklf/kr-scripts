@@ -78,7 +78,7 @@ object FileWrite {
 
     fun writePrivateShellFile(file: String, outName: String, context: Context): String? {
         val data = parseText(context, file)
-        if (data.size > 0 && FileWrite.writePrivateFile(data, outName, context)) {
+        if (data.size > 0 && writePrivateFile(data, outName, context)) {
             return getPrivateFilePath(context, outName)
         }
         return null

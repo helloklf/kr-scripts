@@ -1,5 +1,6 @@
 package com.projectkr.shell.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -7,9 +8,10 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.projectkr.shell.R
 
-class CpuChatView : View {
+class FloatMonitorBatteryView : View {
     //-------------必须给的数据相关-------------
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
@@ -99,7 +101,9 @@ class CpuChatView : View {
             val feeRatio = (fee * 100.0 / total).toInt()
             ratio = 100 - feeRatio
         }
-        invalidate()
+        cgangePer(ratio)
+        // ratioState = ratio
+        // invalidate()
     }
 
     /**
@@ -125,40 +129,72 @@ class CpuChatView : View {
         labelPaint!!.strokeWidth = 2f
     }
 
+    fun cgangePer(per: Int) {
+        val perOld = this.ratioState
+        val va = ValueAnimator.ofInt(perOld, per)
+        va.duration = 200
+        va.interpolator = DecelerateInterpolator()
+        va.addUpdateListener { animation ->
+            ratioState = animation.animatedValue as Int
+            invalidate()
+        }
+        va.start()
+
+    }
+
     /**
      * 画圆环
      * @param canvas
      */
     private fun drawCycle(canvas: Canvas) {
         cyclePaint!!.color = 0x22888888
+        // cyclePaint!!.alpha = 128
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*
         if (ratio == 0) {
             return
         }
         */
-        if (ratioState > 85) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 65) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
-        } else {
+        // cyclePaint!!.alpha = 255
+        if (ratioState > 79) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+        } else if (ratioState > 40) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
+        } else if (ratioState > 25) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
+        } else {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
         }
+
+        /*
+        val dashPathEffect = DashPathEffect(floatArrayOf(15 / 3f, 15 * 2 / 3f), 0f)
+
+        val mSweepGradient = SweepGradient(
+            canvas.getWidth() / 2f,
+            canvas.getHeight() / 2f, //以圆弧中心作为扫描渲染的中心以便实现需要的效果
+            intArrayOf(
+                    resources.getColor(R.color.color_load_low),
+                    resources.getColor(R.color.color_load_mid),
+                    resources.getColor(R.color.color_load_hight),
+                    resources.getColor(R.color.color_load_veryhight)
+            ),
+            floatArrayOf(0f, 0.33f, 0.67f, 1f)
+        );
+        val matrix = Matrix()
+        matrix.setRotate(-108f, canvas.width / 2f, canvas.height / 2f)
+        mSweepGradient.setLocalMatrix(matrix)
+
+        cyclePaint!!.setShader(mSweepGradient)
+        cyclePaint!!.setPathEffect(dashPathEffect);
+        */
+
+        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
         if (ratio < 1 && (ratioState <= 2)) {
             return
         } else if (ratioState >= 98) {
             canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, 360f, false, cyclePaint!!)
         } else {
-            canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f) + 2f, false, cyclePaint!!)
-        }
-        if (ratioState < ratio - 2) {
-            ratioState += 2
-            invalidate()
-        } else if (ratioState > ratio + 2) {
-            ratioState -= 2
-            invalidate()
+            canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f), false, cyclePaint!!)
         }
     }
 }

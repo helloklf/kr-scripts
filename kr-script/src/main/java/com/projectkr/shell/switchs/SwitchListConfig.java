@@ -77,25 +77,18 @@ public class SwitchListConfig {
         if (script == null) {
             return;
         }
-        final StringBuilder cmds = new StringBuilder();
-        cmds.append(script);
 
         String startPath = null;
         if (action.start != null) {
             startPath = action.start;
         }
-        cmds.insert(0, "state=\"" + (toValue ? "1" : "0") + "\"\n");
-        if (action.setStateType == SwitchInfo.ActionScript.ASSETS_FILE) {
-            cmds.append(" $state");
-        }
-        cmds.append("\n\n");
-        cmds.append("\n\n");
-        executeScript(action.title, action.root, cmds, startPath, onExit, new HashMap<String, String>() {{
+
+        executeScript(action.title, script, startPath, onExit, new HashMap<String, String>() {{
             put("state", (toValue ? "1" : "0"));
         }});
     }
 
-    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+    private void executeScript(String title, String cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
         new SimpleShellExecutor(context).execute(title, cmds, startPath, onExit, params);
     }
 }

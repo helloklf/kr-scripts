@@ -18,6 +18,24 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", core));
     }
 
+    public static int getCurrentFrequency() {
+        String freqs = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq");
+        int max = 0;
+        if (!freqs.equals("error")) {
+            String[] freqArr = freqs.split("\n");
+            for (String aFreqArr : freqArr) {
+                try {
+                    int freq = Integer.parseInt(aFreqArr);
+                    if (freq > max) {
+                        max = freq;
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return max;
+    }
+
     public static String getCurrentMinFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";

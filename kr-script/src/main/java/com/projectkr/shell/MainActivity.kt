@@ -2,28 +2,29 @@ package com.projectkr.shell
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.Toast
 import com.omarea.scripts.action.ActionListConfig
-import com.omarea.shell.Files
-import com.omarea.ui.CpuCoresAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.action.ActionConfigReader
 import com.projectkr.shell.switchs.SwitchConfigReader
 import com.projectkr.shell.switchs.SwitchListConfig
 import com.projectkr.shell.utils.CpuFrequencyUtils
+import com.projectkr.shell.utils.GpuUtils
 import com.projectkr.shell.utils.KeepShellPublic
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.IOException
@@ -123,6 +124,23 @@ class MainActivity : AppCompatActivity() {
         main_tabhost.addTab(main_tabhost.newTabSpec("cpu").setContent(R.id.main_tabhost_cpu).setIndicator("", getDrawable(R.drawable.cpu)))
         main_tabhost.addTab(main_tabhost.newTabSpec("actions").setContent(R.id.main_tabhost_actions).setIndicator("", getDrawable(R.drawable.shell)))
         main_tabhost.addTab(main_tabhost.newTabSpec("switchs").setContent(R.id.main_tabhost_switchs).setIndicator("", getDrawable(R.drawable.switchs)))
+
+        val wm = getBaseContext().getSystemService(Context.WINDOW_SERVICE) as (WindowManager)
+        val display = wm.getDefaultDisplay();
+        val size = Point()
+        display.getSize(size);
+        val max = if (size.x > size.y) size.x else size.y
+        if (max < 2160 && getDensity() > 440) {
+            home_title_sum.visibility = View.GONE
+            home_title_mem.visibility = View.GONE
+            // home_title_cores.visibility = View.GONE
+        }
+    }
+
+    private fun getDensity(): Int {
+        val dm = DisplayMetrics()
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        return dm.densityDpi;
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -179,7 +197,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     FloatMonitor(this).showPopupWindow()
-                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "双击悬浮窗即可关闭监视器", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -203,6 +221,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTimer() {
         if (main_tabhost.currentTab == 0) {
+            maxFreqs.clear()
+            minFreqs.clear()
+            updateInfo()
+
             stopTimer()
             timer = Timer()
             timer!!.schedule(object : TimerTask() {
@@ -219,31 +241,25 @@ class MainActivity : AppCompatActivity() {
         startTimer()
     }
 
+    override fun onPause() {
+        stopTimer()
+        super.onPause()
+    }
+
+
+
     @SuppressLint("SetTextI18n")
     private fun updateRamInfo() {
         try {
             val info = ActivityManager.MemoryInfo()
             if (activityManager == null) {
-                activityManager = getSystemService(ACTIVITY_SERVICE) as ActivityManager
+                activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             }
             activityManager!!.getMemoryInfo(info)
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
-            home_raminfo_text.text = "${format1(availMem / 1024.0)} / ${totalMem / 1024 + 1} GB"
-            home_ramstate.text = ((totalMem - availMem) * 100 / totalMem).toString() + "%"
+            home_raminfo_text.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
             home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
-            val sdFree = Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath)
-            if (sdFree > 8192) {
-                datafree.text = "Data：" + sdFree / 1024 + " GB"
-            } else {
-                datafree.text = "Data：" + sdFree + " MB"
-            }
-            val sdSize = Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath)
-            if (sdSize > 8292) {
-                sdfree.text = "SDCard：" + sdSize / 1024 + " GB"
-            } else {
-                sdfree.text = "SDCard：" + sdSize + " MB"
-            }
             val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
             if (swapInfo.contains("Swap")) {
                 try {
@@ -253,33 +269,18 @@ class MainActivity : AppCompatActivity() {
                         val use = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                         val free = total - use
                         home_swapstate_chat.setData(total.toFloat(), free.toFloat())
-                        home_swapstate.text = (use * 100.0 / total).toInt().toString() + "%"
                         if (total > 99) {
-                            home_zramsize.text = "${format1(free / 1024.0)} / ${format1(total / 1024.0)} GB"
+                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${format1(total / 1024.0)}GB)"
                         } else {
-                            home_zramsize.text = "${free}/${total}MB"
+                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${total}MB)"
                         }
                     }
                 } catch (ex: java.lang.Exception) {
-                    home_swapstate.text = ""
                 }
                 // home_swapstate.text = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
             } else {
-                home_swapstate.text = ""
             }
         } catch (ex: Exception) {
-        }
-    }
-
-    override fun onPause() {
-        stopTimer()
-        super.onPause()
-    }
-
-    private fun stopTimer() {
-        if (this.timer != null) {
-            timer!!.cancel()
-            timer = null
         }
     }
 
@@ -289,7 +290,7 @@ class MainActivity : AppCompatActivity() {
             coreCount = CpuFrequencyUtils.getCoreCount()
             myHandler.post {
                 try {
-                    cpu_core_count.text = "核心数：$coreCount"
+                    cpu_core_count.text = "$coreCount 核心"
                 } catch (ex: Exception) {
                 }
             }
@@ -315,15 +316,23 @@ class MainActivity : AppCompatActivity() {
             }
             cores.add(core)
         }
+        val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
+        val gpuLoad = GpuUtils.getGpuLoad()
         myHandler.post {
             try {
+                home_gpu_freq.text = gpuFreq
+                home_gpu_load.text = "负载：" + gpuLoad + "%"
+                if (gpuLoad > -1) {
+                    home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
+                }
                 if (loads.containsKey(-1)) {
                     cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
+                    home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
-                    cpu_core_list.adapter = CpuCoresAdapter(this, cores)
+                    cpu_core_list.adapter = AdapterCpuCores(this, cores)
                 } else {
-                    (cpu_core_list.adapter as CpuCoresAdapter).setData(cores)
+                    (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
                 }
             } catch (ex: Exception) {
 
@@ -336,5 +345,10 @@ class MainActivity : AppCompatActivity() {
             maxFreqs.clear()
         }
     }
-
+    private fun stopTimer() {
+        if (this.timer != null) {
+            timer!!.cancel()
+            timer = null
+        }
+    }
 }
