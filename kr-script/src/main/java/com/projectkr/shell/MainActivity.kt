@@ -53,30 +53,28 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        try {
-            //supportActionBar!!.elevation = 0f
-            val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-            setSupportActionBar(toolbar)
-            setTitle(R.string.app_name)
+        //supportActionBar!!.elevation = 0f
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)
+        setTitle(R.string.app_name)
 
-            val window = window
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.WHITE
-            window.navigationBarColor = Color.WHITE
+        val window = window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.WHITE
+        window.navigationBarColor = Color.WHITE
 
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-            } else {
-                getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            }
-            //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            //getWindow().setNavigationBarColor(Color.WHITE);
-        } catch (ex: Exception) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        } else {
+            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
+        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        //getWindow().setNavigationBarColor(Color.WHITE);
+
         main_tabhost.setup()
 
         val mainActivity = this
@@ -223,7 +221,6 @@ class MainActivity : AppCompatActivity() {
         if (main_tabhost.currentTab == 0) {
             maxFreqs.clear()
             minFreqs.clear()
-            updateInfo()
 
             stopTimer()
             timer = Timer()
@@ -231,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 override fun run() {
                     updateInfo()
                 }
-            }, 0, 1000)
+            }, 0, 1500)
             updateRamInfo()
         }
     }

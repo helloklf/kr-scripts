@@ -6,18 +6,19 @@
     android:layout_gravity="center_horizontal"
     android:orientation="vertical"
     android:paddingTop="8dp"
-    android:paddingBottom="25dp">
+    android:paddingBottom="23dp">
 
     <FrameLayout
         android:layout_width="55dp"
         android:layout_height="55dp"
         android:layout_gravity="center">
 
-        <com.projectkr.shell.ui.CpuChartView
+        <com.projectkr.shell.ui.CpuChartBarView
             android:id="@+id/core_cpu_loading_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:free="0"
+            android:alpha="0.5"
+            app:free="1"
             app:total="1" />
 
         <TextView
@@ -25,12 +26,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text=""
+            android:text="0%"
             android:textSize="12dp"
             android:textStyle="bold" />
     </FrameLayout>
 
     <LinearLayout
+        android:layout_marginTop="3dp"
         android:id="@+id/center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -48,7 +50,7 @@
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
-            android:textSize="12dp" />
+            android:textSize="13dp" />
 
         <TextView
             android:id="@+id/cpu_core_freq_ranage"

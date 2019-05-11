@@ -131,6 +131,7 @@ class CpuChartView : View {
      */
     private fun drawCycle(canvas: Canvas) {
         cyclePaint!!.color = 0x22888888
+        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*
         if (ratio == 0) {
