@@ -1,5 +1,6 @@
 package com.projectkr.shell.ui;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 public class SwitchAdapter implements ListAdapter {
     private ArrayList<SwitchInfo> actionInfos;
+    private Context context;
 
     public SwitchAdapter(ArrayList<SwitchInfo> actionInfos) {
         this.actionInfos = actionInfos;
@@ -46,7 +48,7 @@ public class SwitchAdapter implements ListAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc =  ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+            actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
             String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
@@ -74,30 +76,30 @@ public class SwitchAdapter implements ListAdapter {
         View convertView = view;
         ViewHolder viewHolder;
 
+        if (context == null) {
+            context = parent.getContext();
+        }
+
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(parent.getContext(), R.layout.switch_row_item, null);
+                convertView = View.inflate(context, R.layout.switch_row_item, null);
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
+                viewHolder.contents = convertView.findViewById(R.id.contents);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            if (isNullOrEmpty(item.desc)) {
-                viewHolder.itemText.setVisibility(View.GONE);
+            if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+                viewHolder.contents.setVisibility(View.GONE);
             } else {
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemText.setVisibility(View.VISIBLE);
-            }
+                viewHolder.contents.setVisibility(View.VISIBLE);
 
-            if (isNullOrEmpty(item.title)) {
-                viewHolder.itemSwitch.setVisibility(View.GONE);
-            } else {
+                viewHolder.itemText.setText(item.desc);
                 viewHolder.itemSwitch.setText(item.title);
                 viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setVisibility(View.VISIBLE);
             }
 
             if (isNullOrEmpty(item.separator)) {
@@ -145,8 +147,8 @@ public class SwitchAdapter implements ListAdapter {
 
     protected class ViewHolder {
         TextView itemSeparator = null;
+        View contents = null;
         Switch itemSwitch = null;
         TextView itemText = null;
     }
 }
-

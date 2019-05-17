@@ -1,8 +1,8 @@
 #!/system/bin/sh
 
-source ./custom/switchs/resources/props.sh
+source ./custom/common/props.sh
 
-prop="ro.miui.notch"
+prop="ro.miui.has_security_keyboard"
 
 magisk_set_system_prop $prop $state
 
@@ -12,3 +12,4 @@ then
 else
     set_system_prop $prop $state
 fi
+

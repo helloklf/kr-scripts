@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="color_opacity_card">#FFFFFF</color>
+    <color name="color_list_background">#F5F5F5</color>
+
     <color name="color_powersave">#0091D5</color>
     <color name="color_balance">#00B78A</color>
     <color name="color_perf">#6ECB00</color>

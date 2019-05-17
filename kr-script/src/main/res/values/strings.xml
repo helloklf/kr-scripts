@@ -9,4 +9,6 @@
     <string name="reboot_confirm">确定重启吗？</string>
     <string name="custom">定制</string>
     <string name="switchs">开关</string>
+    <string name="btn_exit">退出</string>
+    <string name="btn_hide">隐藏</string>
 </resources>

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingTop="6dp"
     android:paddingRight="15dp"
     android:paddingBottom="0dp">
 
@@ -14,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="5dp"
+        android:paddingStart="5dp"
         android:alpha="0.5"
         android:clickable="false"
         android:focusable="false"
@@ -23,9 +23,13 @@
         android:textSize="13dp" />
 
     <LinearLayout
+        android:id="@+id/contents"
+        android:background="@drawable/krscript_item_ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingTop="6dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="13dp"
         android:paddingRight="13dp">
 
@@ -50,12 +54,5 @@
             android:text="这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="10dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="10dp"
-            android:alpha="0.4"
-            android:background="@android:color/darker_gray" />
     </LinearLayout>
 </LinearLayout>
