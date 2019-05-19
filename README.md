@@ -341,7 +341,7 @@ file:///android_asset/test.sh
 </switch>
 ```
 
-#### 公共资源
+#### 静态资源
 - 在actions和switchs下，通过resource标签定义公共资源
 - 如果，你需要将一些公共的函数提取到单独的脚本中
 - 或者，你的某个脚本需要一些静态资源文件，而你希望将静态资源集成到apk中
@@ -362,7 +362,8 @@ file:///android_asset/test.sh
 
             if [[ -f './resource/test_file.zip' ]]
             then
-                echo '提取静态资源文件成功'
+                echo '已找到所需的静态资源文件'
+                # cp './resource/test_file.zip' /system/....
             else
                 echo '资源文件丢失...'
             fi
@@ -376,4 +377,4 @@ file:///android_asset/test.sh
 - 上面的例子中，是通过相对位置来使用resource的
 - 如果你定义了`action`或`switch`的`[start]`属性，那么你可能需要通过绝对路径来访问`resource`
 - `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下（仅供参考）
-- 绝对路径可能不如相对路径稳妥~
+
