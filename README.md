@@ -378,3 +378,21 @@ file:///android_asset/test.sh
 - 如果你定义了`action`或`switch`的`[start]`属性，那么你可能需要通过绝对路径来访问`resource`
 - `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下（仅供参考）
 
+
+#### 分组（2.7.9）
+- 对功能进行分组，对switch和action都适用
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<switchs>
+    <group title="分组">
+        <switch>
+            <!-- ... 此处省略 switch 的详细定义 -->
+        </switch>
+        <switch>
+            <!-- ... 此处省略 switch 的详细定义 -->
+        </switch>
+    </group>
+</switchs>
+```
+
