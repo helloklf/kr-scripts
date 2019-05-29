@@ -9,5 +9,7 @@
 ./app/build
 ./app/release
 /captures
+./release
+./gradle
 app/release/app-release.apk
 app/build.gradle

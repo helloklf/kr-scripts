@@ -44,7 +44,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscript.config.PageListView
+                    <com.omarea.krscript.ui.PageListView
                         android:scrollbars="none"
                         android:listSelector="@android:color/transparent"
                         android:id="@+id/list_pages"
@@ -62,7 +62,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <com.omarea.krscript.config.ActionListView
+                    <com.omarea.krscript.ui.ActionListView
                         android:scrollbars="none"
                         android:listSelector="@android:color/transparent"
                         android:id="@+id/list_switchs"

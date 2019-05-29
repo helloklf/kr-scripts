@@ -1,4 +1,4 @@
-package com.omarea.krscript.config;
+package com.omarea.krscript.ui;
 
 import android.content.Context;
 import android.database.DataSetObserver;

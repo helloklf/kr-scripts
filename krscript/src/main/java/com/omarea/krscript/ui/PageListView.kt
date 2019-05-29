@@ -1,4 +1,4 @@
-package com.omarea.krscript.config
+package com.omarea.krscript.ui
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.krscript.config.PageClickHandler
 import com.omarea.krscript.model.PageInfo
 import java.util.*
 

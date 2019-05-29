@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.omarea.krscript.config.ActionListView
+    <com.omarea.krscript.ui.ActionListView
         android:layout_marginTop="?android:actionBarSize"
         android:listSelector="@android:color/transparent"
         android:id="@+id/main_list"

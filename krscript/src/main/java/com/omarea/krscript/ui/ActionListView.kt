@@ -1,4 +1,4 @@
-package com.omarea.krscript.config
+package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.Context
@@ -16,6 +16,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
+import com.omarea.krscript.config.ActionParamInfo
 import java.util.*
 import kotlin.collections.HashMap
 
