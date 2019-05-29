@@ -40,9 +40,26 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/main_tabhost_actions"
+                    android:id="@+id/main_tabhost_2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <com.omarea.krscript.ui.ActionListView
+                        android:scrollbars="none"
+                        android:listSelector="@android:color/transparent"
+                        android:id="@+id/list_favorites"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="@color/color_list_background"
+                        android:dividerHeight="1dp"
+                        android:paddingBottom="10dp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/main_tabhost_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <com.omarea.krscript.ui.PageListView
                         android:scrollbars="none"
@@ -53,23 +70,6 @@
                         android:divider="@color/color_list_background"
                         android:dividerHeight="1dp"
                         android:paddingTop="10dp"
-                        android:paddingBottom="10dp" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/main_tabhost_switchs"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.omarea.krscript.ui.ActionListView
-                        android:scrollbars="none"
-                        android:listSelector="@android:color/transparent"
-                        android:id="@+id/list_switchs"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@color/color_list_background"
-                        android:dividerHeight="1dp"
                         android:paddingBottom="10dp" />
                 </FrameLayout>
             </FrameLayout>
