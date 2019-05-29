@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TabHost
+        android:id="@+id/main_tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:actionBarSize">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@color/color_list_background">
+
+                <FrameLayout
+                    android:id="@+id/main_tabhost_cpu"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <include
+                        layout="@layout/home_monitor"
+                        android:layout_width="match_parent" android:layout_height="match_parent" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/main_tabhost_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.omarea.krscript.config.PageListView
+                        android:scrollbars="none"
+                        android:listSelector="@android:color/transparent"
+                        android:id="@+id/list_pages"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="@color/color_list_background"
+                        android:dividerHeight="1dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/main_tabhost_switchs"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.omarea.krscript.config.ActionListView
+                        android:scrollbars="none"
+                        android:listSelector="@android:color/transparent"
+                        android:id="@+id/list_switchs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:divider="@color/color_list_background"
+                        android:dividerHeight="1dp"
+                        android:paddingBottom="10dp" />
+                </FrameLayout>
+            </FrameLayout>
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white" />
+        </LinearLayout>
+    </TabHost>
+</RelativeLayout>

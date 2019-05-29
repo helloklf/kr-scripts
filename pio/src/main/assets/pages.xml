@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <page title="安卓通用" config="file:///android_asset/for_general.xml" />
+
+    <page>
+        <title>MIUI专属</title>
+        <desc>仅适用于MIUI系统的功能选项</desc>
+        <config>file:///android_asset/for_miui.xml</config>
+    </page>
+
+    <page title="原生专属" config="file:///android_asset/for_aosp.xml" />
+    <page title="Flyme专属" config="file:///android_asset/for_flyme.xml" />
+    <page title="应用程序" config="file:///android_asset/for_applications.xml" />
+</pages>

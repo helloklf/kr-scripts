@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.omarea.krscript.config.ActionListView
+        android:layout_marginTop="?android:actionBarSize"
+        android:listSelector="@android:color/transparent"
+        android:id="@+id/main_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@color/color_list_background"
+        android:dividerHeight="1dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp" />
+
+</RelativeLayout>

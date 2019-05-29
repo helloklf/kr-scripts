@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp"
+    android:paddingBottom="0dp">
+
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/Separator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="2dp"
+        android:alpha="0.5"
+        android:clickable="false"
+        android:focusable="false"
+        android:text="分组"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="13dp" />
+
+    <LinearLayout
+        android:id="@+id/contents"
+        android:background="@drawable/krscript_item_ripple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="6dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="13dp"
+        android:paddingRight="13dp">
+
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:text="这只是测试文本，这只是测试文本"
+            android:textColor="?android:attr/textColorPrimary"
+            android:alpha="0.8"
+            android:textSize="13dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Desc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="10dp" />
+    </LinearLayout>
+</LinearLayout>

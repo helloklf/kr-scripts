@@ -341,7 +341,7 @@ file:///android_asset/test.sh
 </switch>
 ```
 
-#### 静态资源（2.5.9）
+#### 静态资源（2.5.9+）
 - 在actions和switchs下，通过resource标签定义公共资源
 - 如果，你需要将一些公共的函数提取到单独的脚本中
 - 或者，你的某个脚本需要一些静态资源文件，而你希望将静态资源集成到apk中
@@ -379,7 +379,7 @@ file:///android_asset/test.sh
 - `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下（仅供参考）
 
 
-#### 分组（2.7.9）
+#### 分组（2.7.9+）
 - 对功能进行分组，对switch和action都适用
 
 ```xml
@@ -396,3 +396,71 @@ file:///android_asset/test.sh
 </switchs>
 ```
 
+## 3.0.0 版本改进
+1. 配置方式：增加功能分页
+2. 配置方式：支持在同一个文件里，混合switch和action，方便以功能分类，而不是以操作方式分类
+3. 脚本引擎；进度条功能
+4. 性能优化：当resource在action或switch内部定义，执行完support，如果发现是不支持的功能，不再提取资源文件
+5. 性能优化：相同resource在多个位置重复定义时，不再重复提取
+
+
+#### 分页（3.0.0+）
+- 对功能进行分页
+- 由于功能越来越多，在启动时加载所有功能导致效率降低
+- 为了减少一次性看到的内容，以及加快速度，增加了分页功能
+- 同时，配置文件也不再固定为"actions.xml"和"switchs.xml"
+- 并且像action和switch一样支持`support`属性，设置是否显示分页入口
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <page support="file:///android_asset/page_support.sh">
+        <title>分页1 标题</title>
+        <desc>分页功能说明，可以为空</desc>
+        <config>file:///android_asset/page1.xml</config>
+    </page>
+</pages>
+```
+
+
+#### 进度（3.0.0+）
+- 通过特定格式的输出(`echo`)来显示进度
+- 内容格式为`progress:[当前/总数]`
+- 如：`echo "progress:[10/252]"`,表示当前进度为10/252
+- `当前`与`总数`相同时，隐藏进度条
+- `当前`为`-1`，总数为任意数值时，显示loading动画
+
+```sh
+# 进度显示为 10/252
+echo "progress:[10/252]"
+
+# 进度为完成（因此进度条）
+echo "progress:[15/15]"
+
+# 显示为不确定进度的动画
+echo "progress:[-1/0]"
+```
+
+#### 混合选项（3.0.0+）
+- 你再也不用被迫把相似的功能拆分到不同位置了
+- 现在，你可以把action和switch写在同一个配置文件里了
+- 就像下面的例子
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <action>
+        <title>行为1</title>
+        <desc>行为1的说明</desc>
+        <script>
+            echo '脚本执行了呢'
+        </script>
+    </action>
+    <switch>
+        <title>流畅模式</title>
+        <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
+        <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
+        <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
+    </switch>
+</items>
+```

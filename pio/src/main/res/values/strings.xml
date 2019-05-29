@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">PIO</string>
+    <string name="shell_executor">脚本执行</string>
+    <string name="cannot_get_root_access">没有获取到ROOT权限！</string>
+    <string name="execute_success">执行完成！</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="reboot_confirm">确定重启吗？</string>
+    <string name="custom">定制</string>
+    <string name="switchs">开关</string>
+    <string name="btn_exit">退出</string>
+    <string name="btn_hide">隐藏</string>
+    <string name="float_monitor_tips">双击悬浮窗即可关闭，或按住拖动调整位置</string>
+    <string name="permission_float">请授权显示悬浮窗权限！</string>
+    <string name="need_root_permissions">需要ROOT权限</string>
+    <string name="need_root_permissions_desc">请在Magisk或SuperSU等ROOT权限管理器中，设置本应用允许使用ROOT权限！</string>
+    <string name="please_wait">请稍等</string>
+    <string name="load_ratio">负载：</string>
+    <string name="mhz">Mhz</string>
+    <string name="core">核心</string>
+    <string name="title_activity_action_page">ActionPage</string>
+    <string name="command_reboot">reboot</string>
+</resources>
