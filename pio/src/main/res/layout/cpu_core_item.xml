@@ -46,7 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
-            android:text="2048Mhz"
+            android:text=""
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="300Mhz ~ 2048Mhz"
+            android:text=""
             android:textAlignment="center"
             android:textColor="#8888"
             android:textSize="9dp" />

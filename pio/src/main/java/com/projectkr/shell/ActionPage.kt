@@ -1,9 +1,11 @@
 package com.projectkr.shell
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -24,6 +26,14 @@ class ActionPage : AppCompatActivity() {
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            v ->
+            finish()
+        });
 
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

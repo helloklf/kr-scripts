@@ -49,12 +49,26 @@ public class PageListAdapter extends BaseAdapter {
 
     private View renderPageItem(PageInfo item) {
         PageViewHolder viewHolder = new PageViewHolder();
-        View convertView = View.inflate(context, R.layout.list_item_kr_action, null);
+        View convertView = View.inflate(context, R.layout.list_item_kr_page, null);
         viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
 
-        viewHolder.itemText.setText(item.getPageDesc());
-        viewHolder.itemTitle.setText(item.getPageTitle());
+        String desc = item.getPageDesc();
+        String title = item.getPageTitle();
+
+        if(desc.isEmpty()) {
+            viewHolder.itemText.setVisibility(View.GONE);
+        } else {
+            viewHolder.itemText.setText(desc);
+            viewHolder.itemText.setVisibility(View.VISIBLE);
+        }
+
+        if(title.isEmpty()) {
+            viewHolder.itemTitle.setVisibility(View.GONE);
+        } else {
+            viewHolder.itemTitle.setText(title);
+            viewHolder.itemTitle.setVisibility(View.VISIBLE);
+        }
 
         convertView.setTag(viewHolder);
         return convertView;

@@ -10,6 +10,7 @@
         android:layout_height="wrap_content" />
 
     <com.omarea.krscript.ui.ActionListView
+        android:background="@color/color_list_background"
         android:layout_marginTop="?android:actionBarSize"
         android:listSelector="@android:color/transparent"
         android:id="@+id/main_list"

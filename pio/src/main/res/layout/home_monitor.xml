@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="系统内存"
+                android:text="@string/system_ram"
                 android:textAlignment="center"
                 android:textSize="12dp" />
 
@@ -75,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="left"
-                        android:text="物理内存"
+                        android:text="@string/hardware_ram"
                         android:textSize="12dp" />
 
                     <TextView
@@ -101,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:text="交换分区"
+                        android:text="@string/swap"
                         android:textSize="12dp" />
 
                     <TextView
@@ -150,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="整体负载"
+                android:text="@string/total_load"
                 android:textAlignment="center"
                 android:textSize="12dp" />
 
@@ -220,7 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical|end"
-                        android:text="核心数" />
+                        android:text="@string/core_load" />
 
                     <TextView
                         android:id="@+id/cpu_core_total_load"
@@ -269,7 +269,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:text="核心详细"
+                android:text="@string/core_details"
                 android:textAlignment="center"
                 android:textSize="12dp" />
 

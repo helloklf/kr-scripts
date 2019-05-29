@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="关于 · PIO"
+        android:text="@string/about_title"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />
 
@@ -18,13 +18,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="本应用中所使用的脚本由" />
+        android:text="@string/appliction_content" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:text="嘟嘟Ski"
+        android:text="@string/author_name"
         android:textAlignment="center"
         android:textColor="#332200"
         android:textSize="36dp" />
@@ -34,13 +34,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="12dp"
-        android:text="从Scene移植" />
+        android:text="@string/script_source" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="Version 2.5.0"
+        android:text="@string/version_name"
         android:textAlignment="textEnd"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />

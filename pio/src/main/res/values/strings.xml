@@ -20,4 +20,15 @@
     <string name="core">核心</string>
     <string name="title_activity_action_page">ActionPage</string>
     <string name="command_reboot">reboot</string>
+    <string name="author_name">嘟嘟Ski</string>
+    <string name="about_title">关于 · PIO</string>
+    <string name="script_source">从Scene移植</string>
+    <string name="appliction_content">本应用中所使用的脚本由</string>
+    <string name="version_name">Version 2.5.0</string>
+    <string name="system_ram">系统内存</string>
+    <string name="hardware_ram">物理内存</string>
+    <string name="swap">交换分区</string>
+    <string name="total_load">整体负载</string>
+    <string name="core_load">核心数</string>
+    <string name="core_details">核心详细</string>
 </resources>
