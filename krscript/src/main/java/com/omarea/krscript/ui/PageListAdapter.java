@@ -53,8 +53,8 @@ public class PageListAdapter extends BaseAdapter {
         viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
 
-        String desc = item.getPageDesc();
-        String title = item.getPageTitle();
+        String desc = item.getDesc();
+        String title = item.getTitle();
 
         if(desc.isEmpty()) {
             viewHolder.itemText.setVisibility(View.GONE);

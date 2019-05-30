@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.PageInfo
 import org.xmlpull.v1.XmlPullParser
@@ -50,19 +51,42 @@ class PageListReader(private val context: Context) {
                                     page!!.pageConfigPath = value
                                 } else if (attrName == "title") {
                                     val value = parser.getAttributeValue(attrIndex)
-                                    page!!.pageTitle = value
+                                    page!!.title = value
                                 } else if (attrName == "desc") {
                                     val value = parser.getAttributeValue(attrIndex)
-                                    page!!.pageDesc = value
+                                    page!!.desc = value
                                 }
                             }
-                        } else if (page != null) {
+                        }
+                        else if (page != null) {
                             if (name == "title") {
-                                page.pageTitle = parser.nextText();
-                            } else if (name == "desc") {
-                                page.pageDesc = parser.nextText();
-                            } else if (name == "config") {
+                                page.title = parser.nextText();
+                            }
+                            else if (name == "desc") {
+                                page.desc = parser.nextText();
+                            }
+                            else if (name == "config") {
                                 page.pageConfigPath = parser.nextText();
+                            }
+                            else if ("resource" == parser.name) {
+                                for (i in 0 until parser.attributeCount) {
+                                    if (parser.getAttributeName(i) == "file") {
+                                        val file = parser.getAttributeValue(i).trim()
+                                        if (file.startsWith(ASSETS_FILE)) {
+                                            ExtractAssets(context).extractResource(file)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        else if ("resource" == parser.name) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "file") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResource(file)
+                                    }
+                                }
                             }
                         }
                     }

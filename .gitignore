@@ -6,10 +6,11 @@
 /.idea/libraries
 .DS_Store
 /build
-./app/build
-./app/release
+./pio/build
+./krscript/build
+./common/build
 /captures
 ./release
+./release_mini
 ./gradle
-app/release/app-release.apk
 app/build.gradle

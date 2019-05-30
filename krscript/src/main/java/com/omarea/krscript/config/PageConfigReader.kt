@@ -147,10 +147,10 @@ class PageConfigReader(private var context: Context) {
                 val attrName = parser.getAttributeName(i)
                 if (attrName == "su" || attrName == "sh") {
                     action.descPollingShell = parser.getAttributeValue(i)
-                    action.desc = executeResultRoot(context, action.descPollingShell)
+                    action.desc = executeResultRoot(context, action.descPollingShell!!)
                 }
             }
-            if (action.desc == null || action.desc.isEmpty())
+            if (action.desc.isEmpty())
                 action.desc = parser.nextText()
         }
         else if ("script" == parser.name) {
@@ -218,10 +218,6 @@ class PageConfigReader(private var context: Context) {
 
     fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
         if (action != null) {
-            if (action.title == null)
-                action.title = ""
-            if (action.desc == null)
-                action.desc = ""
             if (action.script == null)
                 action.script = ""
             action.params = actionParamInfos
@@ -242,7 +238,7 @@ class PageConfigReader(private var context: Context) {
                     switchInfo.desc = executeResultRoot(context, switchInfo.descPollingShell)
                 }
             }
-            if (switchInfo.desc == null || switchInfo.desc.isEmpty())
+            if (switchInfo.desc.isEmpty())
                 switchInfo.desc = parser.nextText()
         }
         else if ("getstate" == parser.name) {
@@ -265,12 +261,6 @@ class PageConfigReader(private var context: Context) {
 
     fun tagEndInSwitch(switchInfo: SwitchInfo?, parser:XmlPullParser) {
         if (switchInfo != null) {
-            if (switchInfo.title == null) {
-                switchInfo.title = ""
-            }
-            if (switchInfo.desc == null) {
-                switchInfo.desc = ""
-            }
             if (switchInfo.getState == null) {
                 switchInfo.getState = ""
             } else {

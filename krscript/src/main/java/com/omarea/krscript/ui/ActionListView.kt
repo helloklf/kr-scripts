@@ -113,7 +113,7 @@ class ActionListView : OverScrollListView {
             startPath = action.start
         }
         if (action.params != null) {
-            val actionParamInfos = action.params
+            val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
                 val layoutInflater = LayoutInflater.from(context)
                 val view = layoutInflater.inflate(R.layout.dialog_params, null)
@@ -195,14 +195,14 @@ class ActionListView : OverScrollListView {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
-                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action.title, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
+                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action.title!!, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
                     }
                 }).start()
 
                 return
             }
         }
-        actionExecute(action.title, script, startPath, onExit, null)
+        actionExecute(action.title!!, script, startPath, onExit, null)
     }
 
     /**

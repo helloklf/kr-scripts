@@ -1,8 +1,5 @@
 package com.omarea.krscript.model
 
-public class PageInfo {
-    public var pageTitle:String = ""
-    public var pageDesc:String = "";
+public class PageInfo : ConfigItemBase() {
     public var pageConfigPath:String = ""
-    public var items:ArrayList<ConfigItemBase>? = null
 }

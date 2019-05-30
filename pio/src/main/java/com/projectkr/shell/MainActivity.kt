@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 progressBarDialog.hideDialog()
                 list_pages.setListData(pages, object : PageClickHandler {
                     override fun openPage(title: String, config: String) { _openPage(title, config) }
-                    override fun openPage(pageInfo: PageInfo) { _openPage(pageInfo.pageTitle, pageInfo.pageConfigPath) }
+                    override fun openPage(pageInfo: PageInfo) { _openPage(pageInfo.title, pageInfo.pageConfigPath) }
                 })
                 list_favorites.setListData(favorites)
 
@@ -118,7 +118,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     public fun _openPage(pageInfo: PageInfo) {
-        _openPage(pageInfo.pageTitle, pageInfo.pageConfigPath)
+        _openPage(pageInfo.title, pageInfo.pageConfigPath)
     }
 
     public fun _openPage(title:String, config:String) {
