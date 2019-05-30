@@ -32,6 +32,7 @@
     <string name="core_load">核心数</string>
     <string name="core_details">核心详细</string>
 
+    <!--重要内容，谨慎修改-->
     <string name="framework_home_allow">true</string>
     <string name="framework_page_config">pages.xml</string>
     <string name="framework_favorites_config">favorites.xml</string>

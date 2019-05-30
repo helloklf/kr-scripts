@@ -52,6 +52,7 @@
                         android:layout_height="match_parent"
                         android:divider="@color/color_list_background"
                         android:dividerHeight="1dp"
+                        android:paddingTop="10dp"
                         android:paddingBottom="10dp" />
                 </FrameLayout>
 

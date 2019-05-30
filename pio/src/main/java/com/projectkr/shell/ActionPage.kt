@@ -31,7 +31,7 @@ class ActionPage : AppCompatActivity() {
         getSupportActionBar()!!.setHomeButtonEnabled(true);
         getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener({
-            v ->
+            _ ->
             finish()
         });
 

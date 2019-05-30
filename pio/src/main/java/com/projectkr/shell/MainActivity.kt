@@ -19,6 +19,7 @@ import android.view.*
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageClickHandler
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
@@ -34,6 +35,9 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class MainActivity : AppCompatActivity() {
+    val progressBarDialog = ProgressBarDialog(this)
+    private var handler = Handler()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -72,6 +76,34 @@ class MainActivity : AppCompatActivity() {
         //getWindow().setNavigationBarColor(Color.WHITE);
 
         main_tabhost.setup()
+        main_tabhost.setOnTabChangedListener({ tabId ->
+            if (tabId == "home") {
+                startTimer()
+            } else {
+                stopTimer()
+            }
+        })
+        if (getString(R.string.framework_home_allow) == "true")
+            main_tabhost.addTab(main_tabhost.newTabSpec("home").setContent(R.id.main_tabhost_cpu).setIndicator("", getDrawable(R.drawable.cpu)))
+
+        progressBarDialog.showDialog(getString(R.string.please_wait))
+        Thread(Runnable {
+            val pages= PageListReader(this.applicationContext).readPageList(getString(R.string.framework_page_config));
+            val favorites = PageConfigReader(this.applicationContext).readConfigXml(getString(R.string.framework_favorites_config))
+            handler.post {
+                progressBarDialog.hideDialog()
+                list_pages.setListData(pages, object : PageClickHandler {
+                    override fun openPage(title: String, config: String) { _openPage(title, config) }
+                    override fun openPage(pageInfo: PageInfo) { _openPage(pageInfo.pageTitle, pageInfo.pageConfigPath) }
+                })
+                list_favorites.setListData(favorites)
+
+                if (list_favorites.count > 0)
+                    main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_2).setIndicator("", getDrawable(R.drawable.favorites)))
+                if (list_pages.count > 0)
+                    main_tabhost.addTab(main_tabhost.newTabSpec("tab3").setContent(R.id.main_tabhost_3).setIndicator("", getDrawable(R.drawable.switchs)))
+            }
+        }).start()
 
         val wm = getBaseContext().getSystemService(Context.WINDOW_SERVICE) as (WindowManager)
         val display = wm.getDefaultDisplay();
@@ -82,33 +114,6 @@ class MainActivity : AppCompatActivity() {
             home_title_sum.visibility = View.GONE
             home_title_mem.visibility = View.GONE
             // home_title_cores.visibility = View.GONE
-        }
-
-        val pages= PageListReader(this.applicationContext).readPageList(getString(R.string.framework_page_config));
-        list_pages.setListData(pages, object : PageClickHandler {
-            override fun openPage(title: String, config: String) {  _openPage(title, config) }
-            override fun openPage(pageInfo: PageInfo) { _openPage(pageInfo.pageTitle, pageInfo.pageConfigPath) }
-        })
-
-        val favorites = PageConfigReader(this.applicationContext).readConfigXml(getString(R.string.framework_favorites_config))
-        list_favorites.setListData(favorites)
-
-        main_tabhost.setOnTabChangedListener({ tabId ->
-            if (tabId == "home") {
-                startTimer()
-            } else {
-                stopTimer()
-            }
-        })
-
-        if (getString(R.string.framework_home_allow) == "true") {
-            main_tabhost.addTab(main_tabhost.newTabSpec("home").setContent(R.id.main_tabhost_cpu).setIndicator("", getDrawable(R.drawable.cpu)))
-        }
-        if (list_favorites.count > 0) {
-            main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_2).setIndicator("", getDrawable(R.drawable.favorites)))
-        }
-        if (list_pages.count > 0) {
-            main_tabhost.addTab(main_tabhost.newTabSpec("tab3").setContent(R.id.main_tabhost_3).setIndicator("", getDrawable(R.drawable.switchs)))
         }
     }
 
@@ -149,10 +154,10 @@ class MainActivity : AppCompatActivity() {
             R.id.option_menu_reboot -> {
                 DialogHelper.animDialog(AlertDialog.Builder(this)
                         .setTitle(R.string.reboot_confirm)
-                        .setPositiveButton(R.string.yes) { dialog, which ->
+                        .setPositiveButton(R.string.yes) { _, _ ->
                             KeepShellPublic.doCmdSync(getString(R.string.command_reboot))
                         }
-                        .setNegativeButton(R.string.no) { dialog, which -> })
+                        .setNegativeButton(R.string.no) { _, _ -> })
             }
             R.id.action_graph -> {
                 if (FloatMonitor.isShown == true) {
