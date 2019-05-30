@@ -154,7 +154,7 @@ class PageConfigReader(private var context: Context) {
                 action.desc = parser.nextText()
         }
         else if ("script" == parser.name) {
-            action.script = parser.nextText()
+            action.script = parser.nextText().trim()
         }
         else if ("param" == parser.name) {
             if (actionParamInfos == null) {

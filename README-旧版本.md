@@ -1,117 +1,70 @@
 ## 简介
+1. 通过编写Xml，配置一个动作列表，点击选项时执行指定的shell脚本
+2. 为了方便第三方ROM修改爱好者快速定制自己的个性化选项功能
+3. 通过界面交互的方式，允许用户在执行脚本前进行一些输入或选择操作
+4. 加入Get Set机制（分别执行两段脚本），从而在界面上显示Switch开关
 
-### 功能描述
-- 这是一个简单的框架，让你通过xml + shell脚本就能组织起一个工具软件
-- 只要你会写shell脚本，这将都会很简单
-- 解压apk包，替换assets中的静态文件，即可完成功能修改
-- 而不需要繁琐的反编译回编译操作！
-- **注意：本说明仅适用于3.0.0及以后的版本！**
+## **注意：本说明仅适用于2.0.4 及以后的版本！**
 
-### 主要组成
 
-| 定义 | 作用 | 描述 |
-| :-: | :-: | :- |
-| page | 页面 | 一个xml配置文件，就是一个页面，里面可以包含action和switch |
-| action | 动作 | 定义在页面中的具体功能项，表现为：点击后执行某些操作 |
-| switch | 开关 | 定义在页面中的具体功能项，表现为：点击后切换开关状态 |
-| group | 分组 | 定义在页面中，用于对action和switch进行分组 |
-| resource | 资源 | 定义小容量的静态资源文件，解析配置时自动提取 |
+## 使用脚本
+- 在配置文件中你有两种方式来定义脚本
+- 适用场景：所有定义脚本的位置（sh、value-sh、script、options-sh、getstate、setstate 等）
 
-## 页面列表
-- 如果你不修改程序源码，框架将默认从解析`pages.xml`开始
-- pages.xml的配置格式如：
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<pages>
-    <page title="原生专属"
-        desc="越接近AOSP越适用的选项"
-        config="file:///android_asset/config_xml/for_aosp.xml" />
-    <page title="Flyme专属"
-        desc="用于Meizu Flyme系统的选项"
-        config="file:///android_asset/config_xml/for_flyme.xml" />
-</pages>
+> 1 脚本内嵌（不推荐）
 ```
-
-- 属性说明
-
-| 属性 | 名称 | 用途 | 是否可空 |
-| :-: | :-: | :- | :-: |
-| title | 标题 | 功能主标题，建议不要为空 | 是 |
-| desc | 描述 | 显示在标题下的小字，可以不设置 | 是 |
-| config | 配置 | 页面具体功能的配置文件路径 | 否 |
-| support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
-
-- **注意：** config只支持读取应用assets下的文件，其中`file:///android_asset/`是固定前缀，也可以省略不写，就像这样：
-
-```xml
-<page title="标题文本"
-    desc="描述文本"
-    config="config_xml/for_aosp.xml" />
+echo '1'
 ```
+- 不适合大段的代码
 
-> support 是个共通属性，适用于page、action、switch，将在后文单独介绍
-
-
-### 补充说明
-- 为了更友好的设置较长的desc内容，这里做了额外兼容，page节点也允许写成这样
-```xml
-<page>
-  <title>MIUI专属</title>
-  <desc>用于Xiaomi MIUI的选项</desc>
-  <config>file:///android_asset/config_xml/for_miui.xml</config>
-</page>
+> 2 脚本文件（推荐）
 ```
-
-
-## 页面内容
-- page的定义格式大体如下，只需要**囫囵吞枣**瞄一眼
-- action和switch的具体配置会在后文介绍
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<page>
-    <!--定义一个点击后执行的动作-->
-    <action>
-        <!-- ... 此处省略action的功能细节 -->
-    </action>
-
-    <!--定义一个开关选项-->
-    <switch>
-        <!-- ... 此处省略action的功能细节 -->
-    </switch>
-</page>
+file:///android_asset/test.sh
 ```
-
+- 将你的脚本独立保存为 test.sh，放到apk 的 assets目录下
+- 应用启动时会自动提取，并在需要时执行
 
 ## Action
+- 点击执行
 
-### 用途
-- 点击后执行某些动作
-- 允许通过参数定义，在执行前让用户输入或进行一些选择
-
-### 入门 Hello world！
-- 先从最简单的开始，显示一个标题和描述文本
-- 点击后执行一段脚本（输出Hello world！）
-
+### 定义Action
+- 在assets下添加，actions.xml，格式如下：
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<page>
+<actions>
     <action>
-        <title>功能标题</title>
-        <desc>这是描述信息</desc>
-        <script>
-            echo 'Hello world！'
-        </script>
+        <title>行为1</title>
+        <desc>行为1的说明</desc>
+        <script># 点击行为1要执行的脚本</script>
     </action>
-</page>
+    <action>...</action>
+    ...
+</actions>
 ```
 
-### action 的 属性
+### 入门：Hello world！
+
+```xml
+<!--action
+        [confirm]=[true/false]，操作是否需要二次确认，避免误操作，默认为false
+        [start]=[dir]，执行脚本时的起始位置，将在执行script前cd到起始位置，默认位置为/cache
+-->
+<action confirm="false">
+    <title>功能标题</title>
+    <desc>功能说明</desc>
+    <!--script 点击后要执行的脚本（可以直接要执行的文件路径、或要执行的代码）
+            内容将支持两种方式
+            1.要执行的代码内容 如：echo 'hello world！'; echo '执行完毕！';
+            2.assets内嵌资源文件，路径以file:///android_asset开头，如：file:///android_asset/test.sh，执行时会自动从 apk文件 的assets目录自动提取-->
+    <script>echo 'hello world！'</scripts>
+</action>
+```
+
+### 入门 action 属性
 | 属性 | 作用 | 有效值 | 必需 | 示例 |
 | - | - | - | :-: | :- |
-| confirm | 是否在执行操作前让用户确认，默认`false` | `true`、`false` | 否 | `false` |
-| start | 执行脚本的起始位置(如果不设置，默认将工具箱数据目录作为起始目录) | 任意磁盘路径 | 否 | `/cache`  |
+| confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
+| start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
 
 > 示例
@@ -120,13 +73,28 @@
     <!-- 此处省略 -->
 </action>
 ```
-> support 是个共通属性，适用于page、action、switch，将在后文单独介绍
 
+#### 入门 action > title
+- 设置Action的标题，不支持动态值
 
-### 动态 desc
-- 如果你希望执行一段脚本，将输出内容作为文本显示
-- 那么，desc的`sh`属性就能满足需要
+> 示例
+```xml
+<action>
+    <title>标题</title>
+</action>
+```
 
+#### 入门 action > desc
+- 设置Action的描述
+- 方式1：静态值，示例
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+</action>
+```
+
+- 方式2：动态值，示例
 ```xml
 <action>
     <title>标题</title>
@@ -134,12 +102,44 @@
 </action>
 ```
 
-> 请不要在`sh`属性里写大段的shell脚本，推荐方式请参考后文**脚本使用**部分
+- 方式3：动态值，示例
+```xml
+<action>
+    <title>标题</title>
+    <desc sh="file:///android_asset/MyScript.sh"></desc>
+</action>
+```
+> 将要执行的脚本单独写入一个脚本文件，这很适合需要执行大段代码的场景
+> 如上例子，你只需将脚本MyScript.sh 放在apk文件 的assets目录下
 
-### 简单的action示例
+
+#### 入门 action > script
+- 设置Action被点击时要执行的脚本
+- 方式1：直接在配置文件里写脚本
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+    <script>
+        echo '我被执行了'
+    </script>
+</action>
+```
+
+- 方式2：使用单独的脚本文件
+```xml
+<action>
+    <title>标题</title>
+    <desc>这是描述信息</desc>
+    <script>file:///android_asset/MyScript.sh</script>
+</action>
+```
+
+
+#### 入门 简单的action示例
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<page>
+<actions>
     <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，执行内嵌的脚本文件</desc>
@@ -155,26 +155,24 @@
             echo '好了，代码执行完毕！';
         </script>
     </action>
-</page>
+</actions>
 ```
 
-### Action 定义参数
+### 参数 定义Action执行的参数
 - 用于需要用户“输入内容” 或 “作出选择”的场景
 
-#### param 属性
+#### action > params > param 属性
 
-| 属性 | 用途 | 必需 | 示例 |
+| 属性 | 用途 | 必须 | 示例 |
 | - | - | :-: | - |
-| name | 参数名，不可重复 | 是 | `param0` |
+| name | 参数名 | 是 | `param0` |
 | value | 初始值 | 否 | ` ` |
 | value-sh | 使用脚本通过echo输出设置参数初始值 | 否 | ` ` |
 | options-sh | 使用脚本通过echo输出来生成 option | 否 | ` ` |
 | desc | 参数的描述（标题） | 否 | `请选择` |
-| type | 输入类型，默认为普通文本，可配置为`int`(数字) `bool`(勾选框) | 否 | `int` |
-| readonly | 设为readonly表示只读，阻止输入 | 否 | `readonly` | 
-| maxlength | 输入长度限制（位） | 否 | `10` |
-
-> 请不要在`value-sh`、`options-sh` 属性里写大段的shell脚本，推荐方式请参考后文**脚本使用**部分
+| type | 输入类型，空表示为普通文本（默认），可配置为`int`(数字) `bool`(勾选框) | 否 | `int` |
+| readonly | 只读，默认为"" | 否 | `readonly` | 
+| maxlength | 最大输入长度（位） | 否 | `10` |
 
 - 基本示例：
 
@@ -190,7 +188,7 @@
 </action>
 ```
 
-#### param 的 value-sh属性
+#### action > prams > param 动态获取value
 - 例如，你需要在用户输入前动态获取当前已设置的值
 
 ```xml
@@ -206,8 +204,8 @@
 ```
 
 
-#### param > option
-- 通过在param 下定义 option，实现下拉框候选列表
+#### action > params > param > option
+- 通过在param 下定义 option，实现单选操作
 
 ```xml
 <action>
@@ -235,7 +233,7 @@
 ```
 
 
-#### param 输入长度限制
+#### action > params > param 文本输入的长度限制
 
 ```xml
 <action>
@@ -253,7 +251,7 @@
 </action>
 ```
 
-#### param > option 动态列表
+### action > params > param > option 动态选项列表
 - 现在允许更灵活的定义Param的option列表了，通过使用脚本代码输出内，即可实现
 - 脚本的执行过程中的输出内容，每一个each将作为一个选项，如 echo '很小'; echo '适中';
 - 如果你需要将选项的value（值）和label（显示文字）分开
@@ -276,42 +274,46 @@
 
 
 ## Switch
-### 用途
-- 简洁的开关选项
+- 开关项
 
-### Switch 属性（与Action相同）
+### 入门 Switch 属性
 | 属性 | 作用 | 有效值 | 必需 | 示例 |
 | - | - | - | :-: | :- |
 | confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
 | start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
 
-### 添加Switch到页面
+#### 定义Switch列表
+- 在assets目录下，添加 switchs.xml，格式如下
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<page>
+<switchs>
     <switch>
+        <!--开关标题-->
         <title>流畅模式</title>
+        <!--开关说明，同样支持动态设置内容，可参考Action的Desc设置-->
         <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
+        <!--在应用启动时获取状态，用于设定开关显示状态，确保执行时间不会太长，避免启动时界面未响应-->
         <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
+        <!--设置状态，直接脚本时通过$state读取参数，file:///assets_file 方式的脚本文件，则通过 $1 获取参数-->
         <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
     </switch>
     <switch>...</switch>
     ...
-</page>
+</switchs>
 ```
 
-### switch > desc
+#### switch > desc
 - 配置方式与 Action 的 desc相同，不再重复描述
 
-### switch > getstate
+#### switch > getstate
 - 自定义一段脚本，通过echo输出结果，（1或0，1表示选中），如 echo '1'
 
-### switch > setstate
+#### switch > setstate
 - 自定义一段脚本，用户切换选中状态时传入1或0，并执行代码
-- 你可以通过参数 $state 来获取当前是否选中（1或0，1表示选中）
+- 你可以通过参数 $state来获取当前是否选中（1或0，1表示选中）
 
-### 示例
+#### 示例
 
 ```xml
 <switch>
@@ -339,15 +341,15 @@
 </switch>
 ```
 
-## 静态资源
-- 在page功能配置文件的任意位置，通过resource标签定义公共资源
+#### 静态资源（2.5.9+）
+- 在actions和switchs下，通过resource标签定义公共资源
 - 如果，你需要将一些公共的函数提取到单独的脚本中
 - 或者，你的某个脚本需要一些静态资源文件，而你希望将静态资源集成到apk中
 - 那你可以试试这个，例如：
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<page>
+<actions>
     <resource file="file:///android_asset/resource/common.sh" />
     <resource file="file:///android_asset/resource/test_file.zip" />
     <action>
@@ -369,22 +371,20 @@
             echo '>>> 测试完毕'
         </script>
     </action>
-</page>
+</actions>
 ```
 
 - 上面的例子中，是通过相对位置来使用resource的
 - 如果你定义了`action`或`switch`的`[start]`属性，那么你可能需要通过绝对路径来访问`resource`
-- `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下
-
-> 当resource定义在action或switch内部，如果执行完support，发现设备并不受支持(输出为'0')，将不会再提取资源
+- `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下（仅供参考）
 
 
-## 分组
-- 使用`group`标签的`title`属性，对功能进行分组
+#### 分组（2.7.9+）
+- 对功能进行分组，对switch和action都适用
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<page>
+<switchs>
     <group title="分组">
         <switch>
             <!-- ... 此处省略 switch 的详细定义 -->
@@ -393,30 +393,37 @@
             <!-- ... 此处省略 switch 的详细定义 -->
         </switch>
     </group>
-</page>
+</switchs>
+```
+
+## 3.0.0 版本改进
+1. 配置方式：增加功能分页
+2. 配置方式：支持在同一个文件里，混合switch和action，方便以功能分类，而不是以操作方式分类
+3. 脚本引擎；进度条功能
+4. 性能优化：当resource在action或switch内部定义，执行完support，如果发现是不支持的功能，不再提取资源文件
+5. 性能优化：相同resource在多个位置重复定义时，不再重复提取
+
+
+#### 分页（3.0.0+）
+- 对功能进行分页
+- 由于功能越来越多，在启动时加载所有功能导致效率降低
+- 为了减少一次性看到的内容，以及加快速度，增加了分页功能
+- 同时，配置文件也不再固定为"actions.xml"和"switchs.xml"
+- 并且像action和switch一样支持`support`属性，设置是否显示分页入口
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <page support="file:///android_asset/page_support.sh">
+        <title>分页1 标题</title>
+        <desc>分页功能说明，可以为空</desc>
+        <config>file:///android_asset/page1.xml</config>
+    </page>
+</pages>
 ```
 
 
-## 脚本使用
-- 在配置文件中你有两种方式来定义脚本
-- 适用场景：所有定义脚本的位置（sh、value-sh、script、options-sh、getstate、setstate 等）
-
-> 1 直接写脚本代码（不推荐）
-```
-echo '1'
-```
-- 不适合大段的代码
-
-> 2 写脚本文件路径（推荐）
-```
-file:///android_asset/test.sh
-```
-- 将你的脚本独立保存为 test.sh，放到apk 的 assets目录下
-- 应用启动时会自动提取，并在需要时执行
-
-
-## 进度
-- 适用于action执行过程
+#### 进度（3.0.0+）
 - 通过特定格式的输出(`echo`)来显示进度
 - 内容格式为`progress:[当前/总数]`
 - 如：`echo "progress:[10/252]"`,表示当前进度为10/252
@@ -434,34 +441,26 @@ echo "progress:[15/15]"
 echo "progress:[-1/0]"
 ```
 
-## support 属性
-- 定义在page、action、switch节点
-- 你需要写一段脚本，输出`0`或者`1`，用来表示该功能是否支持（支持则显示，否则隐藏）
-- 例如，下面的例子，通过一个名叫`is_huawei_mphone.sh`的脚本文件来判断`action`是否要显示
+#### 混合选项（3.0.0+）
+- 你再也不用被迫把相似的功能拆分到不同位置了
+- 现在，你可以把action和switch写在同一个配置文件里了
+- 就像下面的例子
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <action support="file:///android_asset/is_huawei_mphone.sh">
+    <action>
         <title>行为1</title>
         <desc>行为1的说明</desc>
         <script>
             echo '脚本执行了呢'
         </script>
     </action>
+    <switch>
+        <title>流畅模式</title>
+        <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
+        <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
+        <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
+    </switch>
 </items>
 ```
-
-- 又或者，直接在定义pege的时候就加上support属性
-- 例如：
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<pages>
-    <page
-        support="file:///android_asset/is_huawei_mphone.sh"
-        title="华为专用"
-        desc="只适用于华为手机的选项"
-        config="file:///android_asset/config_xml/for_huawei.xml" />
-</pages>
-```
-
