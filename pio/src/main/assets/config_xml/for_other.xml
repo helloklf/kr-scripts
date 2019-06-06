@@ -19,7 +19,7 @@
         <desc>通过简单的命令，查看当前已挂载的分区</desc>
         <script>df -h</script>
     </action>
-    <action confirm="true">
+    <action confirm="true" interruptible="false">
         <title>磁盘测速</title>
         <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
         <script>file:///android_asset/custom/actions/disk_test.sh</script>

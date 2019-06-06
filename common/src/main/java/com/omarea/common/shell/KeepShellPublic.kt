@@ -14,18 +14,18 @@ object KeepShellPublic {
         return keepShell!!.doCmdSync(cmd)
     }
 
-    fun tryExit() {
-        if (keepShell != null) {
-            keepShell!!.tryExit()
-            keepShell = null
-        }
-    }
-
     //执行脚本
     fun checkRoot(): Boolean {
         if (keepShell == null) {
             keepShell = KeepShell()
         }
         return keepShell!!.checkRoot()
+    }
+
+    fun tryExit() {
+        if (keepShell != null) {
+            keepShell!!.tryExit()
+            keepShell = null
+        }
     }
 }

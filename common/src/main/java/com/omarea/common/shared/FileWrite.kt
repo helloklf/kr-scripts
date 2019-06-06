@@ -2,8 +2,10 @@ package com.omarea.common.shared
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.os.Environment
 import android.util.Log
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 
@@ -12,6 +14,92 @@ import java.io.IOException
  * Created by helloklf on 2016/8/27.
  */
 object FileWrite {
+    // FIXME:不能写死吧？？
+    const val PACKAGE_NAME = "com.omarea.vtools"
+    val SDCardDir: String = Environment.getExternalStorageDirectory().absolutePath
+
+    var baseUrl = "${SDCardDir}/Android/data/${PACKAGE_NAME}/"
+
+    fun writeFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
+        try {
+            val inputStream = ass.open(file)
+            val datas = ByteArray(inputStream.available())
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
+
+            /*
+            //获取SD卡的目录
+            File sdCardDir = Environment.getExternalStorageDirectory();
+            File targetFile = new File(sdCardDir.getCanonicalPath() + "shelltoolsfile.zip");
+            //以指定文件创建RandomAccessFile对象
+            RandomAccessFile raf = new RandomAccessFile(targetFile, "rw");
+            //将文件记录指针移动到最后
+            raf.seek(targetFile.length());
+            //输出文件内容
+            raf.write(datas,0,len);
+            raf.close();
+            */
+            val dir = File(baseUrl)
+            if (!dir.exists())
+                dir.mkdirs()
+            val filePath = baseUrl + if (hasExtName)
+                file
+            else
+                file.substring(0, if (file.lastIndexOf(".") > 0) file.lastIndexOf(".") else file.length)
+
+            val fileOutputStream = FileOutputStream(filePath)
+            fileOutputStream.write(datas, 0, len)
+            fileOutputStream.close()
+            inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
+            //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
+        } catch (e: FileNotFoundException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    fun writeFile(assetManager: AssetManager, file: String, outName: String): String? {
+        try {
+            val inputStream = assetManager.open(file)
+            val datas = ByteArray(inputStream.available())
+            //inputStream.available()
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
+            val dir = File(baseUrl)
+            if (!dir.exists())
+                dir.mkdirs()
+            val filePath = baseUrl + outName
+            val fileDir = File(filePath).parentFile
+            if (!fileDir.exists())
+                fileDir.mkdirs()
+
+            val fileOutputStream = FileOutputStream(filePath)
+            fileOutputStream.write(datas, 0, len)
+            fileOutputStream.close()
+            inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
+            //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
     fun getPrivateFileDir(context: Context): String {
         return context.filesDir.absolutePath + "/private/"
     }
@@ -23,7 +111,7 @@ object FileWrite {
     fun writePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
         try {
             val inputStream = assetManager.open(file)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             //inputStream.available()
             var len = inputStream.read(datas)
             if (len < 0) {
@@ -93,7 +181,7 @@ object FileWrite {
         try {
             val assetManager = context.assets
             val inputStream = assetManager.open(fileName)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             //inputStream.available()
             var len = inputStream.read(datas)
             if (len < 0) {

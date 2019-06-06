@@ -25,6 +25,7 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageInfo
 import com.omarea.vtools.FloatMonitor
+import com.projectkr.shell.ui.TabIconHelper
 import com.projectkr.shell.utils.CpuFrequencyUtils
 import com.projectkr.shell.utils.GpuUtils
 import kotlinx.android.synthetic.main.activity_main.*
@@ -76,15 +77,13 @@ class MainActivity : AppCompatActivity() {
         //getWindow().setNavigationBarColor(Color.WHITE);
 
         main_tabhost.setup()
-        main_tabhost.setOnTabChangedListener({ tabId ->
-            if (tabId == "home") {
-                startTimer()
-            } else {
-                stopTimer()
-            }
-        })
+
+        val tabIconHelper = TabIconHelper(main_tabhost, this)
         if (getString(R.string.framework_home_allow) == "true")
-            main_tabhost.addTab(main_tabhost.newTabSpec("home").setContent(R.id.main_tabhost_cpu).setIndicator("", getDrawable(R.drawable.cpu)))
+            tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_home)!!, R.id.main_tabhost_cpu)
+        main_tabhost.setOnTabChangedListener {
+            tabIconHelper.updateHighlight()
+        }
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
@@ -98,10 +97,12 @@ class MainActivity : AppCompatActivity() {
                 })
                 list_favorites.setListData(favorites)
 
-                if (list_favorites.count > 0)
-                    main_tabhost.addTab(main_tabhost.newTabSpec("tab2").setContent(R.id.main_tabhost_2).setIndicator("", getDrawable(R.drawable.favorites)))
-                if (list_pages.count > 0)
-                    main_tabhost.addTab(main_tabhost.newTabSpec("tab3").setContent(R.id.main_tabhost_3).setIndicator("", getDrawable(R.drawable.switchs)))
+                if (list_favorites.count > 0){
+                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
+                }
+                if (list_pages.count > 0) {
+                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
+                }
             }
         }).start()
 
@@ -117,11 +118,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    public fun _openPage(pageInfo: PageInfo) {
+    fun _openPage(pageInfo: PageInfo) {
         _openPage(pageInfo.title, pageInfo.pageConfigPath)
     }
 
-    public fun _openPage(title:String, config:String) {
+    fun _openPage(title:String, config:String) {
         try {
             val intent = Intent(this, ActionPage::class.java)
             intent.putExtra("title", title)

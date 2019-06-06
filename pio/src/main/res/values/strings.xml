@@ -36,4 +36,6 @@
     <string name="framework_home_allow">true</string>
     <string name="framework_page_config">pages.xml</string>
     <string name="framework_favorites_config">favorites.xml</string>
+    <string name="tab_home">首页</string>
+    <string name="tab_favorites">收藏夹</string>
 </resources>

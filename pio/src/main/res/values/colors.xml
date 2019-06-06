@@ -15,9 +15,9 @@
     <color name="color_load_veryhight">#f9592f</color>
     <color name="blue">#138ed6</color>
 
-    <color name="colorAccent">#664a44bc</color>
-    <color name="colorPrimary">#664a44bc</color>
-    <color name="colorPrimaryDark">#664a44bc</color>
+    <color name="colorAccent">#00BCD4</color>
+    <color name="colorPrimary">#00BCD4</color>
+    <color name="colorPrimaryDark">#00BCD4</color>
 
     <!--<color name="colorAccent">#00b9c2</color>
     <color name="colorPrimary">#00b9c2</color>

@@ -113,6 +113,8 @@
 | confirm | 是否在执行操作前让用户确认，默认`false` | `true`、`false` | 否 | `false` |
 | start | 执行脚本的起始位置(如果不设置，默认将工具箱数据目录作为起始目录) | 任意磁盘路径 | 否 | `/cache`  |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
+| interruptible | 是否允许中断执行，默认`false` | `true`、`false` | 否 | `false` |
+| auto-off | 脚本执行完后，是否执行完自动关闭日志输出界面，默认`false` | `true`、`false` | 否 | `false` |
 
 > 示例
 ```xml
@@ -285,6 +287,8 @@
 | confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
 | start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
+| interruptible | 是否允许中断执行，默认`false` | `true`、`false` | 否 | `false` |
+| auto-off | 脚本执行完后，是否执行完自动关闭日志输出界面，默认`false` | `true`、`false` | 否 | `false` |
 
 ### 添加Switch到页面
 ```xml
