@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 }
                 if (list_pages.count > 0) {
-                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
+                    tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 }
             }
         }).start()
