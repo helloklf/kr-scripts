@@ -129,6 +129,8 @@ public class SimpleShellHandler extends ShellHandler {
         if (autoOff && dialog != null) {
             dialog.dismiss();
             dialog = null;
+        } else if (btnExit != null) {
+            btnExit.setVisibility(View.VISIBLE);
         }
     }
 

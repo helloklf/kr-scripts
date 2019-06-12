@@ -7,16 +7,18 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import com.omarea.krscript.model.ActionInfo
-import com.omarea.krscript.model.ConfigItemBase
-import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.executor.SimpleShellExecutor
-import com.omarea.krscript.model.SwitchInfo
+import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.executor.ScriptEnvironmen
+import com.omarea.krscript.executor.SimpleShellExecutor
+import com.omarea.krscript.model.ActionInfo
+import com.omarea.krscript.model.ActionLongClickHandler
+import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.SwitchInfo
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -31,11 +33,11 @@ class ActionListView : OverScrollListView {
         this.progressBarDialog = ProgressBarDialog(context)
     }
 
-    fun setListData(actionInfos: ArrayList<ConfigItemBase>?) {
+    fun setListData(actionInfos: ArrayList<ConfigItemBase>?, actionLongClickHandler: ActionLongClickHandler? = null) {
         if (actionInfos != null) {
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = ActionListAdapter(actionInfos)
-            this.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            this.onItemClickListener = OnItemClickListener { parent, _, position, _ ->
                 val item = parent.adapter.getItem(position)
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
@@ -47,6 +49,45 @@ class ActionListView : OverScrollListView {
                     })
                 }
             }
+            this.setOnItemLongClickListener { parent, view, position, id ->
+                if (actionLongClickHandler != null) {
+                    val item = parent.adapter.getItem(position)
+                    if (item is ActionInfo) {
+                        actionLongClickHandler.addToFavorites(item)
+                    } else if (item is SwitchInfo) {
+                        actionLongClickHandler.addToFavorites(item)
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    fun triggerAction(id: String, onCompleted: Runnable): Boolean {
+        val actionListAdapter = (adapter as ActionListAdapter)
+        val position = actionListAdapter.getPositionById(id)
+        if (position < 0) {
+            return false
+        } else {
+            val item = actionListAdapter.getItem(position)
+            if (item is ActionInfo) {
+                onActionClick(item, Runnable {
+                    post {
+                        (adapter as ActionListAdapter).update(position, this)
+                        onCompleted.run()
+                    }
+                })
+            } else if (item is SwitchInfo) {
+                onSwitchClick(item, Runnable {
+                    post {
+                        (adapter as ActionListAdapter).update(position, this)
+                        onCompleted.run()
+                    }
+                })
+            }
+            return true
         }
     }
 
@@ -125,7 +166,7 @@ class ActionListView : OverScrollListView {
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell!!)
                         }
                     }
                     handler.post {
@@ -208,7 +249,7 @@ class ActionListView : OverScrollListView {
     /**
      * 获取Param的Options
      */
-    private fun getParamOptions(actionParamInfo: ActionParamInfo):ArrayList<HashMap<String, Any>>? {
+    private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isNullOrEmpty()) {
@@ -244,16 +285,14 @@ class ActionListView : OverScrollListView {
                     })
                 }
             }
-        }
-        else if (actionParamInfo.options != null) {
-            for (option in actionParamInfo.options) {
+        } else if (actionParamInfo.options != null) {
+            for (option in actionParamInfo.options!!) {
                 val opt = HashMap<String, Any>()
-                opt["title"] = option.desc
+                opt.set("title", if(option.desc == null) "" else option.desc!!)
                 opt["item"] = option
                 options.add(opt)
             }
-        }
-        else {
+        } else {
             return null
         }
 
@@ -271,9 +310,9 @@ class ActionListView : OverScrollListView {
 
         val valList = ArrayList<String>()
         if (actionParamInfo.valueFromShell != null)
-            valList.add(actionParamInfo.valueFromShell)
+            valList.add(actionParamInfo.valueFromShell!!)
         if (actionParamInfo.value != null) {
-            valList.add(actionParamInfo.value)
+            valList.add(actionParamInfo.value!!)
         }
         if (valList.size > 0) {
             for (j in valList.indices) {
@@ -296,9 +335,9 @@ class ActionListView : OverScrollListView {
      */
     private fun getCheckState(actionParamInfo: ActionParamInfo, defaultValue: Boolean): Boolean {
         if (actionParamInfo.valueFromShell != null) {
-            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell.toLowerCase() == "true"
+            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.toLowerCase() == "true"
         } else if (actionParamInfo.value != null) {
-            return actionParamInfo.value == "1" || actionParamInfo.value.toLowerCase() == "true"
+            return actionParamInfo.value == "1" || actionParamInfo.value!!.toLowerCase() == "true"
         }
         return defaultValue
     }
@@ -322,7 +361,7 @@ class ActionListView : OverScrollListView {
                 } else
                     actionParamInfo.value = item.toString()
             }
-            params[actionParamInfo.name] = actionParamInfo.value
+            params.set(actionParamInfo.name!!, actionParamInfo.value!!)
         }
         return params
     }

@@ -20,9 +20,9 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.config.PageClickHandler
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
+import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
