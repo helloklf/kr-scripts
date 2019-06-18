@@ -381,6 +381,21 @@
 - `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下
 
 > 当resource定义在action或switch内部，如果执行完support，发现设备并不受支持(输出为'0')，将不会再提取资源
+> resource也可以出现在`pagelist.xml`中，而非仅限于单个page的功能配置文件
+
+- 在3.0.3 之后，resource开始支持`dir`属性用于指定资源文件夹
+- 框架会帮你提取这个文件夹内的所有文件，例如：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <resource dir="file:///android_asset/resource/common" />
+    <page
+        title="原生专属"
+        desc="越接近AOSP越适用的选项"
+        config="file:///android_asset/config_xml/for_aosp.xml" />
+</pages>
+```
 
 
 ## 分组

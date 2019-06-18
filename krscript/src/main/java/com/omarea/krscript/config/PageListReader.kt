@@ -75,6 +75,11 @@ class PageListReader(private val context: Context) {
                                         if (file.startsWith(ASSETS_FILE)) {
                                             ExtractAssets(context).extractResource(file)
                                         }
+                                    } else if (parser.getAttributeName(i) == "dir") {
+                                        val file = parser.getAttributeValue(i).trim()
+                                        if (file.startsWith(ASSETS_FILE)) {
+                                            ExtractAssets(context).extractResources(file)
+                                        }
                                     }
                                 }
                             }
@@ -85,6 +90,11 @@ class PageListReader(private val context: Context) {
                                     val file = parser.getAttributeValue(i).trim()
                                     if (file.startsWith(ASSETS_FILE)) {
                                         ExtractAssets(context).extractResource(file)
+                                    }
+                                } else if (parser.getAttributeName(i) == "dir") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResources(file)
                                     }
                                 }
                             }
