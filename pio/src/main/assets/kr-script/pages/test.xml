@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <action>
+        <title>测试环境变量</title>
+        <desc>查看环境变量</desc>
+        <params>
+            <param name="param_one" desc="普通变量 param_one">
+                <option value="A">测试一下 A</option>
+                <option value="B">测试一下 B</option>
+            </param>
+            <param name="param_two" desc="普通变量 param_two">
+                <option value="Z">测试一下 Z</option>
+                <option value="X">测试一下 X</option>
+            </param>
+        </params>
+        <script>file:///android_asset/kr-script/test/var.sh</script>
+    </action>
+    <switch>
+        <title>测试环境变量</title>
+        <desc>查看环境变量</desc>
+        <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+    </switch>
+</items>

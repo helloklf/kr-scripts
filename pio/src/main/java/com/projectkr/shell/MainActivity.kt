@@ -38,6 +38,7 @@ import kotlin.collections.HashMap
 class MainActivity : AppCompatActivity() {
     val progressBarDialog = ProgressBarDialog(this)
     private var handler = Handler()
+    private var useHomePage = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,19 +77,25 @@ class MainActivity : AppCompatActivity() {
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         //getWindow().setNavigationBarColor(Color.WHITE);
 
-        main_tabhost.setup()
+        val krScriptConfig = KrScriptConfigLoader().initFramework(this.applicationContext);
 
+
+        main_tabhost.setup()
         val tabIconHelper = TabIconHelper(main_tabhost, this)
-        if (getString(R.string.framework_home_allow) == "true")
+        useHomePage = krScriptConfig.get(KrScriptConfigLoader.ALLOW_HOME_PAGE) == "1";
+        if (useHomePage) {
             tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_home)!!, R.id.main_tabhost_cpu)
+        } else {
+            main_tabhost_cpu.visibility = View.GONE
+        }
         main_tabhost.setOnTabChangedListener {
             tabIconHelper.updateHighlight()
         }
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val pages= PageListReader(this.applicationContext).readPageList(getString(R.string.framework_page_config));
-            val favorites = PageConfigReader(this.applicationContext).readConfigXml(getString(R.string.framework_favorites_config))
+            val pages= PageListReader(this.applicationContext).readPageList(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!);
+            val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
             handler.post {
                 progressBarDialog.hideDialog()
                 list_pages.setListData(pages, object : PageClickHandler {
@@ -99,9 +106,13 @@ class MainActivity : AppCompatActivity() {
 
                 if (list_favorites.count > 0){
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
+                } else {
+                    main_tabhost_2.visibility = View.GONE
                 }
                 if (list_pages.count > 0) {
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
+                } else {
+                    main_tabhost_3.visibility = View.GONE
                 }
             }
         }).start()
@@ -204,7 +215,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        if (main_tabhost.currentTab == 0) {
+        if (useHomePage && main_tabhost.currentTab == 0) {
             maxFreqs.clear()
             minFreqs.clear()
 

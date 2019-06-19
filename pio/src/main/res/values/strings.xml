@@ -32,11 +32,10 @@
     <string name="core_load">核心数</string>
     <string name="core_details">核心详细</string>
 
-    <!--重要内容，谨慎修改-->
-    <string name="framework_home_allow">true</string>
-    <string name="framework_page_config">pages.xml</string>
-    <string name="framework_favorites_config">favorites.xml</string>
     <string name="tab_home">首页</string>
     <string name="tab_favorites">收藏夹</string>
     <string name="tab_pages">全部</string>
+
+    <!--重要内容，谨慎修改-->
+    <string name="kr_script_config">kr-script.conf</string>
 </resources>

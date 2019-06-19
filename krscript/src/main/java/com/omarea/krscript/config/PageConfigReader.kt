@@ -141,7 +141,7 @@ class PageConfigReader(private var context: Context) {
             return actions
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-            Log.d("VTools ReadConfig Fail！", ex.message)
+            Log.d("VTools ReadConfig Fail！", "" + ex.message)
         }
 
         return null

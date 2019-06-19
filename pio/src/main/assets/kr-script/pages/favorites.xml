@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<items>
+    <switch>
+        <title>测试环境变量</title>
+        <desc>查看环境变量</desc>
+        <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+    </switch>
+</items>

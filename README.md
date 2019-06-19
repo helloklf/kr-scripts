@@ -111,14 +111,13 @@
 | 属性 | 作用 | 有效值 | 必需 | 示例 |
 | - | - | - | :-: | :- |
 | confirm | 是否在执行操作前让用户确认，默认`false` | `true`、`false` | 否 | `false` |
-| start | 执行脚本的起始位置(如果不设置，默认将工具箱数据目录作为起始目录) | 任意磁盘路径 | 否 | `/cache`  |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
 | interruptible | 是否允许中断执行，默认`true` | `true`、`false` | 否 | `false` |
 | auto-off | 脚本执行完后，是否执行完自动关闭日志输出界面，默认`false` | `true`、`false` | 否 | `false` |
 
 > 示例
 ```xml
-<action confirm="true" start="/cache">
+<action confirm="true">
     <!-- 此处省略 -->
 </action>
 ```
@@ -285,7 +284,6 @@
 | 属性 | 作用 | 有效值 | 必需 | 示例 |
 | - | - | - | :-: | :- |
 | confirm | 配置是否在运行脚本前弹出确认提示框，默认`false` | `true`、`false` | 否 | `false` |
-| start | 执行脚本的起始位置(相当于运行脚本前执行 `cd $start`，默认为工具箱的数据目录) | 任意路径 | 否 |`/cache` |
 | support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
 | interruptible | 是否允许中断执行，默认`true` | `true`、`false` | 否 | `false` |
 | auto-off | 脚本执行完后，是否执行完自动关闭日志输出界面，默认`false` | `true`、`false` | 否 | `false` |
@@ -377,7 +375,6 @@
 ```
 
 - 上面的例子中，是通过相对位置来使用resource的
-- 如果你定义了`action`或`switch`的`[start]`属性，那么你可能需要通过绝对路径来访问`resource`
 - `resource`默认会提取到`/data/data/com.projectkr.shell/files/private/`目录下
 
 > 当resource定义在action或switch内部，如果执行完support，发现设备并不受支持(输出为'0')，将不会再提取资源
