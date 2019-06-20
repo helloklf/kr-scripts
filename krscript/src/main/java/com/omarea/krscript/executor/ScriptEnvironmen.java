@@ -55,13 +55,15 @@ public class ScriptEnvironmen {
                 if (value == null) {
                     value = "";
                 }
-                envShell = envShell.replace("${" + key + "}", value);
+                envShell = envShell.replace("$({" + key + "})", value);
             }
+            String outputPathAbs = FileWrite.INSTANCE.getPrivateFilePath(context, fileName);
+            envShell = envShell.replace("$({EXECUTOR_PATH})", outputPathAbs);
 
 
-            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), executor, context);
+            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), fileName, context);
             if (inited) {
-                environmentPath = FileWrite.INSTANCE.getPrivateFilePath(context, executor);
+                environmentPath = outputPathAbs;
             }
 
             return inited;
@@ -203,6 +205,7 @@ public class ScriptEnvironmen {
             params.put("MAGISK_PATH", magiskPath);
         }
         params.put("START_DIR", getStartPath(context));
+        // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
         params.put("ANDROID_UID", dir.getParentFile().getParentFile().getName());
         params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);

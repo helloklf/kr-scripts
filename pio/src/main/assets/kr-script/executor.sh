@@ -9,16 +9,16 @@ script_path="$1"
 # 脚本执行目录
 execute_path="$2"
 
-# 全局变量
+# 全局变量 - 会由脚本引擎为其赋值
 # 框架并不需要这些变量，如果你不需要可以将其删除
 # 如有需要，你也可以增加一些自己的变量定义
 # 但这个文件每次运行脚本都会被执行，不建议写太复杂的过程
-export START_DIR=${START_DIR}
-export TEMP_DIR=${TEMP_DIR}
-export ANDROID_UID=${ANDROID_UID}
-export ANDROID_SDK=${ANDROID_SDK}
-export SDCARD_PATH=${SDCARD_PATH}
-
+export EXECUTOR_PATH=$({EXECUTOR_PATH})
+export START_DIR=$({START_DIR})
+export TEMP_DIR=$({TEMP_DIR})
+export ANDROID_UID=$({ANDROID_UID})
+export ANDROID_SDK=$({ANDROID_SDK})
+export SDCARD_PATH=$({SDCARD_PATH})
 
 # 判断是否有指定执行目录
 if [[ "$execute_path" != "" ]] && [[ -d "$execute_path" ]]

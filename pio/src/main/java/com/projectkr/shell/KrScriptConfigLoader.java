@@ -9,8 +9,10 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class KrScriptConfigLoader {
-    public final static String EXECUTOR_CORE = "EXECUTOR_CORE";
-    public final static String PAGE_LIST_CONFIG = "PAGE_LIST_CONFIG";
+    private static final String ASSETS_FILE = "file:///android_asset/";
+
+    public final static String EXECUTOR_CORE = "executor_core";
+    public final static String PAGE_LIST_CONFIG = "page_list_config";
     public final static String FAVORITE_CONFIG = "favorite_config";
     public final static String ALLOW_HOME_PAGE = "allow_home_page";
 
@@ -27,7 +29,11 @@ public class KrScriptConfigLoader {
         configInfo.put(ALLOW_HOME_PAGE, allowHomePage);
 
         try {
-            InputStream inputStream = context.getAssets().open(context.getString(R.string.kr_script_config));
+            String fileName = context.getString(R.string.kr_script_config);
+            if (fileName.startsWith(ASSETS_FILE)) {
+                fileName = fileName.substring(ASSETS_FILE.length());
+            }
+            InputStream inputStream = context.getAssets().open(fileName);
             byte[] bytes = new byte[inputStream.available()];
             inputStream.read(bytes);
             String[] rows = new String(bytes, Charset.defaultCharset()).split("\n");

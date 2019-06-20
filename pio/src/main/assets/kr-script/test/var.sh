@@ -13,6 +13,7 @@ sleep 1
 echo '框架定义'
 echo ''
 echo "START_DIR=$START_DIR"
+echo "EXECUTOR_PATH=$EXECUTOR_PATH"
 echo "TEMP_DIR=$TEMP_DIR"
 echo "ANDROID_UID=$ANDROID_UID"
 echo "ANDROID_SDK=$ANDROID_SDK"

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pages>
     <resource dir="file:///android_asset/kr-script/common" />
+    <resource dir="file:///android_asset/kr-script/resource_test.txt" />
 
     <page title="测试页面" desc="脚本框架测试页面" config="kr-script/pages/test.xml" />
 </pages>
