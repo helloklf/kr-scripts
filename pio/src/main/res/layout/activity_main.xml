@@ -28,15 +28,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/color_list_background">
+                android:background="@color/window_bg_light">
 
                 <FrameLayout
                     android:id="@+id/main_tabhost_cpu"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                    <include
-                        layout="@layout/home_monitor"
-                        android:layout_width="match_parent" android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -50,10 +47,10 @@
                         android:id="@+id/list_favorites"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:divider="@color/color_list_background"
+                        android:divider="@color/window_bg_light"
                         android:dividerHeight="1dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp" />
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -68,10 +65,10 @@
                         android:id="@+id/list_pages"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:divider="@color/color_list_background"
+                        android:divider="@color/window_bg_light"
                         android:dividerHeight="1dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp" />
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp" />
                 </FrameLayout>
             </FrameLayout>
 

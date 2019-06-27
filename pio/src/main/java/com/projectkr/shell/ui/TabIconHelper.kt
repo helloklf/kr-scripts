@@ -16,13 +16,13 @@ class TabIconHelper(private var tabHost: TabHost, private var activity: Activity
         return newTabSpec("", drawable, content)
     }
 
-    fun newTabSpec(text:String, drawable: Drawable, content: Int): String {
+    fun newTabSpec(text: String, drawable: Drawable, content: Int): String {
         val layout = View.inflate(activity.baseContext, R.layout.list_item_tab, null)
         val imageView = layout.findViewById<ImageView>(R.id.ItemIcon)
         val textView = layout.findViewById<TextView>(R.id.ItemTitle)
         val tabId = "tab_" + views.size
 
-        textView.setText(text)
+        textView.text = text
 
         // val tintIcon = DrawableCompat.wrap(view.drawable)
         // val csl = getResources().getColorStateList(R.color.colorAccent)

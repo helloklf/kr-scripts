@@ -1,6 +1,5 @@
 package com.omarea.shell.units
 
-import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
@@ -261,7 +260,7 @@ class BatteryUnit {
     /**
      * 获取电池温度
      */
-    public fun getBatteryTemperature(): BatteryStatus {
+    fun getBatteryTemperature(): BatteryStatus {
         val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")
 

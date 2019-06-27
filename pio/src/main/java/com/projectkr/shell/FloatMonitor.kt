@@ -14,10 +14,9 @@ import android.view.WindowManager.LayoutParams
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell.units.BatteryUnit
+import com.projectkr.shell.R
 import com.projectkr.shell.ui.FloatMonitorBatteryView
 import com.projectkr.shell.ui.FloatMonitorChartView
-import com.projectkr.shell.R
-import com.projectkr.shell.ui.CpuChartView
 import com.projectkr.shell.utils.CpuFrequencyUtils
 import com.projectkr.shell.utils.CpuLoadUtils
 import com.projectkr.shell.utils.GpuUtils
@@ -72,7 +71,7 @@ class FloatMonitor(context: Context) {
 
         val navHeight = 0
         if (navHeight > 0) {
-            val display = mWindowManager!!.getDefaultDisplay()
+            val display = mWindowManager!!.defaultDisplay
             val p = Point()
             display.getRealSize(p)
             params.y = -navHeight
@@ -102,10 +101,10 @@ class FloatMonitor(context: Context) {
             @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 if (event != null) {
-                    when(event.action) {
+                    when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
-                            touchStartX = event.getX()
-                            touchStartY = event.getY()
+                            touchStartX = event.x
+                            touchStartY = event.y
                             touchStartRawX = event.rawX
                             touchStartRawY = event.rawY
                             isTouchDown = true
@@ -160,7 +159,7 @@ class FloatMonitor(context: Context) {
     }
 
     private var view: View? = null
-    private var cpuChart: CpuChartView? = null
+    private var cpuChart: FloatMonitorChartView? = null
     private var cpuFreqText: TextView? = null
     private var gpuChart: FloatMonitorChartView? = null
     private var gpuPanel: View? = null
@@ -190,7 +189,7 @@ class FloatMonitor(context: Context) {
 
         var cpuLoad = cpuLoadUtils.cpuLoadSum
         if (cpuLoad < 0) {
-            cpuLoad = 0.toDouble();
+            cpuLoad = 0.toDouble()
         }
 
         val batteryStatus = batteryUnit.getBatteryTemperature()
@@ -227,8 +226,8 @@ class FloatMonitor(context: Context) {
             temperatureChart!!.setData(45f, 45f - value)
             */
             temperatureChart!!.setData(100f, 100f - batteryStatus.level)
-            temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
-            batteryLevelText!!.setText(batteryStatus.level.toString() + "%")
+            temperatureText!!.text = batteryStatus.temperature.toString() + "°C"
+            batteryLevelText!!.text = batteryStatus.level.toString() + "%"
 
             if (batteryStatus.temperature >= 54) {
                 temperatureText!!.setTextColor(Color.rgb(255, 15, 0))
@@ -309,7 +308,7 @@ class FloatMonitor(context: Context) {
 
     companion object {
         private var mWindowManager: WindowManager? = null
-        public var isShown: Boolean? = false
+        var isShown: Boolean? = false
         @SuppressLint("StaticFieldLeak")
         private var mView: View? = null
     }

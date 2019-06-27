@@ -20,4 +20,22 @@
         <desc>查看环境变量</desc>
         <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
     </switch>
+
+    <group title="界面测试">
+        <switch>
+            <title>测试环境变量</title>
+            <desc>查看环境变量</desc>
+            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+        </switch>
+        <switch>
+            <title>测试环境变量</title>
+            <desc>查看环境变量</desc>
+            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+        </switch>
+        <switch>
+            <title>测试环境变量</title>
+            <desc>查看环境变量</desc>
+            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+        </switch>
+    </group>
 </items>

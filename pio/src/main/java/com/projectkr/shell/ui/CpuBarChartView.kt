@@ -13,7 +13,7 @@ class CpuChartBarView : View {
     private var mainPaint: Paint? = null
     private var mHeight: Float = 0f
     private var mWidth: Float = 0f
-    private var loadHisotry = LinkedBlockingQueue<Int>();
+    private var loadHisotry = LinkedBlockingQueue<Int>()
     private var strokeWidth = 0f
 
     constructor(context: Context) : super(context) {
@@ -60,22 +60,14 @@ class CpuChartBarView : View {
             mainPaint!!.style = Paint.Style.FILL
             strokeWidth = this.width.toFloat() / 5
             mainPaint!!.strokeWidth = 0f
+            mainPaint!!.color = resources.getColor(R.color.colorAccent)
         }
 
         var index = 0
         val barWidth = strokeWidth
         for (ratio in loadHisotry) {
-            if (ratio > 85) {
-                mainPaint!!.color = resources.getColor(R.color.color_load_veryhight)
-            } else if (ratio > 65) {
-                mainPaint!!.color = resources.getColor(R.color.color_load_hight)
-            } else if (ratio > 20) {
-                mainPaint!!.color = resources.getColor(R.color.color_load_mid)
-            } else if (ratio <= 2) {
-                mainPaint!!.color = 0x22888888
-            } else {
-                mainPaint!!.color = resources.getColor(R.color.color_load_low)
-            }
+            mainPaint!!.alpha = (ratio * 255 / 100);
+
             var top = 0f
             if (ratio <= 2) {
                 top = mHeight - 10f

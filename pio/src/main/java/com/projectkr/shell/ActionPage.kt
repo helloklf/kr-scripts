@@ -1,24 +1,37 @@
 package com.projectkr.shell
 
+import android.app.AlertDialog
+import android.content.ComponentName
+import android.content.Intent
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.SpannableString
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.model.*
+import com.omarea.krscript.shortcut.ActionShortcutManager
 import kotlinx.android.synthetic.main.activity_action_page.*
 
 class ActionPage : AppCompatActivity() {
-    val progressBarDialog = ProgressBarDialog(this)
+    private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
     private var handler = Handler()
-    private var pageConfig:String = ""
+    private var pageConfig: String = ""
+    private var autoRun: String = ""
+    private var pageTitle = ""
+    private var running = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,12 +41,11 @@ class ActionPage : AppCompatActivity() {
         setTitle(R.string.app_name)
 
         // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({
-            _ ->
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener({ _ ->
             finish()
-        });
+        })
 
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -55,10 +67,14 @@ class ActionPage : AppCompatActivity() {
             val extras = intent.extras
             if (extras != null) {
                 if (extras.containsKey("title")) {
-                    setTitle(extras.getString("title"))
+                    pageTitle = extras.getString("title")!!
+                    title = pageTitle
                 }
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
+                }
+                if (extras.containsKey("autoRunItemId")) {
+                    autoRun = extras.getString("autoRunItemId")!!
                 }
                 if (pageConfig.isEmpty()) {
                     setResult(2)
@@ -66,6 +82,193 @@ class ActionPage : AppCompatActivity() {
                 }
             }
         }
+
+        action_page_tabhost.setup()
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("a").setContent(R.id.main_list).setIndicator(""))
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("b").setContent(R.id.action_params).setIndicator(""))
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("c").setContent(R.id.action_log).setIndicator(""))
+        action_page_tabhost.setOnTabChangedListener {
+            if (action_page_tabhost.currentTab == 0) {
+                title = pageTitle
+            }
+        }
+    }
+
+    /**
+     *  “添加收藏”功能实现
+     */
+    private var addToFavorites = object : ActionLongClickHandler {
+        fun addToFavorites(configItemBase: ConfigItemBase) {
+            val context = this@ActionPage
+
+            if (configItemBase.id.isEmpty()) {
+                DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.shortcut_create_fail)
+                        .setMessage(R.string.ushortcut_nsupported)
+                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                        })
+                )
+            } else {
+                DialogHelper.animDialog(AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.shortcut_create))
+                        .setMessage(String.format(getString(R.string.shortcut_create_desc), configItemBase.title))
+                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                            val intent = Intent()
+                            intent.component = ComponentName(context.applicationContext, context.javaClass.name)
+                            intent.putExtra("config", pageConfig)
+                            intent.putExtra("title", "" + title)
+                            intent.putExtra("autoRunItemId", configItemBase.id)
+                            val result = ActionShortcutManager(context)
+                                    .addShortcut(intent, getDrawable(R.drawable.shortcut_logo)!!, configItemBase)
+                            if (!result) {
+                                Toast.makeText(context, R.string.shortcut_create_fail, Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, getString(R.string.shortcut_create_success), Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                        }))
+            }
+        }
+
+        override fun addToFavorites(switchInfo: SwitchInfo) {
+            addToFavorites(switchInfo as ConfigItemBase)
+        }
+
+        override fun addToFavorites(actionInfo: ActionInfo) {
+            addToFavorites(actionInfo as ConfigItemBase)
+        }
+    }
+
+    private var actionShortClickHandler = object : ActionShortClickHandler {
+        override fun onParamsView(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
+            if (actionInfo.params!!.size > 3) {
+                action_params_editor.removeAllViews()
+                action_params_editor.addView(view)
+                action_page_tabhost.currentTab = 1
+                action_cancel.setOnClickListener {
+                    action_page_tabhost.currentTab = 0
+                    onCancel.run()
+                }
+                btn_confirm.setOnClickListener {
+                    action_params_editor.removeAllViews()
+                    onComplete.run()
+                }
+                title = actionInfo.title
+                return true
+            }
+            return false
+        }
+
+        override fun onExecute(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
+            var forceStopRunnable: Runnable? = null
+
+            btn_hide.setOnClickListener {
+                action_page_tabhost.currentTab = 0
+            }
+            btn_exit.setOnClickListener {
+                action_page_tabhost.currentTab = 0
+                if (running && forceStopRunnable != null) {
+                    forceStopRunnable!!.run()
+                }
+            }
+            if (configItem.interruptible) {
+                btn_hide.visibility = View.VISIBLE
+                btn_exit.visibility = View.VISIBLE
+            } else {
+                btn_hide.visibility = View.GONE
+                btn_exit.visibility = View.GONE
+            }
+
+            action_page_tabhost.currentTab = 2
+            title = configItem.title
+            action_progress.visibility = View.VISIBLE
+            return MyShellHandler(object : IActionEventHandler {
+                override fun onExit() {
+                    running = false
+
+                    onExit.run()
+                    btn_hide.visibility = View.GONE
+                    btn_exit.visibility = View.VISIBLE
+                    action_progress.visibility = View.GONE
+
+                    if (configItem.autoOff) {
+                        action_page_tabhost.currentTab = 0
+                    }
+                }
+
+                override fun onStart(forceStop: Runnable?) {
+                    running = true
+
+                    if (configItem.interruptible && forceStop != null) {
+                        btn_exit.visibility = View.VISIBLE
+                    } else {
+                        btn_exit.visibility = View.GONE
+                    }
+                    forceStopRunnable = forceStop
+                }
+
+            }, shell_output, action_progress)
+        }
+    }
+
+    @FunctionalInterface
+    private interface IActionEventHandler {
+        fun onStart(forceStop: Runnable?)
+        fun onExit()
+    }
+
+    private class MyShellHandler(private var actionEventHandler: IActionEventHandler, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase() {
+        override fun onStart(forceStop: Runnable?) {
+            actionEventHandler.onStart(forceStop)
+        }
+
+        override fun onProgress(current: Int, total: Int) {
+            if (current == -1) {
+                this.shellProgress.visibility = View.VISIBLE
+                this.shellProgress.isIndeterminate = true
+            } else if (current == total) {
+                this.shellProgress.visibility = View.GONE
+            } else {
+                this.shellProgress.visibility = View.VISIBLE
+                this.shellProgress.isIndeterminate = false
+                this.shellProgress.max = total
+                this.shellProgress.progress = current
+            }
+        }
+
+        override fun cleanUp() {
+        }
+
+        override fun onStart(msg: Any?) {
+            this.logView.text = ""
+            updateLog(msg, Color.GRAY)
+        }
+
+        override fun onExit(msg: Any?) {
+            updateLog("\n\n脚本运行结束\n\n", Color.BLUE)
+            actionEventHandler.onExit()
+        }
+
+        override fun updateLog(msg: SpannableString?) {
+            if (msg != null) {
+                this.logView.post({
+                    logView.append(msg)
+                    (logView.parent as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
+                })
+            }
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && action_page_tabhost.currentTab != 0) {
+            if (action_page_tabhost.currentTab == 1) {
+                action_page_tabhost.currentTab = 0
+            } else if (action_page_tabhost.currentTab == 2 && !running) {
+                action_page_tabhost.currentTab = 0
+            }
+            return true
+        }
+        return super.onKeyDown(keyCode, event)
     }
 
     override fun onResume() {
@@ -77,7 +280,19 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        main_list.setListData(items)
+                        main_list.setListData(
+                                items,
+                                actionShortClickHandler,
+                                addToFavorites
+                        )
+                        if (autoRun.isNotEmpty()) {
+                            val onCompleted = Runnable {
+                                // finish()
+                            }
+                            if (!main_list.triggerAction(autoRun, onCompleted)) {
+                                Toast.makeText(this, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
                     progressBarDialog.hideDialog()
                 }

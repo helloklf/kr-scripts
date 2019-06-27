@@ -18,29 +18,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/appliction_content" />
+        android:text="@string/appliction_desc" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/author_name"
+        android:layout_marginTop="24dp"
         android:textAlignment="center"
         android:textColor="#332200"
+        android:text="@string/appliction_name"
         android:textSize="36dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="12dp"
-        android:text="@string/script_source" />
+        android:layout_marginTop="11dp"
+        android:text="@string/appliction_author"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
-        android:text="@string/version_name"
+        android:textAlignment="textEnd"
+        android:textColor="#aaaaaa"
+        android:text="@string/author_name"
+        android:textSize="11dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/engine_version_name"
         android:textAlignment="textEnd"
         android:textColor="#aaaaaa"
         android:textSize="11dp" />

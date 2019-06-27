@@ -40,7 +40,7 @@ class FloatMonitorBatteryView : View {
     private var mHeight: Int = 0
     private var mWidth: Int = 0
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
@@ -188,7 +188,7 @@ class FloatMonitorBatteryView : View {
         cyclePaint!!.setPathEffect(dashPathEffect);
         */
 
-        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
+        cyclePaint!!.strokeCap = Paint.Cap.ROUND
         if (ratio < 1 && (ratioState <= 2)) {
             return
         } else if (ratioState >= 98) {

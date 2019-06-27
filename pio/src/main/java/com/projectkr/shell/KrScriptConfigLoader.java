@@ -9,13 +9,11 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class KrScriptConfigLoader {
-    private static final String ASSETS_FILE = "file:///android_asset/";
-
     public final static String EXECUTOR_CORE = "executor_core";
     public final static String PAGE_LIST_CONFIG = "page_list_config";
     public final static String FAVORITE_CONFIG = "favorite_config";
     public final static String ALLOW_HOME_PAGE = "allow_home_page";
-
+    private static final String ASSETS_FILE = "file:///android_asset/";
     private final String executorCore = "file:///android_asset/kr-script/executor.sh";
     private final String pageList = "file:///android_asset/kr-script/pages/page_list.xml";
     private final String favoriteConfig = "file:///android_asset/kr-script/pages/favorites.xml";
@@ -43,9 +41,7 @@ public class KrScriptConfigLoader {
                     int separator = rowText.indexOf("=");
                     String key = rowText.substring(0, separator);
                     String value = rowText.substring(separator + 2, rowText.length() - 1);
-                    if (configInfo.containsKey(key)) {
-                        configInfo.remove(key);
-                    }
+                    configInfo.remove(key);
                     configInfo.put(key, value);
                 }
             }

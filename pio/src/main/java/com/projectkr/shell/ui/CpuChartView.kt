@@ -38,7 +38,7 @@ class CpuChartView : View {
     private var mHeight: Int = 0
     private var mWidth: Int = 0
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
@@ -131,22 +131,16 @@ class CpuChartView : View {
      */
     private fun drawCycle(canvas: Canvas) {
         cyclePaint!!.color = 0x22888888
-        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
+        cyclePaint!!.strokeCap = Paint.Cap.ROUND
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*
         if (ratio == 0) {
             return
         }
         */
-        if (ratioState > 85) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 65) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
-        } else {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
-        }
+        cyclePaint!!.color = resources.getColor(R.color.colorAccent)
+        cyclePaint!!.alpha = (ratio * 255 / 100);
+
         if (ratio < 1 && (ratioState <= 2)) {
             return
         } else if (ratioState >= 98) {

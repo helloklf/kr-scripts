@@ -1,4 +1,4 @@
-package com.omarea.ui
+package com.projectkr.shell.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -8,7 +8,6 @@ import android.widget.BaseAdapter
 import android.widget.TextView
 import com.projectkr.shell.CpuCoreInfo
 import com.projectkr.shell.R
-import com.projectkr.shell.ui.CpuChartView
 import java.util.*
 
 class AdapterCpuCores(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
@@ -39,20 +38,20 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
     }
 
     fun setData(list: ArrayList<CpuCoreInfo>): AdapterCpuCores {
-        this.list!!.clear();
+        this.list!!.clear()
         this.list.addAll(list)
         notifyDataSetChanged()
-        return this;
+        return this
     }
 
     @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.cpu_core_item, null)
+            convertView = View.inflate(context, R.layout.list_item_cpu_core, null)
         }
         val coreInfo = getItem(position)
-        val cpuChartView = convertView!!.findViewById<CpuChartView>(R.id.core_cpu_loading_chart)
+        val cpuChartView = convertView!!.findViewById<CpuChartBarView>(R.id.core_cpu_loading_chart)
         cpuChartView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
         cpuChartView.invalidate()
 
@@ -62,7 +61,7 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         val currentFreq = convertView.findViewById<TextView>(R.id.cpu_core_current_freq)
         val freqMhz = subFreqStr(coreInfo.currentFreq)
         if (freqMhz == "0") {
-            currentFreq.text = "离线"
+            currentFreq.text = "offline"
         } else {
             currentFreq.text = freqMhz + " Mhz"
         }

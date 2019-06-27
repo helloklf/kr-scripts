@@ -21,7 +21,7 @@
             <FrameLayout
                 android:layout_width="35dp"
                 android:layout_height="35dp">
-                <com.projectkr.shell.ui.CpuChartView
+                <com.projectkr.shell.ui.FloatMonitorChartView
                     android:id="@+id/fw_cpu_load"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
