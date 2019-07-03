@@ -15,6 +15,15 @@
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
+    <action>
+        <title>测试环境变量</title>
+        <desc>查看环境变量</desc>
+        <params>
+            <param name="param_one" desc="普通变量 param_one"></param>
+            <param name="param_two" desc="普通变量 param_two"></param>
+        </params>
+        <script>file:///android_asset/kr-script/test/var.sh</script>
+    </action>
     <switch>
         <title>测试环境变量</title>
         <desc>查看环境变量</desc>
