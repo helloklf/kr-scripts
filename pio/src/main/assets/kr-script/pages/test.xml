@@ -20,7 +20,7 @@
         <desc>查看环境变量</desc>
         <params>
             <param name="param_one" desc="普通变量 param_one"></param>
-            <param name="param_two" desc="普通变量 param_two"></param>
+            <param name="param_two" desc="普通变量 param_two" readonly="readonly"></param>
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
@@ -45,6 +45,17 @@
             <title>测试环境变量</title>
             <desc>查看环境变量</desc>
             <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+        </switch>
+    </group>
+
+
+    <group title="无用的测试">
+        <switch auto-off="true">
+            <title>测试</title>
+            <desc>测试</desc>
+            <setstate>
+                echo '测试运行'
+            </setstate>
         </switch>
     </group>
 </items>
