@@ -20,6 +20,6 @@
             <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" />
             <param name="param_bool" title="选框" type="bool" />
         </params>
-        <script />
+        <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
 </items>

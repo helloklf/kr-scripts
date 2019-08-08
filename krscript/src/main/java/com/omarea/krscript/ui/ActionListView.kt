@@ -153,8 +153,7 @@ class ActionListView : OverScrollListView {
             val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
                 val layoutInflater = LayoutInflater.from(context)
-                val view = layoutInflater.inflate(R.layout.dialog_params, null)
-                val linearLayout = view.findViewById<LinearLayout>(R.id.params_list)
+                val linearLayout = layoutInflater.inflate(R.layout.kr_params_list, null) as LinearLayout
 
                 val handler = Handler()
                 progressBarDialog.showDialog(context.getString(R.string.onloading))
@@ -169,7 +168,7 @@ class ActionListView : OverScrollListView {
                         val render = LayoutRender(linearLayout)
                         render.renderList(actionParamInfos)
                         if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,
-                                        view,
+                                        linearLayout,
                                         Runnable { },
                                         Runnable {
                                             try {
@@ -180,17 +179,24 @@ class ActionListView : OverScrollListView {
                                             }
                                         })) {
                         } else {
-                            DialogHelper.animDialog(AlertDialog.Builder(context)
+                            val dialogView = layoutInflater.inflate(R.layout.dialog_params, null)
+                            dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
+                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
                                     .setTitle(action.title)
-                                    .setView(view)
-                                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                        try {
-                                            val params = render.readParamsValue(actionParamInfos)
-                                            actionExecute(action, script, onExit, params)
-                                        } catch (ex: java.lang.Exception) {
-                                            Toast.makeText(context, "" + ex.message, Toast.LENGTH_LONG).show()
-                                        }
-                                    })
+                                    .setView(dialogView))
+
+                            dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                                dialog!!.dismiss()
+                            }
+                            dialogView.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
+                                try {
+                                    val params = render.readParamsValue(actionParamInfos)
+                                    dialog!!.dismiss()
+                                    actionExecute(action, script, onExit, params)
+                                } catch (ex: java.lang.Exception) {
+                                    Toast.makeText(context, "" + ex.message, Toast.LENGTH_LONG).show()
+                                }
+                            }
                         }
                     }
                 }).start()
