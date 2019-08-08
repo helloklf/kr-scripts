@@ -170,12 +170,18 @@
 | value | 初始值 | 否 | ` ` |
 | value-sh | 使用脚本通过echo输出设置参数初始值 | 否 | ` ` |
 | options-sh | 使用脚本通过echo输出来生成 option | 否 | ` ` |
-| desc | 参数的描述（标题） | 否 | `请选择` |
-| type | 输入类型，默认为普通文本，可配置为`int`(数字) `bool`(勾选框) | 否 | `int` |
+| title | 参数的标题 | 否 | `任意提示文字` |
+| desc | 参数的描述 | 否 | `任意提示文字` |
+| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `bool`(勾选框) `seekbar`(滑块) | 否 | `int` |
 | readonly | 设为readonly表示只读，阻止输入 | 否 | `readonly` | 
-| maxlength | 输入长度限制（位） | 否 | `10` |
+| maxlength | 输入长度限制（位）适用于文本输入 | 否 | `10` |
+| min | 输入的最小值，适用于数字输入和seekbar | 否 | `10` |
+| max | 输入的最大值，适用于数字输入和seekbar | 否 | `100` |
+| required | 是否是不可为空的参数，可配置为`true`、`false` | `100` |
 
 > 请不要在`value-sh`、`options-sh` 属性里写大段的shell脚本，推荐方式请参考后文**脚本使用**部分
+
+> param的type设为`seekbar`时，必需设置`min`和`max`属性！！
 
 - 基本示例：
 
