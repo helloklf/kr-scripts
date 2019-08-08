@@ -19,9 +19,9 @@ class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var co
 
         try {
             if (actionParamInfo.valueFromShell != null)
-                seekbar.progress = (actionParamInfo.valueFromShell)!!.toInt()
+                seekbar.progress = (actionParamInfo.valueFromShell)!!.toInt() - actionParamInfo.min
             else if (actionParamInfo.value != null)
-                seekbar.progress = (actionParamInfo.value)!!.toInt()
+                seekbar.progress = (actionParamInfo.value)!!.toInt() - actionParamInfo.min
         } catch (ex: Exception) {
         }
 
