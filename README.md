@@ -177,7 +177,7 @@
 | maxlength | 输入长度限制（位）适用于文本输入 | 否 | `10` |
 | min | 输入的最小值，适用于数字输入和seekbar | 否 | `10` |
 | max | 输入的最大值，适用于数字输入和seekbar | 否 | `100` |
-| required | 是否是不可为空的参数，可配置为`true`、`false` | `100` |
+| required | 是否为必填参数，可配置为`true`、`false` | 否 | `true` |
 
 > 请不要在`value-sh`、`options-sh` 属性里写大段的shell脚本，推荐方式请参考后文**脚本使用**部分
 
