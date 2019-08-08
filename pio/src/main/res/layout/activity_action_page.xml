@@ -30,6 +30,7 @@
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:background="@color/window_bg_light"
                 android:layout_weight="1">
 
                 <com.omarea.krscript.ui.ActionListView
@@ -37,7 +38,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:divider="@android:color/transparent"
-                    android:background="@color/window_bg_light"
                     android:dividerHeight="1dp"
                     android:listSelector="@android:color/transparent"
                     android:paddingTop="@dimen/activity_vertical_margin"
@@ -52,21 +52,17 @@
 
                     <FrameLayout
                         android:id="@+id/action_params_editor"
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:padding="0dp" />
 
                     <LinearLayout
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="end"
-                        android:orientation="horizontal"
-                        android:paddingTop="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingBottom="0dp">
+                        android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/action_cancel"
@@ -122,27 +118,41 @@
                         android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
+                        android:layout_gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingTop="0dp"
                         android:paddingRight="0dp"
                         android:paddingBottom="0dp">
-
                         <Button
-                            android:id="@+id/btn_hide"
+                            android:id="@+id/btn_copy"
                             style="@style/Widget.AppCompat.ActionButton"
-                            android:layout_width="70dp"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_hide" />
+                            android:text="@string/btn_copy" />
 
-                        <Button
-                            android:id="@+id/btn_exit"
-                            style="@style/Widget.AppCompat.ActionButton"
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/btn_exit"
-                            android:textColor="@android:color/holo_red_light"
-                            android:visibility="gone" />
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_gravity="end"
+                            android:gravity="end"
+                            android:layout_height="match_parent">
+                            <Button
+                                android:id="@+id/btn_hide"
+                                style="@style/Widget.AppCompat.ActionButton"
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/btn_hide" />
+
+                            <Button
+                                android:id="@+id/btn_exit"
+                                style="@style/Widget.AppCompat.ActionButton"
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/btn_exit"
+                                android:textColor="@android:color/holo_red_light"
+                                android:visibility="gone" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

@@ -1,8 +1,7 @@
 package com.projectkr.shell
 
 import android.app.AlertDialog
-import android.content.ComponentName
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +22,7 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 import kotlinx.android.synthetic.main.activity_action_page.*
+
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -150,7 +150,7 @@ class ActionPage : AppCompatActivity() {
                     onCancel.run()
                 }
                 btn_confirm.setOnClickListener {
-                    action_params_editor.removeAllViews()
+                    // action_params_editor.removeAllViews()
                     onComplete.run()
                 }
                 title = actionInfo.title
@@ -169,6 +169,17 @@ class ActionPage : AppCompatActivity() {
                 action_page_tabhost.currentTab = 0
                 if (running && forceStopRunnable != null) {
                     forceStopRunnable!!.run()
+                }
+            }
+            btn_copy.setOnClickListener {
+                try {
+                    val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val myClip: ClipData
+                    myClip = ClipData.newPlainText("text", shell_output.text.toString())
+                    myClipboard.setPrimaryClip(myClip)
+                    Toast.makeText(this@ActionPage, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+                } catch (ex: Exception) {
+                    Toast.makeText(this@ActionPage, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
                 }
             }
             if (configItem.interruptible) {

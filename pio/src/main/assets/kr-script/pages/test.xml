@@ -12,50 +12,27 @@
                 <option value="Z">测试一下 Z</option>
                 <option value="X">测试一下 X</option>
             </param>
+            <param name="param_int" desc="数字" max="100" min="10" required="required" type="int" />
+            <param name="param_seekbar" desc="数字（滑块）" max="100" min="10" type="seekbar" />
+            <param name="param_bool" desc="选框" type="bool" />
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
     <action>
-        <title>测试环境变量</title>
-        <desc>查看环境变量</desc>
+        <title>新界面测试</title>
         <params>
-            <param name="param_one" desc="普通变量 param_one"></param>
-            <param name="param_two" desc="普通变量 param_two" readonly="readonly"></param>
+            <param name="param_one" title="普通变量 param_one">
+                <option value="A">测试一下 A</option>
+                <option value="B">测试一下 B</option>
+            </param>
+            <param name="param_two" title="普通变量 param_two">
+                <option value="Z">测试一下 Z</option>
+                <option value="X">测试一下 X</option>
+            </param>
+            <param name="param_int" title="数字" desc="只能输入数字，数值在10~100以内，不能为空" max="100" min="10" required="required" type="int" />
+            <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" />
+            <param name="param_bool" title="选框" type="bool" />
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
-    <switch>
-        <title>测试环境变量</title>
-        <desc>查看环境变量</desc>
-        <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
-    </switch>
-
-    <group title="界面测试">
-        <switch>
-            <title>测试环境变量</title>
-            <desc>查看环境变量</desc>
-            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
-        </switch>
-        <switch>
-            <title>测试环境变量</title>
-            <desc>查看环境变量</desc>
-            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
-        </switch>
-        <switch>
-            <title>测试环境变量</title>
-            <desc>查看环境变量</desc>
-            <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
-        </switch>
-    </group>
-
-
-    <group title="无用的测试">
-        <switch auto-off="true">
-            <title>测试</title>
-            <desc>测试</desc>
-            <setstate>
-                echo '测试运行'
-            </setstate>
-        </switch>
-    </group>
 </items>
