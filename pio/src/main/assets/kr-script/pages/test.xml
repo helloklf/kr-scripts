@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <action>
+    <switch>
         <title>测试环境变量</title>
         <desc>查看环境变量</desc>
-        <params>
-            <param name="param_one" desc="普通变量 param_one">
-                <option value="A">测试一下 A</option>
-                <option value="B">测试一下 B</option>
-            </param>
-            <param name="param_two" desc="普通变量 param_two">
-                <option value="Z">测试一下 Z</option>
-                <option value="X">测试一下 X</option>
-            </param>
-            <param name="param_int" desc="数字" max="100" min="10" required="required" type="int" />
-            <param name="param_seekbar" desc="数字（滑块）" max="100" min="10" type="seekbar" />
-            <param name="param_bool" desc="选框" type="bool" />
-        </params>
-        <script>file:///android_asset/kr-script/test/var.sh</script>
-    </action>
+        <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+    </switch>
     <action>
         <title>新界面测试</title>
         <params>
@@ -33,6 +20,6 @@
             <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" />
             <param name="param_bool" title="选框" type="bool" />
         </params>
-        <script>file:///android_asset/kr-script/test/var.sh</script>
+        <script />
     </action>
 </items>
