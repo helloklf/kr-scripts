@@ -77,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_home)!!, R.id.main_tabhost_cpu)
         } else {
             main_tabhost_cpu.visibility = View.GONE
+
         }
         main_tabhost.setOnTabChangedListener {
             tabIconHelper.updateHighlight()

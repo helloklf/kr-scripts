@@ -3,13 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <TextView
+        android:paddingTop="15dp"
+        android:paddingBottom="6dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:id="@+id/kr_param_dialog_title"
+        style="@style/textTitle"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
     <ScrollView
         android:id="@+id/kr_param_dialog"
         android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </ScrollView>
+        android:layout_height="0dp" />
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

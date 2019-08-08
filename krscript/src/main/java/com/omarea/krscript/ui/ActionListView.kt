@@ -181,9 +181,8 @@ class ActionListView : OverScrollListView {
                         } else {
                             val dialogView = layoutInflater.inflate(R.layout.dialog_params, null)
                             dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
-                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
-                                    .setTitle(action.title)
-                                    .setView(dialogView))
+                            dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
+                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(context).setView(dialogView))
 
                             dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
                                 dialog!!.dismiss()
