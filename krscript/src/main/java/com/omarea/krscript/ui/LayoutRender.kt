@@ -46,11 +46,10 @@ class LayoutRender {
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool") {
-                val checkBox = CheckBox(context)
-                checkBox.hint = if (actionParamInfo.title != null) actionParamInfo.title else actionParamInfo.name
-                checkBox.isChecked = getCheckState(actionParamInfo, false)
-                checkBox.isEnabled = !actionParamInfo.readonly
-                addToLayout(checkBox, actionParamInfo)
+                val switch = Switch(context)
+                switch.isChecked = getCheckState(actionParamInfo, false)
+                switch.isEnabled = !actionParamInfo.readonly
+                addToLayout(switch, actionParamInfo)
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
@@ -83,7 +82,7 @@ class LayoutRender {
         inputView.tag = actionParamInfo.name
 
         val layout = LayoutInflater.from(context).inflate(R.layout.layout_param_row, null)
-        if (!actionParamInfo.title.isNullOrEmpty() && actionParamInfo.type != "bool") {
+        if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
         } else {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
@@ -134,6 +133,8 @@ class LayoutRender {
                 }
                 actionParamInfo.value = text
             } else if (view is CheckBox) {
+                actionParamInfo.value = if (view.isChecked) "1" else "0"
+            } else if (view is Switch) {
                 actionParamInfo.value = if (view.isChecked) "1" else "0"
             } else if (view is SeekBar) {
                 val text = (view.progress + actionParamInfo.min).toString()

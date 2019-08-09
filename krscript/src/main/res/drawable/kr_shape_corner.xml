@@ -5,5 +5,5 @@
         android:topRightRadius="3dp"
         android:bottomRightRadius="3dp"
         android:bottomLeftRadius="3dp"/>
-    <stroke android:width="0.5dp" android:color="#33888888" />
+    <stroke android:width="0.5dp" android:color="#55888888" />
 </shape>
