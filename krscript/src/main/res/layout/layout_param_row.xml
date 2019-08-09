@@ -8,7 +8,7 @@
     android:paddingBottom="2dp">
     <TextView
         android:id="@+id/kr_param_title"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         style="@style/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
