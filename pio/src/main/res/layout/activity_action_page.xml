@@ -30,8 +30,8 @@
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="@color/window_bg_light"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@color/window_bg_light">
 
                 <com.omarea.krscript.ui.ActionListView
                     android:id="@+id/main_list"
@@ -50,10 +50,9 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <FrameLayout
+                    <ScrollView
                         android:id="@+id/action_params_editor"
                         android:layout_width="match_parent"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:padding="0dp" />
@@ -97,11 +96,11 @@
                         android:max="100"
                         android:progress="0" />
 
-                    <com.omarea.common.ui.OverScrollView
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                    <ScrollView
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:keepScreenOn="false"
                         android:padding="0dp">
 
@@ -112,17 +111,18 @@
                             android:padding="20dp"
                             android:textSize="10dp"
                             android:typeface="monospace" />
-                    </com.omarea.common.ui.OverScrollView>
+                    </ScrollView>
 
                     <LinearLayout
-                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:orientation="horizontal"
                         android:paddingTop="0dp"
                         android:paddingRight="0dp"
                         android:paddingBottom="0dp">
+
                         <Button
                             android:id="@+id/btn_copy"
                             style="@style/Widget.AppCompat.ActionButton"
@@ -131,12 +131,13 @@
                             android:text="@string/btn_copy" />
 
                         <LinearLayout
-                            android:orientation="horizontal"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_gravity="end"
+                            android:layout_weight="1"
                             android:gravity="end"
-                            android:layout_height="match_parent">
+                            android:orientation="horizontal">
+
                             <Button
                                 android:id="@+id/btn_hide"
                                 style="@style/Widget.AppCompat.ActionButton"
