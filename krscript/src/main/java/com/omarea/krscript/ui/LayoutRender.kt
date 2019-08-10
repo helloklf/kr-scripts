@@ -55,11 +55,15 @@ class LayoutRender {
                 }
                 addToLayout(checkBox, actionParamInfo)
             }
-            // 选择框渲染
+            // 开关渲染
             else if (actionParamInfo.type == "switch") {
                 val switch = Switch(context)
                 switch.isChecked = getCheckState(actionParamInfo, false)
                 switch.isEnabled = !actionParamInfo.readonly
+                if (!actionParamInfo.label.isNullOrEmpty()) {
+                    switch.text = actionParamInfo.label
+                }
+                switch.setPadding(dp2px(context, 8f), 0, 0, 0)
                 addToLayout(switch, actionParamInfo)
             }
             // 滑块
@@ -99,7 +103,7 @@ class LayoutRender {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
         }
 
-        if (!actionParamInfo.label.isNullOrEmpty() && (actionParamInfo.type != "bool" && actionParamInfo.type != "checkbox")) {
+        if (!actionParamInfo.label.isNullOrEmpty() && (actionParamInfo.type != "bool" && actionParamInfo.type != "checkbox" && actionParamInfo.type != "switch")) {
             layout.findViewById<TextView>(R.id.kr_param_label).text = actionParamInfo.label
         } else {
             layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
