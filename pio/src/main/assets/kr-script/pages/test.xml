@@ -18,7 +18,7 @@
             </param>
             <param name="param_int" label="数字" desc="只能输入数字，数值在10~100以内，不能为空" max="100" min="10" required="required" type="int" />
             <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" value="50" />
-            <param name="param_bool" label="选框" type="bool" />
+            <param name="param_bool" label="开关" type="switch" />
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
