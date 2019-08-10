@@ -172,7 +172,7 @@
 | options-sh | 使用脚本通过echo输出来生成 option | 否 | ` ` |
 | title | 参数的标题 | 否 | `任意提示文字` |
 | desc | 参数的描述 | 否 | `任意提示文字` |
-| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `bool`(勾选框) `seekbar`(滑块) | 否 | `int` |
+| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `checkbox`(勾选框) `switch`(开关) `seekbar`(滑块)，取值为 `1` 或 `0` | 否 | `int` |
 | readonly | 设为readonly表示只读，阻止输入 | 否 | `readonly` | 
 | maxlength | 输入长度限制（位）适用于文本输入 | 否 | `10` |
 | min | 输入的最小值，适用于数字输入和seekbar | 否 | `10` |
