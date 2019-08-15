@@ -9,6 +9,8 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 
+import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.executor.SimpleShellWatcher;
 import com.omarea.krscript.model.ShellHandlerBase;
@@ -58,6 +60,15 @@ public class WebViewInjector {
         }
 
         /**
+         * 检查是否具有ROOT权限
+         * @return
+         */
+        @JavascriptInterface
+        public boolean rootCheck() {
+            return KeepShellPublic.INSTANCE.checkRoot();
+        }
+
+        /**
          * 同步执行shell脚本 并返回结果（不包含错误信息）
          * @param script 脚本内容
          * @return 执行过程中的输出内容
@@ -102,7 +113,20 @@ public class WebViewInjector {
             }
         }
 
-        void setHandler(Process process, final String callbackFunction, final Runnable onExit) {
+        /**
+         * 提取assets中的文件
+         *  @param assets 要提取的文件
+         * @return 提取成功后所在的目录
+         */
+        @JavascriptInterface
+        public String extractAssets(String assets) {
+            Log.d("extractAssets", assets);
+            String output = new ExtractAssets(context).extractResource(assets);
+            Log.d("extractAssets", "" + output);
+            return output;
+        }
+
+        private void setHandler(Process process, final String callbackFunction, final Runnable onExit) {
             final InputStream inputStream = process.getInputStream();
             final InputStream errorStream = process.getErrorStream();
             final Thread reader = new Thread(new Runnable() {
