@@ -90,12 +90,8 @@ class MainActivity : AppCompatActivity() {
             handler.post {
                 progressBarDialog.hideDialog()
                 list_pages.setListData(pages, object : PageClickHandler {
-                    override fun openPage(title: String, config: String) {
-                        _openPage(title, config)
-                    }
-
                     override fun openPage(pageInfo: PageInfo) {
-                        _openPage(pageInfo.title, pageInfo.pageConfigPath)
+                        _openPage(pageInfo)
                     }
                 })
                 list_favorites.setListData(favorites)
@@ -121,15 +117,18 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun _openPage(pageInfo: PageInfo) {
-        _openPage(pageInfo.title, pageInfo.pageConfigPath)
-    }
-
-    fun _openPage(title: String, config: String) {
         try {
-            val intent = Intent(this, ActionPage::class.java)
-            intent.putExtra("title", title)
-            intent.putExtra("config", config)
-            startActivity(intent)
+            if (!pageInfo.pageConfigPath.isEmpty()) {
+                val intent = Intent(this, ActionPage::class.java)
+                intent.putExtra("config", pageInfo.pageConfigPath)
+                intent.putExtra("title", pageInfo.title)
+                startActivity(intent)
+            } else if (!pageInfo.onlineHtmlPage.isEmpty()) {
+                val intent = Intent(this, ActionPageOnline::class.java)
+                intent.putExtra("config", pageInfo.onlineHtmlPage)
+                intent.putExtra("title", pageInfo.title)
+                startActivity(intent)
+            }
         } catch (ex: java.lang.Exception) {
             Log.e("_openPage", "" + ex.message)
         }

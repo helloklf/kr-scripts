@@ -5,4 +5,5 @@
 
     <page title="测试页面" desc="脚本框架测试页面" config="kr-script/pages/test.xml" />
     <page title="内核调谐器" desc="框架测试界面，演示实时模式的使用" config="kr-script/pages/kernel_tuner.xml" />
+    <page title="在线页面测试" desc="在线脚本测试" html="http://10.20.11.15:8080/#/" />
 </pages>

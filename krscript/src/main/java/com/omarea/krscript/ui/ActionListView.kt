@@ -276,6 +276,6 @@ class ActionListView : OverScrollListView {
             shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
         }
 
-        SimpleShellExecutor(context).execute(configItem, script, onExit, params, shellHandler)
+        SimpleShellExecutor().execute(context, configItem, script, onExit, params, shellHandler)
     }
 }
