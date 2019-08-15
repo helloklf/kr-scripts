@@ -15,3 +15,8 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+#确保openFileChooser方法不被混淆
+-keepclassmembers class * extends android.webkit.WebChromeClient{
+ public void openFileChooser(...);
+}

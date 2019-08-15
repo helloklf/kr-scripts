@@ -32,6 +32,7 @@ class ActionPageOnline : AppCompatActivity() {
         setTitle(R.string.app_name)
         Log.e("_openPage", "Online---")
 
+        /*
         // 显示返回按钮
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -39,7 +40,6 @@ class ActionPageOnline : AppCompatActivity() {
             finish()
         })
 
-        /*
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE

@@ -75,6 +75,7 @@ public class WebViewInjector {
          */
         @JavascriptInterface
         public String executeShell(String script) {
+            // Log.d("executeShell", "" + script);
             if (script != null && !script.isEmpty()) {
                 return ScriptEnvironmen.executeResultRoot(context, script);
             }
