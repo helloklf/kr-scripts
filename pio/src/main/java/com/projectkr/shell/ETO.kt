@@ -1,10 +1,12 @@
 package com.projectkr.shell
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
-import android.database.Cursor
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -15,6 +17,8 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.webkit.*
+import android.widget.Toast
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.WebViewInjector
 import kotlinx.android.synthetic.main.activity_action_page_online.*
@@ -171,27 +175,17 @@ class ETO : AppCompatActivity() {
     }
 
     private fun getPath(uri: Uri): String? {
-        if ("content".equals(uri.scheme!!, ignoreCase = true)) {
-            val projection = arrayOf("_data")
-            var cursor: Cursor? = null
-            try {
-                cursor = getContentResolver().query(uri, projection, null, null, null)
-                val column_index = cursor!!.getColumnIndexOrThrow("_data")
-                if (cursor.moveToFirst()) {
-                    return cursor.getString(column_index)
-                }
-            } catch (e: Exception) {
-                // Eat it  Or Log it.
-            } finally {
-                if (cursor != null) {
-                    cursor.close()
-                }
+        try {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 2);
+                Toast.makeText(this, getString(R.string.write_external_storage), Toast.LENGTH_LONG).show()
+                return null;
+            } else {
+                return FilePathResolver().getPath(this, uri)
             }
-
-        } else if ("file".equals(uri.scheme!!, ignoreCase = true)) {
-            return uri.path
+        } catch (ex: java.lang.Exception) {
+            return null
         }
-        return null
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -253,12 +247,12 @@ class ETO : AppCompatActivity() {
                     Log.d("onFileChoose", "" + path)
                     if (path == null) {
                         webView.post {
-                            webView.evaluateJavascript("$callbackFunction(null)", ValueCallback {  })
+                            webView.evaluateJavascript("$callbackFunction(null)", ValueCallback { })
                         }
                     } else {
                         val result = JSONObject()
                         result.put("absPath", path)
-                        webView.evaluateJavascript("$callbackFunction(${result})", ValueCallback {  })
+                        webView.evaluateJavascript("$callbackFunction(${result})", ValueCallback { })
                     }
                 }
             })
