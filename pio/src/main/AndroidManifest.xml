@@ -52,6 +52,7 @@
         <activity
             android:name=".ETO"
             android:label="@string/eto_app_name"
+            android:screenOrientation="portrait"
             android:maxAspectRatio="2.8">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
