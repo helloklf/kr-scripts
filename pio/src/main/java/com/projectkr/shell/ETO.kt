@@ -229,15 +229,16 @@ class ETO : AppCompatActivity() {
         }
 
         @JavascriptInterface
-        public fun getOptions(): JSONArray? {
+        public fun getOptions(): String? {
             try {
                 val reader = eto.assets.open("eto/" + deviceModel()!! + "/sdk${sdkInt()}/config.json")
                 val jsonStr = String(reader.readBytes(), Charset.defaultCharset())
                 Log.d("getOptions", "" + jsonStr)
-                return JSONArray(jsonStr)
+                return jsonStr
             } catch (ex: Exception) {
                 return null
             }
+
         }
 
         @JavascriptInterface
