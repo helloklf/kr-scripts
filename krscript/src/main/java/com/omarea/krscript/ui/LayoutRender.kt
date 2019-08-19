@@ -84,7 +84,7 @@ class LayoutRender {
                 editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
                 editText.isEnabled = !actionParamInfo.readonly
                 editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (actionParamInfo.type == "int" || actionParamInfo.type == "number" && (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.min != Int.MAX_VALUE)) {
+                if (actionParamInfo.type == "int" || actionParamInfo.type == "number" && (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)) {
                     editText.hint = "${actionParamInfo.min} ~ ${actionParamInfo.max}"
                 }
 
