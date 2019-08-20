@@ -68,8 +68,8 @@ class ETO : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.hide()
 
-        // initWebview("http://10.20.11.15:8080/#/")
-        initWebview("file:///android_asset/ui/index.html")
+        initWebview("http://10.20.11.15:8002/#/")
+        // initWebview("file:///android_asset/ui/index.html")
     }
 
     @SuppressLint("JavascriptInterface")

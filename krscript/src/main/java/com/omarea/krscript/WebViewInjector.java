@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 
 public class WebViewInjector {
     private WebView webView;
@@ -75,7 +76,6 @@ public class WebViewInjector {
          */
         @JavascriptInterface
         public String executeShell(String script) {
-            // Log.d("executeShell", "" + script);
             if (script != null && !script.isEmpty()) {
                 return ScriptEnvironmen.executeResultRoot(context, script);
             }
@@ -87,10 +87,17 @@ public class WebViewInjector {
          * @param callbackFunction
          */
         @JavascriptInterface
-        public boolean executeShellAsync(String script, String callbackFunction) {
+        public boolean executeShellAsync(String script, String callbackFunction, String env) {
             HashMap<String, String> params = new HashMap<>();
             Process process = null;
             try {
+                if (env != null && !env.isEmpty()) {
+                    JSONObject paramsObject = new JSONObject(env);
+                    for (Iterator<String> it = paramsObject.keys(); it.hasNext(); ) {
+                        String key = it.next();
+                        params.put(key, paramsObject.getString(key));
+                    }
+                }
                 process = Runtime.getRuntime().exec("su");
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
