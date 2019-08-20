@@ -637,8 +637,7 @@ var shellFile = "file:///android_asset/kr-script/test/var.sh"
 window.callbackMethod = function (log) {
     /*...此处省略日志输出处理过程...*/
 }
-var result = KrScriptCore.executeShell(shellFile, "window.callbackMethod", JSON.stringify({
+KrScriptCore.executeShell(shellFile, "window.callbackMethod", JSON.stringify({
     param_one: "张飞"
 }))
-alert('输出内容：' + result)
 ```
