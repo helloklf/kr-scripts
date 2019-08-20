@@ -11,14 +11,8 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.dropLastWhile
-import kotlin.collections.get
-import kotlin.collections.indices
-import kotlin.collections.set
-import kotlin.collections.toTypedArray
 
 class LayoutRender {
     private var linearLayout: LinearLayout
@@ -84,7 +78,11 @@ class LayoutRender {
                 editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
                 editText.isEnabled = !actionParamInfo.readonly
                 editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (actionParamInfo.type == "int" || actionParamInfo.type == "number" && (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)) {
+                if (
+                        (actionParamInfo.type == "int" || actionParamInfo.type == "number")
+                        &&
+                        (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)
+                ) {
                     editText.hint = "${actionParamInfo.min} ~ ${actionParamInfo.max}"
                 }
 
