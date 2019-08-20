@@ -1,8 +1,13 @@
 package com.projectkr.shell
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -16,11 +21,13 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page.*
 
 
@@ -282,6 +289,51 @@ class ActionPage : AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
+    private var fileSelectedInterface:FileChooserRender.FileSelectedInterface? = null
+    private val ACTION_FILE_PATH_CHOOSER = 65400
+    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 2);
+            Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
+            return false
+        } else {
+            try {
+                val intent = Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*")
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                this.fileSelectedInterface = fileSelectedInterface
+                return true;
+            } catch (ex: java.lang.Exception) {
+                return false
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
+            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            if (fileSelectedInterface != null) {
+                if (result != null) {
+                    val absPath = getPath(result)
+                    fileSelectedInterface?.onFileSelected(absPath)
+                } else {
+                    fileSelectedInterface?.onFileSelected(null)
+                }
+            }
+            this.fileSelectedInterface = null
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun getPath(uri: Uri): String? {
+        try {
+            return FilePathResolver().getPath(this, uri)
+        } catch (ex: java.lang.Exception) {
+            return null
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -293,6 +345,11 @@ class ActionPage : AppCompatActivity() {
                     if (items != null && items.size != 0) {
                         main_list.setListData(
                                 items,
+                                object : FileChooserRender.FileChooserInterface {
+                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                                        return chooseFilePath(fileSelectedInterface)
+                                    }
+                                },
                                 actionShortClickHandler,
                                 addToFavorites
                         )

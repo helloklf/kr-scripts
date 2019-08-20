@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>KrScript</title>
+    <script>
+      window.fileChooserCallback = function (result) {
+        if (result.absPath) {
+          alert('选中文件：' + result.absPath)
+        } else {
+          alert('文件已丢失')
+        }
+      }
+      function chooseFile() {
+        KrScriptCore.fileChooser('window.fileChooserCallback')
+      }
+    </script>
+  </head>
+  <body>
+    <button type="button" onclick="chooseFile()">测试文件选择</button>
+  </body>
+  <style>
+    body {
+      padding-top: 100px;
+      text-align: center;
+    }
+    button {
+      border: none;
+      background: #0094ff;
+      color: #fff;
+      padding: 1em 3em;
+      border-radius: 0.3em;
+      outline: none;
+    }
+  </style>
+</html>

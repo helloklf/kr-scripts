@@ -173,7 +173,7 @@
 | title | 参数的标题，显示在输入框顶部 | 否 | `任意提示文字` |
 | label | 参数的标题，显示在输入框左侧 | 否 | `任意提示文字` |
 | desc | 参数的描述，显示在输入框下方 | 否 | `任意提示文字` |
-| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `checkbox`(勾选框) `switch`(开关) `seekbar`(滑块)，取值为 `1` 或 `0` | 否 | `int` |
+| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `checkbox`(勾选框) `switch`(开关) `seekbar`(滑块) `file`(文件路径选择) | 否 | `int` |
 | readonly | 设为readonly表示只读，阻止输入 | 否 | `readonly` | 
 | maxlength | 输入长度限制（位）适用于文本输入 | 否 | `10` |
 | min | 输入的最小值，适用于数字输入和seekbar | 否 | `10` |
@@ -598,6 +598,23 @@ if (successful == true) {
     // 通常情况下，用户授予了root权限，就是调用成功的
 } else {
     alert('执行脚本失败，请检查是否已经授予ROOT权限！')
+}
+```
+
+##### KrScriptCore.fileChooser
+- 调用文件路径选择器
+
+```javascript
+
+window.fileChooserCallback = function (result) {
+if (result.absPath) {
+    alert('选中文件：' + result.absPath)
+} else {
+    alert('文件已丢失')
+}
+}
+function chooseFile() {
+KrScriptCore.fileChooser('window.fileChooserCallback')
 }
 ```
 

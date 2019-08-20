@@ -8,6 +8,7 @@ echo "state=$state"
 echo "param_int=$param_int"
 echo "param_seekbar=$param_seekbar"
 echo "param_bool=$param_bool"
+echo "param_file=$param_file"
 echo ''
 echo ''
 echo ''

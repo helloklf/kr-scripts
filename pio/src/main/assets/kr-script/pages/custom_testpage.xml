@@ -6,7 +6,7 @@
         <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
     </switch>
     <action>
-        <title>新界面测试</title>
+        <title>参数类型列举</title>
         <params>
             <param name="param_one" label="普通变量 param_one">
                 <option value="A">测试一下 A</option>
@@ -18,7 +18,8 @@
             </param>
             <param name="param_int" label="数字" desc="只能输入数字，数值在10~100以内，不能为空" max="100" min="10" required="required" type="int" />
             <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" value="50" />
-            <param name="param_bool" label="开关 这个故意搞了一堆字" type="switch" />
+            <param name="param_bool" label="选框" type="bool" />
+            <param name="param_file" label="文件选择" type="file" value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>

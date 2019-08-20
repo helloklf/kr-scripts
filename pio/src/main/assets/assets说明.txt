@@ -1,0 +1,7 @@
+## 以下文件为框架依赖的必要文件
+- kr-script.conf            基础配置信息
+- kr-script/executor.sh     脚本执行器入口（由 kr-script.conf 指定）
+- kr-script/favorites.xml   收藏夹页面功能配置（由 kr-script.conf 指定）
+- kr-script/page_list.xml   "全部"界面列表配置（由 kr-script.conf 指定）
+
+未在上述列表中提及的文件，均属于框架试用代码或示例

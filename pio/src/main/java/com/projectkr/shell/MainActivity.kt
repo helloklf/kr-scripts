@@ -1,7 +1,10 @@
 package com.projectkr.shell
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -14,6 +17,7 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -21,6 +25,7 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -94,7 +99,12 @@ class MainActivity : AppCompatActivity() {
                         _openPage(pageInfo)
                     }
                 })
-                list_favorites.setListData(favorites)
+                list_favorites.setListData(favorites,
+                        object : FileChooserRender.FileChooserInterface {
+                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                                return chooseFilePath(fileSelectedInterface)
+                            }
+                        })
 
                 if (list_favorites.count > 0) {
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
@@ -114,6 +124,51 @@ class MainActivity : AppCompatActivity() {
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_tabhost_cpu, home)
         transaction.commit()
+    }
+
+    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private val ACTION_FILE_PATH_CHOOSER = 65400
+    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
+            return false
+        } else {
+            try {
+                val intent = Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*")
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                this.fileSelectedInterface = fileSelectedInterface
+                return true;
+            } catch (ex: java.lang.Exception) {
+                return false
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
+            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            if (fileSelectedInterface != null) {
+                if (result != null) {
+                    val absPath = getPath(result)
+                    fileSelectedInterface?.onFileSelected(absPath)
+                } else {
+                    fileSelectedInterface?.onFileSelected(null)
+                }
+            }
+            this.fileSelectedInterface = null
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun getPath(uri: Uri): String? {
+        try {
+            return FilePathResolver().getPath(this, uri)
+        } catch (ex: java.lang.Exception) {
+            return null
+        }
     }
 
     fun _openPage(pageInfo: PageInfo) {
