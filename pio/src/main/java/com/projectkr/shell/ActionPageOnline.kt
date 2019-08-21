@@ -18,6 +18,7 @@ import android.webkit.WebViewClient
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.WebViewInjector
+import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
 
 
@@ -126,7 +127,11 @@ class ActionPageOnline : AppCompatActivity() {
 
         kr_online_webview.loadUrl(url)
 
-        WebViewInjector(kr_online_webview).inject()
+        WebViewInjector(kr_online_webview, object : FileChooserRender.FileChooserInterface {
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                return false
+            }
+        }).inject()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

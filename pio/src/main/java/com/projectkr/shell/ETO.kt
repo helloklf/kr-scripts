@@ -21,8 +21,8 @@ import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.WebViewInjector
+import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
-import org.json.JSONArray
 import org.json.JSONObject
 import java.nio.charset.Charset
 
@@ -68,8 +68,8 @@ class ETO : AppCompatActivity() {
         val actionBar = supportActionBar
         actionBar!!.hide()
 
-        initWebview("http://10.20.11.15:8002/#/")
-        // initWebview("file:///android_asset/ui/index.html")
+        // initWebview("http://10.20.11.15:8002/#/")
+        initWebview("file:///android_asset/ui/index.html")
     }
 
     @SuppressLint("JavascriptInterface")
@@ -123,7 +123,11 @@ class ETO : AppCompatActivity() {
 
         kr_online_webview.loadUrl(url)
 
-        WebViewInjector(kr_online_webview).inject()
+        WebViewInjector(kr_online_webview, object : FileChooserRender.FileChooserInterface {
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                return false
+            }
+        }).inject()
         kr_online_webview.addJavascriptInterface(ExtendedInterface(this, kr_online_webview), "ExtendedInterface")
     }
 
@@ -166,7 +170,6 @@ class ETO : AppCompatActivity() {
                 this.fileCallbackInterface = fileCallbackInterface
                 return true;
             } catch (ex: java.lang.Exception) {
-                Log.e("onShowFileChooser", "onShowFileChooser" + ex.message)
                 return false
             }
         } else {

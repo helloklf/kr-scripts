@@ -21,6 +21,7 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
@@ -94,7 +95,11 @@ class MainActivity : AppCompatActivity() {
                         _openPage(pageInfo)
                     }
                 })
-                list_favorites.setListData(favorites)
+                list_favorites.setListData(favorites, object : FileChooserRender.FileChooserInterface {
+                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                        return false
+                    }
+                })
 
                 if (list_favorites.count > 0) {
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)

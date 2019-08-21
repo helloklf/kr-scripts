@@ -21,6 +21,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page.*
 
 
@@ -293,6 +294,11 @@ class ActionPage : AppCompatActivity() {
                     if (items != null && items.size != 0) {
                         main_list.setListData(
                                 items,
+                                object : FileChooserRender.FileChooserInterface {
+                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                                        return false
+                                    }
+                                },
                                 actionShortClickHandler,
                                 addToFavorites
                         )
