@@ -173,12 +173,25 @@
 | title | 参数的标题，显示在输入框顶部 | 否 | `任意提示文字` |
 | label | 参数的标题，显示在输入框左侧 | 否 | `任意提示文字` |
 | desc | 参数的描述，显示在输入框下方 | 否 | `任意提示文字` |
-| type | 输入类型，默认为普通文本，可配置为`int`(整数) `number`(数字) `checkbox`(勾选框) `switch`(开关) `seekbar`(滑块) `file`(文件路径选择) | 否 | `int` |
+| type | 输入类型，具体见下文 | 否 | `int` |
 | readonly | 设为readonly表示只读，阻止输入 | 否 | `readonly` | 
 | maxlength | 输入长度限制（位）适用于文本输入 | 否 | `10` |
 | min | 输入的最小值，适用于数字输入和seekbar | 否 | `10` |
 | max | 输入的最大值，适用于数字输入和seekbar | 否 | `100` |
 | required | 是否为必填参数，可配置为`true`、`false` | 否 | `true` |
+
+> param 的`type`列举如下：
+
+| 类型 | 描述 | 取值 |
+| - | :- | - |
+| int | 整数输入框，可配合`min`、`max`属性适用 | `min`和`max`之间的整数 |
+| number | 带小数的数字输入框，可配合`min`、`max`属性适用 | `min`和`max`之间的数字 |
+| checkbox | 勾选框 | `1`或`0` |
+| switch | 开关 | `1`或`0` |
+| seekbar | 滑块，**必需**配合`min`、`max`属性适用 | `min`和`max`之间的整数 |
+| file | 文件路径选择器 | 选中文件的绝对路径 |
+| text | 任意文本输入（默认） | 任意自定义输入的文本 |
+
 
 > 请不要在`value-sh`、`options-sh` 属性里写大段的shell脚本，推荐方式请参考后文**脚本使用**部分
 
@@ -193,7 +206,7 @@
     <script>wm density $dpi;</script>
     <!--通过params定义脚本执行参数-->
     <params>
-        <param name="dpi" desc="请输入DPI" type="int" value="480" />
+        <param name="dpi" desc="请输入DPI" type="int" max="96" min="160" value="480" />
     </params>
 </action>
 ```
