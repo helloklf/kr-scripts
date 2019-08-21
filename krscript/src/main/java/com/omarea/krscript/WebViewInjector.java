@@ -14,7 +14,9 @@ import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.executor.SimpleShellWatcher;
 import com.omarea.krscript.model.ShellHandlerBase;
+import com.omarea.krscript.ui.FileChooserRender;
 
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -29,11 +31,13 @@ import java.util.Iterator;
 public class WebViewInjector {
     private WebView webView;
     private Context context;
+    private FileChooserRender.FileChooserInterface fileChooser;
 
     @SuppressLint("SetJavaScriptEnabled")
-    public WebViewInjector(WebView webView) {
+    public WebViewInjector(WebView webView, FileChooserRender.FileChooserInterface fileChooser) {
         this.webView = webView;
         this.context = webView.getContext();
+        this.fileChooser = fileChooser;
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
@@ -132,6 +136,36 @@ public class WebViewInjector {
             String output = new ExtractAssets(context).extractResource(assets);
             Log.d("extractAssets", "" + output);
             return output;
+        }
+
+        @JavascriptInterface
+        public boolean fileChooser(final String callbackFunction) {
+            if (fileChooser != null) {
+                return fileChooser.openFileChooser(new FileChooserRender.FileSelectedInterface() {
+                    @Override
+                    public void onFileSelected(@Nullable String path) {
+                        try {
+                            final JSONObject message = new JSONObject();
+                            if (path == null || path.isEmpty()) {
+                                message.put("absPath", null);
+                            } else {
+                                message.put("absPath", path);
+                            }
+                            webView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    webView.evaluateJavascript(callbackFunction + "(" + message.toString() + ")", new ValueCallback<String>() {
+                                        @Override
+                                        public void onReceiveValue(String value) {
+                                        }
+                                    });
+                                }
+                            });
+                        } catch (Exception ex) {}
+                    }
+                });
+            }
+            return false;
         }
 
         private void setHandler(Process process, final String callbackFunction, final Runnable onExit) {
