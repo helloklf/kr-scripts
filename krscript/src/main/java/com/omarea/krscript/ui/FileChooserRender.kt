@@ -38,7 +38,10 @@ class FileChooserRender(private var actionParamInfo: ActionParamInfo, private va
             })
         }
 
-        if (!actionParamInfo.value.isNullOrEmpty()) {
+        if (actionParamInfo.valueFromShell != null) {
+            textView.text = actionParamInfo.valueFromShell
+            pathView.text = actionParamInfo.valueFromShell
+        } else if (!actionParamInfo.value.isNullOrEmpty()) {
             textView.text = actionParamInfo.value
             pathView.text = actionParamInfo.value
         }
