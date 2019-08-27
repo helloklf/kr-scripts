@@ -234,7 +234,7 @@ class ETO : AppCompatActivity() {
         @JavascriptInterface
         public fun getOptions(): String? {
             try {
-                val reader = eto.assets.open("eto/" + deviceModel()!! + "/sdk${sdkInt()}/config.json")
+                val reader = eto.assets.open("dtbo/" + deviceModel()!! + "/sdk${sdkInt()}/config.json")
                 val jsonStr = String(reader.readBytes(), Charset.defaultCharset())
                 Log.d("getOptions", "" + jsonStr)
                 return jsonStr
