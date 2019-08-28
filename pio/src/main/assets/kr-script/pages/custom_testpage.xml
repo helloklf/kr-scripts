@@ -23,4 +23,23 @@
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
+
+    <action>
+        <title>调用内置的网页浏览界面</title>
+        <desc>am start -a android.intent.action.MAIN -n "$activity" --es config "$url"</desc>
+        <script>
+# 使用am start启动activity的说明
+# 添加Extras
+#   --ei 整数参数【extra integer】
+#   --es 字符串参数【extra string】
+
+url="https://cn.bing.com"
+activity="com.projectkr.shell/.ActionPageOnline"
+am start -a android.intent.action.MAIN -n "$activity" --es config "$url"
+
+# 对应到Java中取出参数的过程
+# Intent intent = getIntent();
+# String webPage = intent.getStringExtra("config");
+        </script>
+    </action>
 </items>
