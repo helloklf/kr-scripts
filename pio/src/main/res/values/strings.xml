@@ -4,7 +4,7 @@
 
 
     <string name="app_name">PIO</string>
-    <string name="eto_app_name">ETO屏幕刷新率</string>
+    <string name="eto_app_name">屏幕刷新率</string>
     <string name="shell_executor">脚本执行</string>
     <string name="cannot_get_root_access">没有获取到ROOT权限！</string>
     <string name="execute_success">执行完成！</string>
