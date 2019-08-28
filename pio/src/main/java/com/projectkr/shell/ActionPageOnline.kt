@@ -15,10 +15,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.KeyEvent
 import android.view.View
-import android.webkit.JsResult
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
@@ -129,6 +126,21 @@ class ActionPageOnline : AppCompatActivity() {
                 super.onPageStarted(view, url, favicon)
                 progressBarDialog.showDialog(getString(R.string.please_wait))
             }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                try{
+                    val requestUrl = request?.url
+                    if(requestUrl != null && requestUrl.scheme?.startsWith("http") != true){
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(requestUrl.toString()));
+                        startActivity(intent);
+                        return true;
+                    } else {
+                        return super.shouldOverrideUrlLoading(view, request);
+                    }
+                } catch (e:Exception){
+                    return super.shouldOverrideUrlLoading(view, request);
+                }
+            }
         }
 
         kr_online_webview.loadUrl(url)
@@ -187,7 +199,12 @@ class ActionPageOnline : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        return super.onKeyDown(keyCode, event)
+        if(keyCode == KeyEvent.KEYCODE_BACK && kr_online_webview.canGoBack()) {
+            kr_online_webview.goBack()
+            return true
+        } else {
+            return super.onKeyDown(keyCode, event)
+        }
     }
 
     override fun onResume() {
