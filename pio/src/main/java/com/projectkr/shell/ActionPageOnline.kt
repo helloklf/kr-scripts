@@ -3,6 +3,10 @@ package com.projectkr.shell
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.DownloadManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -10,19 +14,22 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
+import android.view.WindowManager
 import android.webkit.*
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.WebViewInjector
+import com.omarea.krscript.downloader.Downloader
 import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
+import java.util.*
 
 
 class ActionPageOnline : AppCompatActivity() {
@@ -34,7 +41,6 @@ class ActionPageOnline : AppCompatActivity() {
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
-        Log.e("_openPage", "Online---")
 
         // 显示返回按钮
         supportActionBar!!.setHomeButtonEnabled(true)
@@ -42,31 +48,6 @@ class ActionPageOnline : AppCompatActivity() {
         toolbar.setNavigationOnClickListener({ _ ->
             finish()
         })
-
-        /*
-        val window = window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.WHITE
-        window.navigationBarColor = Color.WHITE
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        */
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            val decorView = window.decorView
-            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            decorView.systemUiVisibility = option
-            window.statusBarColor = Color.TRANSPARENT
-        }
-        val actionBar = supportActionBar
-        actionBar!!.hide()
 
         // 读取intent里的参数
         val intent = this.intent
@@ -76,11 +57,59 @@ class ActionPageOnline : AppCompatActivity() {
                 if (extras.containsKey("title")) {
                     title = extras.getString("title")!!
                 }
+
+                if (extras.containsKey("downloadUrl")) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        DialogHelper.helpInfo(this, "", getString(R.string.kr_write_external_storage))
+                    } else {
+                        val url = extras.getString("downloadUrl")!!
+                        val downloadId = Downloader(this).downloadBySystem(url, null, null)
+                        if (downloadId != null) {
+                            kr_download_url.text = url
+                            watchDownloadProgress(downloadId)
+                        }
+                    }
+                }
+
                 if (extras.containsKey("config")) {
                     initWebview(extras.getString("config"))
+                    hideWindowTitle()
+                } else if (extras.containsKey("url")) {
+                    initWebview(extras.getString("url"))
+                    hideWindowTitle()
+                } else {
+                    setWhiteWindowTitle()
                 }
             }
         }
+    }
+
+    private fun hideWindowTitle() {
+        if (Build.VERSION.SDK_INT >= 21) {
+            val decorView = window.decorView
+            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            decorView.systemUiVisibility = option
+            window.statusBarColor = Color.TRANSPARENT
+        }
+        val actionBar = supportActionBar
+        actionBar!!.hide()
+    }
+
+    private fun setWhiteWindowTitle() {
+        val window = window
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.WHITE
+        window.navigationBarColor = Color.WHITE
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        } else {
+            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+        kr_online_root.fitsSystemWindows = true
     }
 
     private fun initWebview(url: String?) {
@@ -128,16 +157,16 @@ class ActionPageOnline : AppCompatActivity() {
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                try{
+                try {
                     val requestUrl = request?.url
-                    if(requestUrl != null && requestUrl.scheme?.startsWith("http") != true){
+                    if (requestUrl != null && requestUrl.scheme?.startsWith("http") != true) {
                         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(requestUrl.toString()));
                         startActivity(intent);
                         return true;
                     } else {
                         return super.shouldOverrideUrlLoading(view, request);
                     }
-                } catch (e:Exception){
+                } catch (e: Exception) {
                     return super.shouldOverrideUrlLoading(view, request);
                 }
             }
@@ -147,7 +176,7 @@ class ActionPageOnline : AppCompatActivity() {
 
         WebViewInjector(kr_online_webview,
                 object : FileChooserRender.FileChooserInterface {
-                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
                 }).inject()
@@ -199,7 +228,7 @@ class ActionPageOnline : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if(keyCode == KeyEvent.KEYCODE_BACK && kr_online_webview.canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && kr_online_webview.canGoBack()) {
             kr_online_webview.goBack()
             return true
         } else {
@@ -207,7 +236,84 @@ class ActionPageOnline : AppCompatActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onDestroy() {
+        stopWatchDownloadProgress()
+        super.onDestroy()
+    }
+
+    private fun stopWatchDownloadProgress() {
+        if (progressPolling != null) {
+            progressPolling?.cancel()
+            progressPolling = null
+        }
+    }
+
+    var progressPolling:Timer? = null
+    /**
+     * 监视下载进度
+     */
+    private fun watchDownloadProgress(downloadId: Long) {
+        kr_download_state.visibility = View.VISIBLE
+
+        val downloadManager =  getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val query = DownloadManager.Query().setFilterById(downloadId)
+
+        kr_download_name_copy.setOnClickListener {
+            val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val myClip = ClipData.newPlainText("text", kr_download_name.text.toString())
+            myClipboard.setPrimaryClip(myClip)
+            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+        }
+        kr_download_url_copy.setOnClickListener {
+            val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val myClip = ClipData.newPlainText("text", kr_download_url.text.toString())
+            myClipboard.setPrimaryClip(myClip)
+            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+        }
+
+        val handler = Handler()
+        progressPolling = Timer()
+        progressPolling?.schedule(object : TimerTask() {
+            override fun run() {
+                val cursor = downloadManager.query(query)
+                var fileName = ""
+                if (cursor.moveToFirst()) {
+                    val downloadBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
+                    val totalBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                    val totalBytes = cursor.getLong(totalBytesIdx)
+                    val downloadBytes = cursor.getLong(downloadBytesIdx)
+                    val ratio = (downloadBytes * 100 / totalBytes).toInt()
+                    if (fileName.isEmpty()) {
+                        try {
+                            val nameColumn = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
+                            fileName = cursor.getString(nameColumn)
+                            val absPath = FilePathResolver().getPath(this@ActionPageOnline, Uri.parse(fileName))
+                            if (!absPath.isNullOrEmpty()) {
+                                fileName = absPath
+                            }
+                        } catch (ex: java.lang.Exception) {
+                        }
+                    }
+
+                    handler.post {
+                        kr_download_name.text = fileName
+                        kr_download_progress.progress = ratio
+                        kr_download_progress.isIndeterminate = false
+                        setTitle(R.string.kr_download_downloading)
+                    }
+
+                    if (ratio >= 100) {
+                        handler.post {
+                            setTitle(R.string.kr_download_completed)
+                            kr_download_progress.visibility = View.GONE
+                        }
+                        stopWatchDownloadProgress()
+                        val result = Intent()
+                        result.putExtra("xxx", "aaaa")
+                        setResult(0, result)
+                    }
+                }
+            }
+        }, 200, 200)
     }
 }

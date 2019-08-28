@@ -21,4 +21,5 @@
     <string name="kr_download_create_success">开始下载文件</string>
     <string name="kr_download_confirm">是否下载文件</string>
     <string name="kr_download_completed">文件下载成功</string>
+    <string name="kr_download_downloading">文件下载中</string>
 </resources>

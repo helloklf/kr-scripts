@@ -25,7 +25,7 @@ class Downloader(private var context: Context, private var activity: Activity? =
         activity?.startActivity(intent);
     }
 
-    fun downloadBySystem(url: String, contentDisposition: String, mimeType: String) {
+    fun downloadBySystem(url: String, contentDisposition: String?, mimeType: String?): Long? {
         try {
             // 指定下载地址
             val request = DownloadManager.Request(Uri.parse(url))
@@ -59,10 +59,11 @@ class Downloader(private var context: Context, private var activity: Activity? =
             Toast.makeText(context, context.getString(R.string.kr_download_create_success), Toast.LENGTH_SHORT).show()
             // 注册下载完成事件监听
             DownloadCompleteReceiver.autoRegister(context)
+            return downloadId
         } catch (ex: Exception) {
             DialogHelper.helpInfo(context, context.getString(R.string.kr_download_create_fail), "" + ex.message)
+            return null
         }
-
     }
 
     // 保存下载记录
