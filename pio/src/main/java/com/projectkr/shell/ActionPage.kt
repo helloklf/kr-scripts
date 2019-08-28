@@ -289,7 +289,7 @@ class ActionPage : AppCompatActivity() {
         return super.onKeyDown(keyCode, event)
     }
 
-    private var fileSelectedInterface:FileChooserRender.FileSelectedInterface? = null
+    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
     private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -346,7 +346,7 @@ class ActionPage : AppCompatActivity() {
                         main_list.setListData(
                                 items,
                                 object : FileChooserRender.FileChooserInterface {
-                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                                         return chooseFilePath(fileSelectedInterface)
                                     }
                                 },

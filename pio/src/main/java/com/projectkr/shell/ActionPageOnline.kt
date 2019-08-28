@@ -49,40 +49,7 @@ class ActionPageOnline : AppCompatActivity() {
             finish()
         })
 
-        // 读取intent里的参数
-        val intent = this.intent
-        if (intent.extras != null) {
-            val extras = intent.extras
-            if (extras != null) {
-                if (extras.containsKey("title")) {
-                    title = extras.getString("title")!!
-                }
-
-                if (extras.containsKey("downloadUrl")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        DialogHelper.helpInfo(this, "", getString(R.string.kr_write_external_storage))
-                    } else {
-                        val url = extras.getString("downloadUrl")!!
-                        val downloadId = Downloader(this).downloadBySystem(url, null, null)
-                        if (downloadId != null) {
-                            kr_download_url.text = url
-                            watchDownloadProgress(downloadId)
-                        }
-                    }
-                }
-
-                if (extras.containsKey("config")) {
-                    initWebview(extras.getString("config"))
-                    hideWindowTitle()
-                } else if (extras.containsKey("url")) {
-                    initWebview(extras.getString("url"))
-                    hideWindowTitle()
-                } else {
-                    setWhiteWindowTitle()
-                }
-            }
-        }
+        loadIntentData()
     }
 
     private fun hideWindowTitle() {
@@ -109,10 +76,49 @@ class ActionPageOnline : AppCompatActivity() {
         } else {
             getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
+
         kr_online_root.fitsSystemWindows = true
     }
 
+    private fun loadIntentData() {
+        // 读取intent里的参数
+        val intent = this.intent
+        if (intent.extras != null) {
+            val extras = intent.extras
+            if (extras != null) {
+                if (extras.containsKey("title")) {
+                    title = extras.getString("title")!!
+                }
+
+                if (extras.containsKey("config")) {
+                    initWebview(extras.getString("config"))
+                    hideWindowTitle()
+                } else if (extras.containsKey("url")) {
+                    initWebview(extras.getString("url"))
+                    hideWindowTitle()
+                } else {
+                    setWhiteWindowTitle()
+                }
+
+                if (extras.containsKey("downloadUrl")) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        DialogHelper.helpInfo(this, "", getString(R.string.kr_write_external_storage))
+                    } else {
+                        val url = extras.getString("downloadUrl")!!
+                        val downloadId = Downloader(this).downloadBySystem(url, null, null)
+                        if (downloadId != null) {
+                            kr_download_url.text = url
+                            watchDownloadProgress(downloadId)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun initWebview(url: String?) {
+        kr_online_webview.visibility = View.VISIBLE
         kr_online_webview.webChromeClient = object : WebChromeClient() {
             override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
                 DialogHelper.animDialog(
