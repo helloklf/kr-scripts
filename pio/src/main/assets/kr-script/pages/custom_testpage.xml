@@ -34,7 +34,7 @@
             #   --es 字符串参数【extra string】
 
             url="https://cn.bing.com"
-            activity="com.projectkr.shell/.ActionPageOnline"
+            activity="$PACKAGE_NAME/com.projectkr.shell.ActionPageOnline"
             am start -a android.intent.action.MAIN -n "$activity" --es url "$url"
 
             # 对应到Java中取出参数的过程
@@ -48,7 +48,7 @@
         <desc>am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl "$url"</desc>
         <script>
             downloadUrl="https://hugeota.d.miui.com/9.8.28/miui-blockota-sagit-9.8.27-9.8.28-cfa9921c33-9.0.zip"
-            activity="com.projectkr.shell/.ActionPageOnline"
+            activity="$PACKAGE_NAME/com.projectkr.shell.ActionPageOnline"
             am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl "$downloadUrl"
         </script>
     </action>

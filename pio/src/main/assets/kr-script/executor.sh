@@ -19,6 +19,7 @@ export TEMP_DIR=$({TEMP_DIR})
 export ANDROID_UID=$({ANDROID_UID})
 export ANDROID_SDK=$({ANDROID_SDK})
 export SDCARD_PATH=$({SDCARD_PATH})
+export PACKAGE_NAME=$({PACKAGE_NAME})
 
 # 判断是否有指定执行目录
 if [[ "$execute_path" != "" ]] && [[ -d "$execute_path" ]]

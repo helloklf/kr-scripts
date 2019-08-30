@@ -101,8 +101,10 @@ class ActionPageOnline : AppCompatActivity() {
                 }
 
                 if (extras.containsKey("downloadUrl")) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    if (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
                         DialogHelper.helpInfo(this, "", getString(R.string.kr_write_external_storage))
                     } else {
                         val url = extras.getString("downloadUrl")!!
@@ -185,7 +187,7 @@ class ActionPageOnline : AppCompatActivity() {
                     override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
-                }).inject()
+                }).inject(this)
     }
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
@@ -254,14 +256,14 @@ class ActionPageOnline : AppCompatActivity() {
         }
     }
 
-    var progressPolling:Timer? = null
+    var progressPolling: Timer? = null
     /**
      * 监视下载进度
      */
     private fun watchDownloadProgress(downloadId: Long) {
         kr_download_state.visibility = View.VISIBLE
 
-        val downloadManager =  getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val query = DownloadManager.Query().setFilterById(downloadId)
 
         kr_download_name_copy.setOnClickListener {

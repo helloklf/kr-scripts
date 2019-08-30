@@ -2,6 +2,7 @@ package com.omarea.krscript;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,7 +49,7 @@ public class WebViewInjector {
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
-    public void inject() {
+    public void inject(final Activity activity) {
         if (webView != null) {
 
             WebSettings webSettings = webView.getSettings();
@@ -67,6 +68,7 @@ public class WebViewInjector {
                     if (
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                                     context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        activity.requestPermissions(new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE }, 2);
                         Toast.makeText(context, R.string.kr_write_external_storage, Toast.LENGTH_LONG).show();
                     } else {
                         DialogHelper.Companion.animDialog(new AlertDialog.Builder(context)
