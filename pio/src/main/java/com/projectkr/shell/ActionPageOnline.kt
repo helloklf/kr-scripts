@@ -101,17 +101,27 @@ class ActionPageOnline : AppCompatActivity() {
                 }
 
                 if (extras.containsKey("downloadUrl")) {
+                    val downloader = Downloader(this)
+                    val url = extras.getString("downloadUrl")!!
+                    val taskAliasId = if (extras.containsKey("taskId")) extras.getString("taskId") else UUID.randomUUID().toString()
+
                     if (
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                             checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
+                        downloader.saveTaskStatus(taskAliasId, 0)
+
+                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
                         DialogHelper.helpInfo(this, "", getString(R.string.kr_write_external_storage))
                     } else {
-                        val url = extras.getString("downloadUrl")!!
-                        val downloadId = Downloader(this).downloadBySystem(url, null, null)
+                        val downloadId = downloader.downloadBySystem(url, null, null, taskAliasId)
                         if (downloadId != null) {
                             kr_download_url.text = url
-                            watchDownloadProgress(downloadId)
+                            val autoClose = extras.containsKey("autoClose") && extras.getBoolean("autoClose")
+
+                            downloader.saveTaskStatus(taskAliasId, 0)
+                            watchDownloadProgress(downloadId, autoClose, taskAliasId)
+                        } else {
+                            downloader.saveTaskStatus(taskAliasId, -1)
                         }
                     }
                 }
@@ -194,7 +204,7 @@ class ActionPageOnline : AppCompatActivity() {
     private val ACTION_FILE_PATH_CHOOSER = 65400
     private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             return false
         } else {
@@ -260,7 +270,7 @@ class ActionPageOnline : AppCompatActivity() {
     /**
      * 监视下载进度
      */
-    private fun watchDownloadProgress(downloadId: Long) {
+    private fun watchDownloadProgress(downloadId: Long, autoClose: Boolean, taskAliasId: String) {
         kr_download_state.visibility = View.VISIBLE
 
         val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
@@ -280,11 +290,13 @@ class ActionPageOnline : AppCompatActivity() {
         }
 
         val handler = Handler()
+        val downloader = Downloader(this)
         progressPolling = Timer()
         progressPolling?.schedule(object : TimerTask() {
             override fun run() {
                 val cursor = downloadManager.query(query)
                 var fileName = ""
+                var absPath = ""
                 if (cursor.moveToFirst()) {
                     val downloadBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR)
                     val totalBytesIdx = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
@@ -295,8 +307,8 @@ class ActionPageOnline : AppCompatActivity() {
                         try {
                             val nameColumn = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
                             fileName = cursor.getString(nameColumn)
-                            val absPath = FilePathResolver().getPath(this@ActionPageOnline, Uri.parse(fileName))
-                            if (!absPath.isNullOrEmpty()) {
+                            absPath = FilePathResolver().getPath(this@ActionPageOnline, Uri.parse(fileName))
+                            if (!absPath.isEmpty()) {
                                 fileName = absPath
                             }
                         } catch (ex: java.lang.Exception) {
@@ -308,20 +320,29 @@ class ActionPageOnline : AppCompatActivity() {
                         kr_download_progress.progress = ratio
                         kr_download_progress.isIndeterminate = false
                         setTitle(R.string.kr_download_downloading)
+                        downloader.saveTaskStatus(taskAliasId, ratio)
                     }
 
                     if (ratio >= 100) {
+                        // 保存下载成功后的路径
+                        downloader.saveTaskCompleted(downloadId, absPath)
+
                         handler.post {
                             setTitle(R.string.kr_download_completed)
                             kr_download_progress.visibility = View.GONE
+                            stopWatchDownloadProgress()
+
+                            val result = Intent()
+                            result.putExtra("absPath", absPath)
+                            setResult(0, result)
+
+                            if (autoClose) {
+                                finish()
+                            }
                         }
-                        stopWatchDownloadProgress()
-                        val result = Intent()
-                        result.putExtra("xxx", "aaaa")
-                        setResult(0, result)
                     }
                 }
             }
-        }, 200, 200)
+        }, 200, 500)
     }
 }
