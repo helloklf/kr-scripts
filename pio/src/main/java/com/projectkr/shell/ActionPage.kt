@@ -199,6 +199,8 @@ class ActionPage : AppCompatActivity() {
 
             action_page_tabhost.currentTab = 2
             title = configItem.title
+            action_progress.isIndeterminate = true
+            action_progress.progress = 0
             action_progress.visibility = View.VISIBLE
             return MyShellHandler(object : IActionEventHandler {
                 override fun onExit() {
