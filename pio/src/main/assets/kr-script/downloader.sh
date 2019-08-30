@@ -54,8 +54,6 @@ function downloader() {
     # 0~100 为下载进度百分比，-1表示创建下载任务失败
     local task_path="$START_DIR/downloader/status/$task_id"
     local result_path="$START_DIR/downloader/result/$task_id"
-    echo "$task_path"
-    echo "$result_path"
     while [ '1' = '1' ]
     do
         if [[ -f "$task_path" ]]; then
