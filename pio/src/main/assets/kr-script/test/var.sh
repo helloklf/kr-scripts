@@ -42,6 +42,14 @@ echo ''
 echo ''
 sleep 1
 
+echo 'export -p 命令'
+echo ''
+export -p
+echo ''
+echo ''
+echo ''
+sleep 1
+
 # echo 'export 命令' 1>&2
 # export
 # echo ''

@@ -1,6 +1,8 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -207,13 +209,15 @@ public class ScriptEnvironmen {
         final String dirUri = dir.getAbsolutePath();
         HashMap<String, String> params = new HashMap<>();
 
+        String toolkitDir = FileWrite.INSTANCE.getPrivateFilePath(context, "kr-script/toolkit");
+        params.put("TOOLKIT", "" + toolkitDir);
+        // params.put("PATH", "$PATH:" + toolkitDir);
         if (MagiskExtend.moduleInstalled()) {
             String magiskPath = MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() - 1)) : MagiskExtend.MAGISK_PATH;
             params.put("MAGISK_PATH", magiskPath);
         } else {
             params.put("MAGISK_PATH", "");
         }
-        params.put("PACKAGE_NAME", context.getPackageName());
         params.put("START_DIR", getStartPath(context));
         // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
@@ -226,6 +230,16 @@ public class ScriptEnvironmen {
         } else {
             params.put("BUSYBOX", "busybox");
         }
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            params.put("PACKAGE_NAME", context.getPackageName());
+            params.put("PACKAGE_VERSION_NAME", packageInfo.versionName);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.getLongVersionCode());
+            } else {
+                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.versionCode);
+            }
+        } catch (Exception ex) {}
 
         return params;
     }

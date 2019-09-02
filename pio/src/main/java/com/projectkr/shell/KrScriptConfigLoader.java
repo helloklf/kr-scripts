@@ -10,21 +10,24 @@ import java.util.HashMap;
 
 public class KrScriptConfigLoader {
     public final static String EXECUTOR_CORE = "executor_core";
+    private final String EXECUTOR_CORE_DEFAULT = "file:///android_asset/kr-script/executor.sh";
     public final static String PAGE_LIST_CONFIG = "page_list_config";
+    private final String PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/page_list.xml";
     public final static String FAVORITE_CONFIG = "favorite_config";
+    private final String FAVORITE_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/favorites.xml";
     public final static String ALLOW_HOME_PAGE = "allow_home_page";
+    private final String ALLOW_HOME_PAGE_DEFAULT = "1";
+    public final static String TOOLKIT_DIR = "toolkit_dir";
+    public final static String TOOLKIT_DIR_DEFAULT = "kr-script/toolkit/";
     private static final String ASSETS_FILE = "file:///android_asset/";
-    private final String executorCore = "file:///android_asset/kr-script/executor.sh";
-    private final String pageList = "file:///android_asset/kr-script/pages/page_list.xml";
-    private final String favoriteConfig = "file:///android_asset/kr-script/pages/favorites.xml";
-    private final String allowHomePage = "1";
 
     public HashMap<String, String> initFramework(Context context) {
         HashMap<String, String> configInfo = new HashMap<>();
-        configInfo.put(EXECUTOR_CORE, executorCore);
-        configInfo.put(PAGE_LIST_CONFIG, pageList);
-        configInfo.put(FAVORITE_CONFIG, favoriteConfig);
-        configInfo.put(ALLOW_HOME_PAGE, allowHomePage);
+        configInfo.put(EXECUTOR_CORE, EXECUTOR_CORE_DEFAULT);
+        configInfo.put(PAGE_LIST_CONFIG, PAGE_LIST_CONFIG_DEFAULT);
+        configInfo.put(FAVORITE_CONFIG, FAVORITE_CONFIG_DEFAULT);
+        configInfo.put(ALLOW_HOME_PAGE, ALLOW_HOME_PAGE_DEFAULT);
+        configInfo.put(TOOLKIT_DIR, TOOLKIT_DIR_DEFAULT);
 
         try {
             String fileName = context.getString(R.string.kr_script_config);

@@ -24,7 +24,9 @@ class PageListReader(private val context: Context) {
         }
     }
 
-    fun readPageList(filePath: String): ArrayList<PageInfo> {
+    fun readPageList(filePath: String, toolkitDir: String): ArrayList<PageInfo> {
+        val extractAssets = ExtractAssets(context)
+        extractAssets.extractResources(toolkitDir)
         val pages = ArrayList<PageInfo>()
 
         try {
@@ -76,12 +78,12 @@ class PageListReader(private val context: Context) {
                                     if (parser.getAttributeName(i) == "file") {
                                         val file = parser.getAttributeValue(i).trim()
                                         if (file.startsWith(ASSETS_FILE)) {
-                                            ExtractAssets(context).extractResource(file)
+                                            extractAssets.extractResource(file)
                                         }
                                     } else if (parser.getAttributeName(i) == "dir") {
                                         val file = parser.getAttributeValue(i).trim()
                                         if (file.startsWith(ASSETS_FILE)) {
-                                            ExtractAssets(context).extractResources(file)
+                                            extractAssets.extractResources(file)
                                         }
                                     }
                                 }
@@ -92,12 +94,12 @@ class PageListReader(private val context: Context) {
                                 if (parser.getAttributeName(i) == "file") {
                                     val file = parser.getAttributeValue(i).trim()
                                     if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResource(file)
+                                        extractAssets.extractResource(file)
                                     }
                                 } else if (parser.getAttributeName(i) == "dir") {
                                     val file = parser.getAttributeValue(i).trim()
                                     if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResources(file)
+                                        extractAssets.extractResources(file)
                                     }
                                 }
                             }

@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
+    <action>
+        <title>busybox 测试</title>
+        <desc>测试toolkit目录中放置的busybox是否生效</desc>
+        <script>
+            echo '当前busybox版本：'
+            busybox | grep BusyBox
+            echo ''
+            echo '当前目录：'
+            pwd
+        </script>
+    </action>
+    <action>
+        <title>zip 测试</title>
+        <desc>测试toolkit目录中放置的zip是否生效</desc>
+        <script>
+            zip --help
+        </script>
+    </action>
     <switch>
         <title>测试环境变量</title>
         <desc>查看环境变量</desc>
@@ -16,10 +34,13 @@
                 <option value="Z">测试一下 Z</option>
                 <option value="X">测试一下 X</option>
             </param>
-            <param name="param_int" label="数字" desc="只能输入数字，数值在10~100以内，不能为空" max="100" min="10" required="required" type="int" />
-            <param name="param_seekbar" title="数字（滑块）" max="100" min="10" type="seekbar" value="50" />
+            <param name="param_int" desc="只能输入数字，数值在10~100以内，不能为空" label="数字" max="100" min="10"
+                required="required" type="int" />
+            <param name="param_seekbar" max="100" min="10" title="数字（滑块）" type="seekbar"
+                value="50" />
             <param name="param_bool" label="选框" type="bool" />
-            <param name="param_file" label="文件选择" type="file" value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
+            <param name="param_file" label="文件选择" type="file"
+                value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
