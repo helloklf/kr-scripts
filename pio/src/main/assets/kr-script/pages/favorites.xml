@@ -23,7 +23,13 @@
     <action>
         <title>卸载系统自带的busybox</title>
         <desc>卸载安装到system分区的busybox</desc>
-        <setstate>file:///android_asset/kr-script/test/delete_busybox.sh</setstate>
+        <script>file:///android_asset/kr-script/test/delete_busybox.sh</script>
+    </action>
+
+    <action>
+        <title>用户身份测试</title>
+        <desc>检查当前用户名</desc>
+        <script>file:///android_asset/kr-script/test/check_root.sh</script>
     </action>
 
     <switch>
@@ -31,6 +37,7 @@
         <desc>查看环境变量</desc>
         <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
     </switch>
+
     <action>
         <title>参数类型列举</title>
         <params>
