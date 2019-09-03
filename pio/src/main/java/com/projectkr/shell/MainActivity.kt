@@ -90,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val pages = PageListReader(this.applicationContext).readPageList(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!, krScriptConfig.get(KrScriptConfigLoader.TOOLKIT_DIR)!!)
+            val pages = PageListReader(this.applicationContext).readPageList(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!)
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
             handler.post {
                 progressBarDialog.hideDialog()

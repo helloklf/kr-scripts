@@ -24,9 +24,8 @@ class PageListReader(private val context: Context) {
         }
     }
 
-    fun readPageList(filePath: String, toolkitDir: String): ArrayList<PageInfo> {
+    fun readPageList(filePath: String): ArrayList<PageInfo> {
         val extractAssets = ExtractAssets(context)
-        extractAssets.extractResources(toolkitDir)
         val pages = ArrayList<PageInfo>()
 
         try {
@@ -34,7 +33,7 @@ class PageListReader(private val context: Context) {
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
             var type = parser.eventType
-            var page:PageInfo? = null
+            var page: PageInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG -> {
@@ -62,18 +61,14 @@ class PageListReader(private val context: Context) {
                                     page!!.desc = value
                                 }
                             }
-                        }
-                        else if (page != null) {
+                        } else if (page != null) {
                             if (name == "title") {
                                 page.title = parser.nextText();
-                            }
-                            else if (name == "desc") {
+                            } else if (name == "desc") {
                                 page.desc = parser.nextText();
-                            }
-                            else if (name == "config") {
+                            } else if (name == "config") {
                                 page.pageConfigPath = parser.nextText();
-                            }
-                            else if ("resource" == parser.name) {
+                            } else if ("resource" == parser.name) {
                                 for (i in 0 until parser.attributeCount) {
                                     if (parser.getAttributeName(i) == "file") {
                                         val file = parser.getAttributeValue(i).trim()
@@ -88,8 +83,7 @@ class PageListReader(private val context: Context) {
                                     }
                                 }
                             }
-                        }
-                        else if ("resource" == parser.name) {
+                        } else if ("resource" == parser.name) {
                             for (i in 0 until parser.attributeCount) {
                                 if (parser.getAttributeName(i) == "file") {
                                     val file = parser.getAttributeValue(i).trim()

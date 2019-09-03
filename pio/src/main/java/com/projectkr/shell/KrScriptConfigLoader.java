@@ -18,7 +18,7 @@ public class KrScriptConfigLoader {
     public final static String ALLOW_HOME_PAGE = "allow_home_page";
     private final String ALLOW_HOME_PAGE_DEFAULT = "1";
     public final static String TOOLKIT_DIR = "toolkit_dir";
-    public final static String TOOLKIT_DIR_DEFAULT = "kr-script/toolkit/";
+    public final static String TOOLKIT_DIR_DEFAULT = "file:///android_asset/kr-script/toolkit";
     private static final String ASSETS_FILE = "file:///android_asset/";
 
     public HashMap<String, String> initFramework(Context context) {
@@ -51,7 +51,7 @@ public class KrScriptConfigLoader {
         } catch (Exception ex) {
         }
 
-        ScriptEnvironmen.init(context, configInfo.get(EXECUTOR_CORE));
+        ScriptEnvironmen.init(context, configInfo.get(EXECUTOR_CORE), configInfo.get(TOOLKIT_DIR));
 
         return configInfo;
     }
