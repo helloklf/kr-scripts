@@ -7,6 +7,7 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
+        resConfigs "zh"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 61
@@ -17,6 +18,7 @@ android {
             minifyEnabled false
         }
         release_mini {
+            shrinkResources true
             minifyEnabled = true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
