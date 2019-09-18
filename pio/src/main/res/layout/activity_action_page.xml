@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:background="@color/window_bg_light">
 
-                <com.omarea.krscript.ui.ActionListView
+                <FrameLayout
                     android:id="@+id/main_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

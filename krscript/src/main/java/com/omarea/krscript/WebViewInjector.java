@@ -17,16 +17,15 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.common.shell.ShellExecutor;
 import com.omarea.common.ui.DialogHelper;
 import com.omarea.krscript.downloader.Downloader;
 import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.FileChooserRender;
-
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -140,7 +139,7 @@ public class WebViewInjector {
                         params.put(key, paramsObject.getString(key));
                     }
                 }
-                process = Runtime.getRuntime().exec("su");
+                process = ShellExecutor.getSuperUserRuntime();
             } catch (Exception ex) {
                 Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -152,7 +151,6 @@ public class WebViewInjector {
                 setHandler(process, callbackFunction, new Runnable() {
                     @Override
                     public void run() {
-
                     }
                 });
 

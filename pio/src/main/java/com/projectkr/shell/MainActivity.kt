@@ -25,6 +25,7 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
@@ -99,14 +100,22 @@ class MainActivity : AppCompatActivity() {
                         _openPage(pageInfo)
                     }
                 })
-                list_favorites.setListData(favorites,
+
+                val fragment = ActionListFragment()
+                getFragmentManager().beginTransaction()
+                        .add(R.id.list_favorites, fragment as android.app.Fragment)        //.addToBackStack("fname")
+                        .commit()
+
+                fragment.setListData(
+                        this,
+                        favorites,
                         object : FileChooserRender.FileChooserInterface {
                             override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
                                 return chooseFilePath(fileSelectedInterface)
                             }
                         })
 
-                if (list_favorites.count > 0) {
+                if (favorites != null && favorites.size > 0) {
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE

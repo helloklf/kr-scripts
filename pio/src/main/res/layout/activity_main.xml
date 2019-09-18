@@ -41,16 +41,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscript.ui.ActionListView
+                    <FrameLayout
                         android:scrollbars="none"
-                        android:listSelector="@android:color/transparent"
                         android:id="@+id/list_favorites"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@color/window_bg_light"
-                        android:dividerHeight="1dp"
-                        android:paddingTop="15dp"
-                        android:paddingBottom="15dp" />
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout

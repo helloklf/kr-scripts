@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <action>
-        <title>busybox 测试</title>
-        <desc>测试toolkit目录中放置的busybox是否生效</desc>
-        <script>
-            echo '当前busybox版本：'
-            busybox | grep BusyBox
-            echo ''
-            echo '当前目录：'
-            pwd
-        </script>
-    </action>
-
-    <action>
-        <title>zip 测试</title>
-        <desc>测试toolkit目录中放置的zip是否生效</desc>
-        <script>
-            zip --help
-        </script>
-    </action>
+    <group title="工具测试">
+        <action>
+            <title>busybox 测试</title>
+            <desc>测试toolkit目录中放置的busybox是否生效</desc>
+            <script>
+                echo '当前busybox版本：'
+                busybox | grep BusyBox
+                echo ''
+                echo '当前目录：'
+                pwd
+            </script>
+        </action>
+        <action>
+            <title>zip 测试</title>
+            <desc>测试toolkit目录中放置的zip是否生效</desc>
+            <script>
+                zip --help
+            </script>
+        </action>
+    </group>
 
     <action>
         <title>卸载系统自带的busybox</title>

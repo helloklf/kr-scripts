@@ -27,6 +27,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page.*
 
@@ -345,21 +346,26 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        main_list.setListData(
+                        val fragment = ActionListFragment()
+                        getFragmentManager().beginTransaction()
+                                .add(R.id.main_list, fragment as android.app.Fragment)        //.addToBackStack("fname")
+                                .commit()
+
+                        fragment.setListData(
+                                this,
                                 items,
                                 object : FileChooserRender.FileChooserInterface {
                                     override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                                         return chooseFilePath(fileSelectedInterface)
                                     }
                                 },
-                                actionShortClickHandler,
-                                addToFavorites
+                                actionShortClickHandler
                         )
                         if (autoRun.isNotEmpty()) {
                             val onCompleted = Runnable {
                                 // finish()
                             }
-                            if (!main_list.triggerAction(autoRun, onCompleted)) {
+                            if (!fragment.triggerAction(autoRun, onCompleted)) {
                                 Toast.makeText(this, "指定项已丢失", Toast.LENGTH_SHORT).show()
                             }
                         }
