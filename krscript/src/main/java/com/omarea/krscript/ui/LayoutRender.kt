@@ -74,6 +74,13 @@ class LayoutRender {
                 addToLayout(layout, actionParamInfo)
                 layout.tag = null
             }
+            // 颜色输入
+            else if (actionParamInfo.type == "color") {
+                val layout = ColorPicker(actionParamInfo, context).render()
+
+                addToLayout(layout, actionParamInfo)
+                layout.tag = null
+            }
             // 文本框渲染
             else {
                 val editText = EditText(context)
@@ -156,15 +163,23 @@ class LayoutRender {
             val view = linearLayout.findViewWithTag<View>(actionParamInfo.name)
             if (view is EditText) {
                 val text = view.text.toString()
-                if ((actionParamInfo.type == "int" || actionParamInfo.type == "number") && text.isNotEmpty()) {
-                    try {
-                        val value = text.toInt()
-                        if (value < actionParamInfo.min) {
-                            throw Exception("${getFieldTips(actionParamInfo)} ${value} < ${actionParamInfo.min} !!!")
-                        } else if (value > actionParamInfo.max) {
-                            throw Exception("${getFieldTips(actionParamInfo)} ${value} > ${actionParamInfo.max} !!!")
+                if (text.isNotEmpty()) {
+                    if ((actionParamInfo.type == "int" || actionParamInfo.type == "number")) {
+                        try {
+                            val value = text.toInt()
+                            if (value < actionParamInfo.min) {
+                                throw Exception("${getFieldTips(actionParamInfo)} ${value} < ${actionParamInfo.min} !!!")
+                            } else if (value > actionParamInfo.max) {
+                                throw Exception("${getFieldTips(actionParamInfo)} ${value} > ${actionParamInfo.max} !!!")
+                            }
+                        } catch (ex: java.lang.NumberFormatException) {
                         }
-                    } catch (ex: java.lang.NumberFormatException) {
+                    } else if (actionParamInfo.type == "color") {
+                        try {
+                            Color.parseColor(text)
+                        } catch (ex: java.lang.Exception) {
+                            throw Exception("" + getFieldTips(actionParamInfo) + "  \n" + context.getString(R.string.kr_invalid_color))
+                        }
                     }
                 }
                 actionParamInfo.value = text

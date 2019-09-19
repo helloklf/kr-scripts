@@ -10,8 +10,8 @@ android {
         resConfigs "zh"
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 61
-        versionName "3.4.1"
+        versionCode 63
+        versionName "3.4.3"
     }
     buildTypes {
         release {

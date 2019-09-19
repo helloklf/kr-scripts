@@ -16,10 +16,13 @@
     <string name="kr_param_options_load">加载候选列表 </string>
     <string name="kr_params_render">渲染界面……</string>
     <string name="kr_please_choose_file">请选择文件</string>
+    <string name="kr_please_input_color">请输入颜色</string>
     <string name="kr_write_external_storage">需要读写外置存储权限！</string>
     <string name="kr_download_create_fail">创建下载任务失败</string>
     <string name="kr_download_create_success">开始下载文件</string>
     <string name="kr_download_confirm">是否下载文件</string>
     <string name="kr_download_completed">文件下载成功</string>
     <string name="kr_download_downloading">文件下载中</string>
+    <string name="kr_color_picker">请选择颜色</string>
+    <string name="kr_invalid_color">输入的色值无效，仅支持类似 #ff88aa00 的格式</string>
 </resources>

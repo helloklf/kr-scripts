@@ -57,6 +57,8 @@
             <param name="param_bool" label="选框" type="bool" />
             <param name="param_file" label="文件选择" type="file"
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
+            <param name="color" type="color" label="颜色输入">
+            </param>
         </params>
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
