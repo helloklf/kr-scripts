@@ -1,18 +1,18 @@
 package com.omarea.krscript.config
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.ActionInfo
-import com.omarea.krscript.model.ConfigItemBase
-import com.omarea.krscript.model.GroupInfo
-import com.omarea.krscript.model.SwitchInfo
+import com.omarea.krscript.model.*
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by Hello on 2018/04/01.
@@ -40,6 +40,7 @@ class PageConfigReader(private var context: Context) {
             val actions: ArrayList<ConfigItemBase> = ArrayList<ConfigItemBase>()
             var action: ActionInfo? = null
             var switch: SwitchInfo? = null
+            var picker: PickerInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG ->
@@ -70,7 +71,6 @@ class PageConfigReader(private var context: Context) {
                                     "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
                                     "auto-off" -> action.autoOff = parser.getAttributeValue(i) == "true"
                                     "interruptible" -> action.interruptible = parser.getAttributeValue(i) != "false"
-                                    "start" -> action.start = parser.getAttributeValue(i)
                                     "support" -> {
                                         if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
                                             action = null
@@ -90,11 +90,35 @@ class PageConfigReader(private var context: Context) {
                                     "confirm" -> switch.confirm = parser.getAttributeValue(i) == "true"
                                     "auto-off" -> switch.autoOff = parser.getAttributeValue(i) == "true"
                                     "interruptible" -> switch.interruptible = parser.getAttributeValue(i) != "false"
-                                    "start" -> switch.start = parser.getAttributeValue(i)
                                     "support" -> {
                                         if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
                                             switch = null
                                         }
+                                    }
+                                }
+                            }
+                        }
+                        else if ("picker" == parser.name) {
+                            picker = PickerInfo()
+                            for (i in 0 until parser.attributeCount) {
+                                if (picker == null) {
+                                    break
+                                }
+                                val attrValue = parser.getAttributeValue(i)
+                                when (parser.getAttributeName(i)) {
+                                    "id" -> picker.id = attrValue
+                                    "confirm" -> picker.confirm = attrValue == "true"
+                                    "auto-off" -> picker.autoOff = attrValue == "true"
+                                    "interruptible" -> picker.interruptible = attrValue != "false"
+                                    "support" -> {
+                                        if (executeResultRoot(context, attrValue) != "1") {
+                                            picker = null
+                                        }
+                                    }
+                                    "options-sh", "options-su" -> {
+                                        if (picker.options == null)
+                                            picker.options = ArrayList()
+                                        picker.optionsSh = attrValue
                                     }
                                 }
                             }
@@ -104,6 +128,9 @@ class PageConfigReader(private var context: Context) {
                         }
                         else if (switch != null) {
                             tagStartInSwitch(switch, parser)
+                        }
+                        else if (picker != null) {
+                            tagStartInPicker(picker, parser)
                         }
                         else if ("resource" == parser.name) {
                             for (i in 0 until parser.attributeCount) {
@@ -135,14 +162,23 @@ class PageConfigReader(private var context: Context) {
                             }
                             switch = null
                         }
+                        else if ("picker" == parser.name) {
+                            tagEndInPicker(picker, parser)
+                            if (picker != null) {
+                                actions.add(picker)
+                            }
+                            picker = null
+                        }
                 }
                 type = parser.next()// 继续下一个事件
             }
 
             return actions
         } catch (ex: Exception) {
-            Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-            Log.d("VTools ReadConfig Fail！", "" + ex.message)
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+            }
+            Log.e("VTools ReadConfig Fail！", "" + ex.message)
         }
 
         return null
@@ -150,7 +186,7 @@ class PageConfigReader(private var context: Context) {
 
     var actionParamInfos: ArrayList<ActionParamInfo>? = null
     var actionParamInfo: ActionParamInfo? = null
-    fun tagStartInAction(action: ActionInfo, parser:XmlPullParser) {
+    private fun tagStartInAction(action: ActionInfo, parser:XmlPullParser) {
         if ("title" == parser.name) {
             action.title = parser.nextText()
         }
@@ -247,7 +283,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
+    private fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
         if (action != null) {
             if (action.script == null)
                 action.script = ""
@@ -260,7 +296,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    fun tagStartInSwitch(switchInfo: SwitchInfo, parser:XmlPullParser) {
+    private fun tagStartInSwitch(switchInfo: SwitchInfo, parser:XmlPullParser) {
         if ("title" == parser.name) {
             switchInfo.title = parser.nextText()
         }
@@ -298,7 +334,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    fun tagEndInSwitch(switchInfo: SwitchInfo?, parser:XmlPullParser) {
+    private fun tagEndInSwitch(switchInfo: SwitchInfo?, parser:XmlPullParser) {
         if (switchInfo != null) {
             if (switchInfo.getState == null) {
                 switchInfo.getState = ""
@@ -312,6 +348,51 @@ class PageConfigReader(private var context: Context) {
             if (switchInfo.id.isEmpty() && switchInfo.title.isNotEmpty()) {
                 switchInfo.id = switchInfo.title
             }
+        }
+    }
+
+    private fun tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
+        if ("title" == parser.name) {
+            pickerInfo.title = parser.nextText()
+        }
+        else if ("desc" == parser.name) {
+            for (i in 0 until parser.attributeCount) {
+                val attrName = parser.getAttributeName(i)
+                if (attrName == "su" || attrName == "sh") {
+                    pickerInfo.descPollingShell = parser.getAttributeValue(i)
+                    pickerInfo.desc = executeResultRoot(context, pickerInfo.descPollingShell)
+                }
+            }
+            if (pickerInfo.desc.isEmpty())
+                pickerInfo.desc = parser.nextText()
+        }
+        else if ("option" == parser.name) {
+            if (pickerInfo.options === null) {
+                pickerInfo.options = ArrayList()
+            }
+            val option = ActionParamInfo.ActionParamOption()
+            for (i in 0 until parser.attributeCount) {
+                val attrName = parser.getAttributeName(i)
+                if (attrName == "val" || attrName == "value") {
+                    option.value = parser.getAttributeValue(i)
+                }
+            }
+            option.desc = parser.nextText()
+            if (option.value == null)
+                option.value = option.desc
+            pickerInfo.options!!.add(option)
+        }
+        else if ("getstate" == parser.name) {
+            pickerInfo.getState = parser.nextText()
+        }
+        else if ("setstate" == parser.name) {
+            pickerInfo.setState = parser.nextText()
+        }
+    }
+
+    private fun tagEndInPicker(pickerInfo: PickerInfo?, parser:XmlPullParser) {
+        if (pickerInfo != null) {
+
         }
     }
 

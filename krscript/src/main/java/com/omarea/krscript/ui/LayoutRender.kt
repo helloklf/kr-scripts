@@ -15,6 +15,38 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class LayoutRender {
+    companion object {
+        /**
+         * 获取当前选中项索引
+         * @param ActionParamInfo actionParamInfo 参数信息
+         * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
+         */
+        fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): Int {
+            var selectedIndex = -1
+            var index = 0
+
+            val valList = ArrayList<String>()
+            if (actionParamInfo.valueFromShell != null)
+                valList.add(actionParamInfo.valueFromShell!!)
+            if (actionParamInfo.value != null) {
+                valList.add(actionParamInfo.value!!)
+            }
+            if (valList.size > 0) {
+                for (j in valList.indices) {
+                    for (option in options) {
+                        if ((option["item"] as ActionParamInfo.ActionParamOption).value == valList[j]) {
+                            selectedIndex = index
+                            break
+                        }
+                        index++
+                    }
+                    if (selectedIndex > -1)
+                        break
+                }
+            }
+            return selectedIndex
+        }
+    }
     private var linearLayout: LinearLayout
     private var context: Context
 
@@ -228,37 +260,6 @@ class LayoutRender {
                 // TODO:刷新界面显示
             }
         }
-    }
-
-    /**
-     * 获取当前选中项索引
-     * @param ActionParamInfo actionParamInfo 参数信息
-     * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
-     */
-    private fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): Int {
-        var selectedIndex = -1
-        var index = 0
-
-        val valList = ArrayList<String>()
-        if (actionParamInfo.valueFromShell != null)
-            valList.add(actionParamInfo.valueFromShell!!)
-        if (actionParamInfo.value != null) {
-            valList.add(actionParamInfo.value!!)
-        }
-        if (valList.size > 0) {
-            for (j in valList.indices) {
-                for (option in options) {
-                    if ((option["item"] as ActionParamInfo.ActionParamOption).value == valList[j]) {
-                        selectedIndex = index
-                        break
-                    }
-                    index++
-                }
-                if (selectedIndex > -1)
-                    break
-            }
-        }
-        return selectedIndex
     }
 
     /**

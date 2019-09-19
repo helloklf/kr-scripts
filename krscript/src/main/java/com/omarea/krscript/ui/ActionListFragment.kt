@@ -2,7 +2,6 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.preference.*
@@ -17,15 +16,13 @@ import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
-import java.lang.Exception
 
 class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
     private lateinit var mContext: Context
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
     override fun onPreferenceClick(preference: Preference?): Boolean {
         if (preference != null) {
-            val key = preference!!.key
-            Log.d("key", "onPreferenceClick" + key)
+            val key = preference.key
             try {
                 val index = key.toInt()
                 val item = actionInfos[index]
@@ -35,6 +32,10 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                             item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                         }
                         preference.summary = item.desc
+                    })
+                } else if (item is PickerInfo) {
+                    onPickerClick(item, Runnable {
+
                     })
                 } else if (item is SwitchInfo) {
                     onSwitchClick(item, Runnable {
@@ -95,6 +96,8 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                 preference = createSwitchPreference(it, index)
             } else if (it is ActionInfo) {
                 preference = createActionPreference(it, index)
+            } else if (it is PickerInfo) {
+                preference = createListPreference(it, index)
             } else if (it is GroupInfo) {
                 preferenceCategory = createPreferenceGroup(it)
                 preferenceScreen.addPreference(preferenceCategory)
@@ -108,6 +111,41 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                 }
             }
         }
+    }
+
+    private fun createListPreference(pickerInfo: PickerInfo, index: Int): Preference {
+        /*
+        // 不够自由
+        val item = ListPreference(mContext)
+        item.key = index.toString()
+        item.title = "" + pickerInfo.title
+        item.summary = "" + pickerInfo.desc
+        item.onPreferenceClickListener = this
+        item.dialogTitle = item.title
+        item.value = "" + pickerInfo.value
+        item.layoutResource = R.layout.kr_picker_list_item
+
+        if (pickerInfo.options != null) {
+            item.entries = pickerInfo.options!!.map {  it.desc }.toTypedArray()
+            item.entryValues = pickerInfo.options!!.map {  it.value }.toTypedArray()
+        } else {
+            item.entries = arrayOf()
+            item.entryValues = arrayOf()
+        }
+
+        return item
+        */
+
+        val item = this.preferenceManager.createPreferenceScreen(mContext)
+        // val item = EditTextPreference(mContext)
+        item.key = index.toString()
+        item.title = "" + pickerInfo.title
+        item.summary = "" + pickerInfo.desc
+        item.onPreferenceClickListener = this
+        item.layoutResource = R.layout.kr_action_list_item2
+        // item.widgetLayoutResource = R.layout.kr_action_list_item2
+
+        return item
     }
 
     private fun createSwitchPreference(switchInfo: SwitchInfo, index: Int): Preference {
@@ -180,6 +218,57 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         actionExecute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
+            }
+        })
+    }
+
+
+    /**
+     * 单选列表点击
+     */
+    private fun onPickerClick(pickerInfo: PickerInfo, onExit: Runnable) {
+        val paramInfo = ActionParamInfo()
+        paramInfo.options = pickerInfo.options
+        paramInfo.optionsSh = pickerInfo.optionsSh
+
+        // 获取当前值
+        if (pickerInfo.getState != null) {
+            paramInfo.valueFromShell = executeScriptGetResult(mContext, pickerInfo.getState!!)
+        }
+
+        // 获取可选项（合并options-sh和静态options的结果）
+        val coalescentOptions = getParamOptions(paramInfo)
+
+        val options = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
+        val values = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+
+        var index = -1
+        if (coalescentOptions != null) {
+            index = LayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
+        }
+
+        DialogHelper.animDialog(
+                AlertDialog.Builder(mContext)
+                        .setTitle(pickerInfo.title)
+                        .setSingleChoiceItems(options, index) { _, which ->
+                            index = which
+                        }
+                        .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                            pickerExecute(pickerInfo, "" + (if (index > -1) values[index] else ""), onExit)
+                        }
+                        .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ ->
+                        })
+    }
+
+    /**
+     * 执行picker的操作
+     */
+    private fun pickerExecute(pickerInfo: PickerInfo, toValue: String, onExit: Runnable) {
+        val script = pickerInfo.setState ?: return
+
+        actionExecute(pickerInfo, script, onExit, object : java.util.HashMap<String, String>() {
+            init {
+                put("state", toValue)
             }
         })
     }
