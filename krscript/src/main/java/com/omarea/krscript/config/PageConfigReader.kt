@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
+import android.text.Layout
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
@@ -342,18 +343,12 @@ class PageConfigReader(private var context: Context) {
     private fun pageNode(page: PageInfo, parser: XmlPullParser): PageInfo {
         for (attrIndex in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(attrIndex)
-            if (attrName == "config") {
-                val value = parser.getAttributeValue(attrIndex)
-                page.pageConfigPath = value
-            } else if (attrName == "html") {
-                val value = parser.getAttributeValue(attrIndex)
-                page.onlineHtmlPage = value
-            } else if (attrName == "title") {
-                val value = parser.getAttributeValue(attrIndex)
-                page.title = value
-            } else if (attrName == "desc") {
-                val value = parser.getAttributeValue(attrIndex)
-                page.desc = value
+            val attrValue = parser.getAttributeValue(attrIndex)
+            when (attrName) {
+                "config" -> page.pageConfigPath = attrValue
+                "html" -> page.onlineHtmlPage = attrValue
+                "title" -> page.title = attrValue
+                "desc" -> page.desc = attrValue
             }
         }
         return page
@@ -411,38 +406,40 @@ class PageConfigReader(private var context: Context) {
         else if ("desc" == parser.name) {
             descNode(textInfo, parser)
         }
-        else if ("row" == parser.name) {
+        else if ("slice" == parser.name) {
             rowNode(textInfo, parser)
         }
     }
 
     private fun rowNode(textInfo: TextInfo, parser: XmlPullParser) {
-        try {
-            val count = parser.attributeCount
-            for (i in 0 until count) {
-                val attrName = parser.getAttributeName(i)
-                val attrValue = parser.getAttributeValue(i)
-                val textRow = TextInfo.TextRow()
-                try {
-                    when (attrName) {
-                        "bold" -> textRow.bold = (attrValue == "1" || attrValue == "true" || attrValue == "bold")
-                        "italic" -> textRow.italic = (attrValue == "1" || attrValue == "true" || attrValue == "italic")
-                        "color" -> textRow.color = Color.parseColor(attrValue)
-                        "size" -> textRow.size = attrValue.toInt()
-                        "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
+        val textRow = TextInfo.TextRow()
+        for (i in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(i).toLowerCase()
+            val attrValue = parser.getAttributeValue(i)
+            try {
+                when (attrName) {
+                    "bold", "b" -> textRow.bold = (attrValue == "1" || attrValue == "true" || attrValue == "bold")
+                    "italic", "i" -> textRow.italic = (attrValue == "1" || attrValue == "true" || attrValue == "italic")
+                    "underline", "u" -> textRow.underline = (attrValue == "1" || attrValue == "true" || attrValue == "underline")
+                    "foreground", "color" -> textRow.color = Color.parseColor(attrValue)
+                    "background", "bgcolor" -> textRow.bgColor = Color.parseColor(attrValue)
+                    "size" -> textRow.size = attrValue.toInt()
+                    "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
+                    "link", "href", "a" -> textRow.link = attrValue
+                    "align" -> {
+                        when (attrValue) {
+                            "left" -> textRow.align = Layout.Alignment.ALIGN_LEFT
+                            "right" -> textRow.align = Layout.Alignment.ALIGN_RIGHT
+                            "center" -> textRow.align = Layout.Alignment.ALIGN_CENTER
+                            "normal" -> textRow.align = Layout.Alignment.ALIGN_NORMAL
+                        }
                     }
-                } catch (ex: Exception) {
                 }
-                try {
-                    textRow.text = parser.nextText()
-                    textInfo.rows.add(textRow)
-                } catch (ex: java.lang.Exception) {
-                    Log.e("KrConfig rowNode", "" + ex.message)
-                }
+            } catch (ex: Exception) {
             }
-        } catch (ex: java.lang.Exception) {
-            Log.e("KrConfig rowNode", "" + ex.message)
         }
+        textRow.text = "" + parser.nextText()
+        textInfo.rows.add(textRow)
     }
 
     private fun tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {

@@ -1,21 +1,20 @@
 package com.omarea.krscript.ui
 
 import android.content.Context
-import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import com.omarea.krscript.R
-import com.omarea.krscript.model.GroupInfo
-import com.omarea.krscript.model.TextInfo
-import kotlinx.android.synthetic.main.kr_text_list_item.view.*
-import android.graphics.Color.parseColor
+import android.content.Intent
 import android.graphics.Typeface
-import android.text.style.ForegroundColorSpan
+import android.net.Uri
+import android.text.Layout
+import android.text.SpannableString
 import android.text.Spanned
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.StyleSpan
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.*
+import android.view.View
+import android.widget.TextView
+import android.widget.Toast
+import com.omarea.krscript.R
+import com.omarea.krscript.model.TextInfo
 
 
 class ListItemText(private val context: Context,
@@ -26,29 +25,57 @@ class ListItemText(private val context: Context,
 
     init {
         if (config.rows.size > 0 && rowsView != null) {
+            rowsView.setMovementMethod(LinkMovementMethod.getInstance()) // 不设置 ClickableSpan 点击没反应
+            // rowsView.setOnClickListener {}
+
             rowsView.visibility = View.VISIBLE
             for (row in config.rows) {
-                val spannableString = SpannableString(if(row.breakRow) ("\n" + row.text) else row.text)
+                if(row.breakRow || row.align != Layout.Alignment.ALIGN_NORMAL) {
+                    rowsView.append("\n")
+                }
+                val text = row.text
+                val length = text.length
+                val spannableString = SpannableString(text)
 
                 if (row.color != -1) {
-                    val foregroundColorSpan = ForegroundColorSpan(row.color)
-                    spannableString.setSpan(foregroundColorSpan, 0, row.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(ForegroundColorSpan(row.color), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.bgColor != -1) {
+                    spannableString.setSpan(BackgroundColorSpan(row.bgColor), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 if (row.bold && row.italic) {
-                    val style = StyleSpan(Typeface.BOLD_ITALIC)
-                    spannableString.setSpan(style, 0, row.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(StyleSpan(Typeface.BOLD_ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 } else if (row.bold) {
-                    val style = StyleSpan(Typeface.BOLD)
-                    spannableString.setSpan(style, 0, row.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 } else if (row.italic) {
-                    val style = StyleSpan(Typeface.ITALIC)
-                    spannableString.setSpan(style, 0, row.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(StyleSpan(Typeface.ITALIC), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 if (row.size != -1) {
-                    val size = AbsoluteSizeSpan(row.size, true)
-                    spannableString.setSpan(size, 0, row.text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(AbsoluteSizeSpan(row.size, true), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                spannableString.setSpan(AlignmentSpan.Standard(row.align), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+
+                if (row.underline) {
+                    spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                }
+
+                if (row.link.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            try {
+                                val uri = Uri.parse(row.link)
+                                val intent = Intent(Intent.ACTION_VIEW, uri)
+                                context.startActivity(intent)
+                            } catch (ex: Exception) {
+                                Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
                 }
 
                 rowsView.append(spannableString)
