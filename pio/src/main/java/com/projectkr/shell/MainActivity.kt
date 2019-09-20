@@ -95,11 +95,12 @@ class MainActivity : AppCompatActivity() {
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
             handler.post {
                 progressBarDialog.hideDialog()
-                list_pages.setListData(pages, object : PageClickHandler {
+                val openPageHandler = object : PageClickHandler {
                     override fun openPage(pageInfo: PageInfo) {
                         _openPage(pageInfo)
                     }
-                })
+                }
+                list_pages.setListData(pages, openPageHandler)
 
                 val fragment = ActionListFragment()
                 getFragmentManager().beginTransaction()
@@ -113,7 +114,9 @@ class MainActivity : AppCompatActivity() {
                             override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
                                 return chooseFilePath(fileSelectedInterface)
                             }
-                        })
+                        },
+                        null,
+                        openPageHandler)
 
                 if (favorites != null && favorites.size > 0) {
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)

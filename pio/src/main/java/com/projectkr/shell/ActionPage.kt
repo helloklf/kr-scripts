@@ -14,6 +14,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.SpannableString
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -359,8 +360,12 @@ class ActionPage : AppCompatActivity() {
                                         return chooseFilePath(fileSelectedInterface)
                                     }
                                 },
-                                actionShortClickHandler
-                        )
+                                actionShortClickHandler,
+                                object : PageClickHandler {
+                                    override fun openPage(pageInfo: PageInfo) {
+                                        _openPage(pageInfo)
+                                    }
+                                })
                         if (autoRun.isNotEmpty()) {
                             val onCompleted = Runnable {
                                 // finish()
@@ -374,6 +379,24 @@ class ActionPage : AppCompatActivity() {
                 }
                 actionsLoaded = true
             }).start()
+        }
+    }
+
+    fun _openPage(pageInfo: PageInfo) {
+        try {
+            if (!pageInfo.pageConfigPath.isEmpty()) {
+                val intent = Intent(this, ActionPage::class.java)
+                intent.putExtra("config", pageInfo.pageConfigPath)
+                intent.putExtra("title", pageInfo.title)
+                startActivity(intent)
+            } else if (!pageInfo.onlineHtmlPage.isEmpty()) {
+                val intent = Intent(this, ActionPageOnline::class.java)
+                intent.putExtra("config", pageInfo.onlineHtmlPage)
+                intent.putExtra("title", pageInfo.title)
+                startActivity(intent)
+            }
+        } catch (ex: java.lang.Exception) {
+            Log.e("_openPage", "" + ex.message)
         }
     }
 }

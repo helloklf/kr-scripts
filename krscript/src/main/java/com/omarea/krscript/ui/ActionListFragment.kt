@@ -90,24 +90,27 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
             } catch (ex: Exception) {
             }
         }
-        return false
+        return true
     }
 
     private lateinit var progressBarDialog: ProgressBarDialog
     private var fileChooser: FileChooserRender.FileChooserInterface? = null
     private var actionShortClickHandler: ActionShortClickHandler? = null
+    private var pageClickHandler: PageClickHandler? = null
 
     fun setListData(
             context: Context,
             actionInfos: ArrayList<ConfigItemBase>?,
             fileChooser: FileChooserRender.FileChooserInterface,
-            actionShortClickHandler: ActionShortClickHandler? = null) {
+            actionShortClickHandler: ActionShortClickHandler? = null,
+            pageClickHandler: PageClickHandler) {
         this.mContext = context
         this.progressBarDialog = ProgressBarDialog(mContext)
         if (actionInfos != null) {
             this.actionInfos = actionInfos
             this.fileChooser = fileChooser
             this.actionShortClickHandler = actionShortClickHandler
+            this.pageClickHandler = pageClickHandler
         }
     }
 
@@ -198,7 +201,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         item.title = "" + info.title
         item.summary = "" + info.desc
         item.onPreferenceClickListener = this
-        item.layoutResource = R.layout.kr_action_list_item2
+        item.layoutResource = R.layout.kr_page_list_item2
         // item.widgetLayoutResource = R.layout.kr_action_list_item2
 
         return item
@@ -280,7 +283,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
 
     private fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
-
+        pageClickHandler?.openPage(pageInfo)
     }
 
 
