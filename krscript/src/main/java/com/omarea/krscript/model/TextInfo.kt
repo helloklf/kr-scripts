@@ -14,6 +14,7 @@ class TextInfo : ConfigItemBase() {
         internal var breakRow: Boolean = false
         internal var align: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL
         internal var link: String = ""
+        internal var activity: String = ""
         internal var text: String = ""
     }
 }

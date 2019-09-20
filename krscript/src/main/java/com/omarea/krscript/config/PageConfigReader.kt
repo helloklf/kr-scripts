@@ -425,7 +425,8 @@ class PageConfigReader(private var context: Context) {
                     "background", "bgcolor" -> textRow.bgColor = Color.parseColor(attrValue)
                     "size" -> textRow.size = attrValue.toInt()
                     "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
-                    "link", "href", "a" -> textRow.link = attrValue
+                    "link", "href" -> textRow.link = attrValue
+                    "activity", "a" -> textRow.activity = attrValue
                     "align" -> {
                         when (attrValue) {
                             "left" -> textRow.align = Layout.Alignment.ALIGN_LEFT

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
+import android.provider.Settings
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
@@ -61,21 +62,38 @@ class ListItemText(private val context: Context,
 
 
                 if (row.underline) {
-                    spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 if (row.link.isNotEmpty()) {
                     spannableString.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
-                            try {
-                                val uri = Uri.parse(row.link)
-                                val intent = Intent(Intent.ACTION_VIEW, uri)
-                                context.startActivity(intent)
-                            } catch (ex: Exception) {
-                                Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
+                            if (row.link.isNotEmpty()) {
+                                try {
+                                    val uri = Uri.parse(row.link)
+                                    val intent = Intent(Intent.ACTION_VIEW, uri)
+                                    context.startActivity(intent)
+                                } catch (ex: Exception) {
+                                    Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
+                                }
                             }
                         }
-                    }, 0, length, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.activity.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            if (row.activity.isNotEmpty()) {
+                                try {
+                                    val intent = Intent(row.activity)
+                                    context.startActivity(intent)
+                                } catch (ex: Exception) {
+                                    Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }
 
                 rowsView.append(spannableString)

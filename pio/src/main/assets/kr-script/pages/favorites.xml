@@ -129,12 +129,29 @@
             <slice bold="true" italic="true">显示为粗斜体</slice>
             <slice size="20">字体显示为20dp</slice>
             <slice color="#ff0000">显示为红色</slice>
-            <slice align="center" break="true">居中对齐</slice>
-            <slice align="right" break="true">靠右对齐（Android P+）</slice>
-            <slice bgcolor="#ff0000" color="#ffffff">红底白字</slice>
-            <slice break="break" underline="underline">文字带下划线</slice>
-            <slice break="break" u="1">文字带下划线（underline属性同u属性）</slice>
-            <slice break="break" size="20" link="http://vtools.omarea.com/">Scene 官网</slice>
+            <slice
+                align="center"
+                break="true">居中对齐</slice>
+            <slice
+                align="right"
+                break="true">靠右对齐（Android P+）</slice>
+            <slice
+                bgcolor="#ff0000"
+                color="#ffffff">红底白字</slice>
+            <slice
+                break="break"
+                underline="underline">文字带下划线</slice>
+            <slice
+                break="break"
+                u="1">文字带下划线（underline属性同u属性）</slice>
+            <slice
+                break="break"
+                size="20"
+                link="http://vtools.omarea.com/">Scene 官网</slice>
+            <slice
+                break="1"
+                size="20"
+                activity="android.settings.APN_SETTINGS">打开APN设置</slice>
         </slices>
     </text>
 </items>
