@@ -37,143 +37,93 @@ class PageConfigReader(private var context: Context) {
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
             var type = parser.eventType
-            val actions: ArrayList<ConfigItemBase> = ArrayList<ConfigItemBase>()
+            val mainList: ArrayList<ConfigItemBase> = ArrayList()
             var action: ActionInfo? = null
             var switch: SwitchInfo? = null
             var picker: PickerInfo? = null
+            var group: GroupInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG ->
-                        if ("separator" == parser.name) {
-                            val separator = ActionInfo()
-                            separator.separator = parser.nextText()
-                            actions.add(separator)
+                        if ("group" == parser.name) {
+                            group = groupNode(GroupInfo(), parser)
                         }
-                        else if ("group" == parser.name) {
-                            for (i in 0 until parser.attributeCount) {
-                                val attrName = parser.getAttributeName(i)
-                                if (attrName == "title") {
-                                    val separator = GroupInfo()
-                                    separator.separator = parser.getAttributeValue(i)
-                                    actions.add(separator)
-                                    break
-                                }
-                            }
+                        else if (group != null && !group.supported) {
+                            // 如果 group.supported !- true 跳过group内所有项
                         }
-                        else if ("action" == parser.name) {
-                            action = ActionInfo()
-                            for (i in 0 until parser.attributeCount) {
-                                if (action == null) {
-                                    break
-                                }
-                                when (parser.getAttributeName(i)) {
-                                    "id" -> action.id = parser.getAttributeValue(i)
-                                    "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
-                                    "auto-off" -> action.autoOff = parser.getAttributeValue(i) == "true"
-                                    "interruptible" -> action.interruptible = parser.getAttributeValue(i) != "false"
-                                    "support" -> {
-                                        if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
-                                            action = null
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if ("switch" == parser.name) {
-                            switch = SwitchInfo()
-                            for (i in 0 until parser.attributeCount) {
-                                if (switch == null) {
-                                    break
-                                }
-                                when (parser.getAttributeName(i)) {
-                                    "id" -> switch.id = parser.getAttributeValue(i)
-                                    "confirm" -> switch.confirm = parser.getAttributeValue(i) == "true"
-                                    "auto-off" -> switch.autoOff = parser.getAttributeValue(i) == "true"
-                                    "interruptible" -> switch.interruptible = parser.getAttributeValue(i) != "false"
-                                    "support" -> {
-                                        if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
-                                            switch = null
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else if ("picker" == parser.name) {
-                            picker = PickerInfo()
-                            for (i in 0 until parser.attributeCount) {
-                                if (picker == null) {
-                                    break
-                                }
-                                val attrValue = parser.getAttributeValue(i)
-                                when (parser.getAttributeName(i)) {
-                                    "id" -> picker.id = attrValue
-                                    "confirm" -> picker.confirm = attrValue == "true"
-                                    "auto-off" -> picker.autoOff = attrValue == "true"
-                                    "interruptible" -> picker.interruptible = attrValue != "false"
-                                    "support" -> {
-                                        if (executeResultRoot(context, attrValue) != "1") {
-                                            picker = null
-                                        }
-                                    }
-                                    "options-sh", "options-su" -> {
-                                        if (picker.options == null)
-                                            picker.options = ArrayList()
-                                        picker.optionsSh = attrValue
-                                    }
-                                }
-                            }
-                        }
-                        else if (action != null) {
-                            tagStartInAction(action, parser)
-                        }
-                        else if (switch != null) {
-                            tagStartInSwitch(switch, parser)
-                        }
-                        else if (picker != null) {
-                            tagStartInPicker(picker, parser)
-                        }
-                        else if ("resource" == parser.name) {
-                            for (i in 0 until parser.attributeCount) {
-                                if (parser.getAttributeName(i) == "file") {
-                                    val file = parser.getAttributeValue(i).trim()
-                                    if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResource(file)
-                                    }
-                                } else if (parser.getAttributeName(i) == "dir") {
-                                    val file = parser.getAttributeValue(i).trim()
-                                    if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResources(file)
-                                    }
-                                }
+                        else {
+                            if ("action" == parser.name) {
+                                action = mainNode(ActionInfo(), parser) as ActionInfo
+                            } else if ("switch" == parser.name) {
+                                switch = mainNode(SwitchInfo(), parser) as SwitchInfo
+                            } else if ("picker" == parser.name) {
+                                picker = mainNode(PickerInfo(), parser) as PickerInfo
+                            } else if (action != null) {
+                                tagStartInAction(action, parser)
+                            } else if (switch != null) {
+                                tagStartInSwitch(switch, parser)
+                            } else if (picker != null) {
+                                tagStartInPicker(picker, parser)
+                            } else if ("resource" == parser.name) {
+                                resourceNode(parser)
                             }
                         }
                     XmlPullParser.END_TAG ->
-                        if ("action" == parser.name) {
-                            tagEndInAction(action, parser)
-                            if (action != null) {
-                                actions.add(action)
+                        if ("group" == parser.name) {
+                            if (group != null) {
+                                mainList.add(group)
                             }
-                            action = null
-                        }
-                        else if ("switch" == parser.name) {
-                            tagEndInSwitch(switch, parser)
-                            if (switch != null) {
-                                actions.add(switch)
+                            group = null
+                        } else if (group != null) {
+                            if ("action" == parser.name) {
+                                tagEndInAction(action, parser)
+                                if (action != null) {
+                                    group.children.add(action)
+                                }
+                                action = null
                             }
-                            switch = null
-                        }
-                        else if ("picker" == parser.name) {
-                            tagEndInPicker(picker, parser)
-                            if (picker != null) {
-                                actions.add(picker)
+                            else if ("switch" == parser.name) {
+                                tagEndInSwitch(switch, parser)
+                                if (switch != null) {
+                                    group.children.add(switch)
+                                }
+                                switch = null
                             }
-                            picker = null
+                            else if ("picker" == parser.name) {
+                                tagEndInPicker(picker, parser)
+                                if (picker != null) {
+                                    group.children.add(picker)
+                                }
+                                picker = null
+                            }
+                        } else {
+                            if ("action" == parser.name) {
+                                tagEndInAction(action, parser)
+                                if (action != null) {
+                                    mainList.add(action)
+                                }
+                                action = null
+                            }
+                            else if ("switch" == parser.name) {
+                                tagEndInSwitch(switch, parser)
+                                if (switch != null) {
+                                    mainList.add(switch)
+                                }
+                                switch = null
+                            }
+                            else if ("picker" == parser.name) {
+                                tagEndInPicker(picker, parser)
+                                if (picker != null) {
+                                    mainList.add(picker)
+                                }
+                                picker = null
+                            }
                         }
                 }
                 type = parser.next()// 继续下一个事件
             }
 
-            return actions
+            return mainList
         } catch (ex: Exception) {
             Handler(Looper.getMainLooper()).post {
                 Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
@@ -191,15 +141,7 @@ class PageConfigReader(private var context: Context) {
             action.title = parser.nextText()
         }
         else if ("desc" == parser.name) {
-            for (i in 0 until parser.attributeCount) {
-                val attrName = parser.getAttributeName(i)
-                if (attrName == "su" || attrName == "sh") {
-                    action.descPollingShell = parser.getAttributeValue(i)
-                    action.desc = executeResultRoot(context, action.descPollingShell!!)
-                }
-            }
-            if (action.desc.isEmpty())
-                action.desc = parser.nextText()
+            descNode(action, parser)
         }
         else if ("script" == parser.name) {
             action.script = parser.nextText().trim()
@@ -267,19 +209,7 @@ class PageConfigReader(private var context: Context) {
             actionParamInfo.options!!.add(option)
         }
         else if ("resource" == parser.name) {
-            for (i in 0 until parser.attributeCount) {
-                if (parser.getAttributeName(i) == "file") {
-                    val file = parser.getAttributeValue(i).trim()
-                    if (file.startsWith(ASSETS_FILE)) {
-                        ExtractAssets(context).extractResource(file)
-                    }
-                } else if (parser.getAttributeName(i) == "dir") {
-                    val file = parser.getAttributeValue(i).trim()
-                    if (file.startsWith(ASSETS_FILE)) {
-                        ExtractAssets(context).extractResources(file)
-                    }
-                }
-            }
+            resourceNode(parser)
         }
     }
 
@@ -297,38 +227,80 @@ class PageConfigReader(private var context: Context) {
     }
 
     private fun tagStartInSwitch(switchInfo: SwitchInfo, parser:XmlPullParser) {
-        if ("title" == parser.name) {
-            switchInfo.title = parser.nextText()
+        when {
+            "title" == parser.name -> switchInfo.title = parser.nextText()
+            "desc" == parser.name -> descNode(switchInfo, parser)
+            "getstate" == parser.name -> switchInfo.getState = parser.nextText()
+            "setstate" == parser.name -> switchInfo.setState = parser.nextText()
+            "resource" == parser.name -> resourceNode(parser)
         }
-        else if ("desc" == parser.name) {
-            for (i in 0 until parser.attributeCount) {
-                val attrName = parser.getAttributeName(i)
-                if (attrName == "su" || attrName == "sh") {
-                    switchInfo.descPollingShell = parser.getAttributeValue(i)
-                    switchInfo.desc = executeResultRoot(context, switchInfo.descPollingShell)
-                }
+    }
+
+    private fun groupNode(groupInfo: GroupInfo, parser: XmlPullParser): GroupInfo {
+        val groupInfo = GroupInfo()
+        for (i in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(i)
+            val attrValue = parser.getAttributeValue(i)
+            if (attrName == "title") {
+                groupInfo.separator = attrValue
+            } else if (attrName == "support") {
+                groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
-            if (switchInfo.desc.isEmpty())
-                switchInfo.desc = parser.nextText()
         }
-        else if ("getstate" == parser.name) {
-            switchInfo.getState = parser.nextText()
-        }
-        else if ("setstate" == parser.name) {
-            switchInfo.setState = parser.nextText()
-        }
-        else if ("resource" == parser.name) {
-            for (i in 0 until parser.attributeCount) {
-                if (parser.getAttributeName(i) == "file") {
-                    val file = parser.getAttributeValue(i).trim()
-                    if (file.startsWith(ASSETS_FILE)) {
-                        ExtractAssets(context).extractResource(file)
+        return groupInfo
+    }
+
+    private fun mainNode(configItemBase: ConfigItemBase, parser: XmlPullParser): ConfigItemBase? {
+        for (i in 0 until parser.attributeCount) {
+            val attrValue = parser.getAttributeValue(i)
+            when (parser.getAttributeName(i)) {
+                "id" -> configItemBase.id = attrValue
+                "confirm" -> configItemBase.confirm = attrValue == "true"
+                "auto-off" -> configItemBase.autoOff = attrValue == "true"
+                "interruptible" -> configItemBase.interruptible = attrValue != "false"
+                "support" -> {
+                    if (executeResultRoot(context, attrValue) != "1") {
+                        return null
                     }
-                } else if (parser.getAttributeName(i) == "dir") {
-                    val file = parser.getAttributeValue(i).trim()
-                    if (file.startsWith(ASSETS_FILE)) {
-                        ExtractAssets(context).extractResources(file)
-                    }
+                }
+                /*
+                "options-sh", "options-su" -> {
+                    if (configItemBase.options == null)
+                        configItemBase.options = ArrayList()
+                    configItemBase.optionsSh = attrValue
+                }
+                */
+            }
+        }
+        if (configItemBase.id.isEmpty()) {
+            configItemBase.id = UUID.randomUUID().toString()
+        }
+        return configItemBase
+    }
+
+    private fun descNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
+        for (i in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(i)
+            if (attrName == "su" || attrName == "sh") {
+                configItemBase.descPollingShell = parser.getAttributeValue(i)
+                configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+            }
+        }
+        if (configItemBase.desc.isEmpty())
+            configItemBase.desc = parser.nextText()
+    }
+
+    private fun resourceNode(parser: XmlPullParser) {
+        for (i in 0 until parser.attributeCount) {
+            if (parser.getAttributeName(i) == "file") {
+                val file = parser.getAttributeValue(i).trim()
+                if (file.startsWith(ASSETS_FILE)) {
+                    ExtractAssets(context).extractResource(file)
+                }
+            } else if (parser.getAttributeName(i) == "dir") {
+                val file = parser.getAttributeValue(i).trim()
+                if (file.startsWith(ASSETS_FILE)) {
+                    ExtractAssets(context).extractResources(file)
                 }
             }
         }
@@ -356,15 +328,7 @@ class PageConfigReader(private var context: Context) {
             pickerInfo.title = parser.nextText()
         }
         else if ("desc" == parser.name) {
-            for (i in 0 until parser.attributeCount) {
-                val attrName = parser.getAttributeName(i)
-                if (attrName == "su" || attrName == "sh") {
-                    pickerInfo.descPollingShell = parser.getAttributeValue(i)
-                    pickerInfo.desc = executeResultRoot(context, pickerInfo.descPollingShell)
-                }
-            }
-            if (pickerInfo.desc.isEmpty())
-                pickerInfo.desc = parser.nextText()
+            descNode(pickerInfo, parser)
         }
         else if ("option" == parser.name) {
             if (pickerInfo.options === null) {
@@ -392,7 +356,18 @@ class PageConfigReader(private var context: Context) {
 
     private fun tagEndInPicker(pickerInfo: PickerInfo?, parser:XmlPullParser) {
         if (pickerInfo != null) {
-
+            if (pickerInfo.getState == null) {
+                pickerInfo.getState = ""
+            } else {
+                val shellResult = executeResultRoot(context, "" + pickerInfo.getState)
+                pickerInfo.value = shellResult
+            }
+            if (pickerInfo.setState == null) {
+                pickerInfo.setState = ""
+            }
+            if (pickerInfo.id.isEmpty() && pickerInfo.title.isNotEmpty()) {
+                pickerInfo.id = pickerInfo.title
+            }
         }
     }
 

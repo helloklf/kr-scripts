@@ -63,19 +63,21 @@
         <script>file:///android_asset/kr-script/test/var.sh</script>
     </action>
 
-    <picker>
-        <title>测试单选界面</title>
-        <desc>测试单选界面</desc>
-        <options>
-            <option value="123">测试123</option>
-            <option value="234">测试234</option>
-        </options>
-        <getstate>
-            getprop xxx.xxx.xxx
-        </getstate>
-        <setstate>
-            echo 执行参数：$state
-            setprop xxx.xxx.xxx $state
-        </setstate>
-    </picker>
+    <group support="echo 1">
+        <picker>
+            <title>测试单选界面</title>
+            <desc>测试单选界面</desc>
+            <options>
+                <option value="123">测试123</option>
+                <option value="234">测试234</option>
+            </options>
+            <getstate>
+                getprop xxx.xxx.xxx
+            </getstate>
+            <setstate>
+                echo 执行参数：$state
+                setprop xxx.xxx.xxx $state
+            </setstate>
+        </picker>
+    </group>
 </items>

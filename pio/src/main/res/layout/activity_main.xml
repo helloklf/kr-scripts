@@ -59,10 +59,21 @@
                         android:id="@+id/list_pages"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="0dp"
+                        android:paddingTop="15dp"
+                        android:paddingBottom="15dp" />
+                    <!--
+                    <com.omarea.krscript.ui.PageListView
+                        android:scrollbars="none"
+                        android:listSelector="@android:color/transparent"
+                        android:id="@+id/list_pages"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:divider="@color/window_bg_light"
                         android:dividerHeight="1dp"
                         android:paddingTop="15dp"
-                        android:paddingBottom="15dp" />
+                        android:paddingBottom="15dp" />-->
                 </FrameLayout>
             </FrameLayout>
 

@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.preference.*
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,34 +21,58 @@ import com.omarea.krscript.model.*
 class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
     private lateinit var mContext: Context
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
+    private fun findItemByKey(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
+        for (item in actionInfos) {
+            if (item.id == key) {
+                return item
+            } else if (item is GroupInfo && item.children.size > 0) {
+                val result = findItemByKey(key, item.children)
+                if (result != null) {
+                    return  result
+                }
+            }
+        }
+        return null
+    }
+
     override fun onPreferenceClick(preference: Preference?): Boolean {
+        val handler = Handler(Looper.getMainLooper())
         if (preference != null) {
             val key = preference.key
             try {
-                val index = key.toInt()
-                val item = actionInfos[index]
+                val item = findItemByKey(key, actionInfos)
+                if (item == null) {
+                    Log.e("onPreferenceClick", "找不到指定ID的项 key: " + key)
+                    return true
+                }
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
-                        if (item.descPollingShell != null && !item.descPollingShell!!.isEmpty()) {
-                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                        handler.post {
+                            if (item.descPollingShell.isNotEmpty()) {
+                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                            }
+                            preference.summary = item.desc
                         }
-                        preference.summary = item.desc
                     })
                 } else if (item is PickerInfo) {
                     onPickerClick(item, Runnable {
+                        handler.post {
 
+                        }
                     })
                 } else if (item is SwitchInfo) {
                     onSwitchClick(item, Runnable {
-                        if (item.descPollingShell != null && !item.descPollingShell.isEmpty()) {
-                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                        handler.post {
+                            if (item.descPollingShell.isNotEmpty()) {
+                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                            }
+                            if (item.getState != null && !item.getState.isEmpty()) {
+                                val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
+                                item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
+                            }
+                            preference.summary = item.desc
+                            (preference as SwitchPreference).isChecked = item.selected
                         }
-                        if (item.getState != null && !item.getState.isEmpty()) {
-                            val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                            item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
-                        }
-                        preference.summary = item.desc
-                        (preference as SwitchPreference).isChecked = item.selected
                     })
                 }
             } catch (ex: Exception) {
@@ -84,23 +109,26 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
         val preferenceScreen = this.preferenceManager.createPreferenceScreen(mContext)
         this.preferenceScreen = preferenceScreen
-        // createPreferenceGroup(preferenceScreen)
+        mapConfigList(preferenceScreen, actionInfos)
+    }
+
+    private fun mapConfigList(preferenceScreen: PreferenceGroup, actionInfos: ArrayList<ConfigItemBase>) {
         var preferenceCategory: PreferenceCategory? = null
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
-            if (preferenceCategory == null) {
-
-            }
             var preference: Preference? = null
             if (it is SwitchInfo) {
-                preference = createSwitchPreference(it, index)
+                preference = createSwitchPreference(it)
             } else if (it is ActionInfo) {
-                preference = createActionPreference(it, index)
+                preference = createActionPreference(it)
             } else if (it is PickerInfo) {
-                preference = createListPreference(it, index)
+                preference = createListPreference(it)
             } else if (it is GroupInfo) {
                 preferenceCategory = createPreferenceGroup(it)
                 preferenceScreen.addPreference(preferenceCategory)
+                if (it.children.size > 0) {
+                    mapConfigList(preferenceCategory, it.children)
+                }
             }
 
             if (preference != null) {
@@ -113,7 +141,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         }
     }
 
-    private fun createListPreference(pickerInfo: PickerInfo, index: Int): Preference {
+    private fun createListPreference(pickerInfo: PickerInfo): Preference {
         /*
         // 不够自由
         val item = ListPreference(mContext)
@@ -138,7 +166,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
         val item = this.preferenceManager.createPreferenceScreen(mContext)
         // val item = EditTextPreference(mContext)
-        item.key = index.toString()
+        item.key = pickerInfo.id
         item.title = "" + pickerInfo.title
         item.summary = "" + pickerInfo.desc
         item.onPreferenceClickListener = this
@@ -148,9 +176,9 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         return item
     }
 
-    private fun createSwitchPreference(switchInfo: SwitchInfo, index: Int): Preference {
+    private fun createSwitchPreference(switchInfo: SwitchInfo): Preference {
         val item = SwitchPreference(mContext)
-        item.key = index.toString()
+        item.key = switchInfo.id
         item.title = "" + switchInfo.title
         item.summary = "" + switchInfo.desc
         item.onPreferenceClickListener = this
@@ -160,10 +188,10 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         return item
     }
 
-    private fun createActionPreference(actionInfo: ActionInfo, index: Int): Preference {
+    private fun createActionPreference(actionInfo: ActionInfo): Preference {
         val item = this.preferenceManager.createPreferenceScreen(mContext)
         // val item = EditTextPreference(mContext)
-        item.key = index.toString()
+        item.key = actionInfo.id
         item.title = "" + actionInfo.title
         item.summary = "" + actionInfo.desc
         item.onPreferenceClickListener = this
