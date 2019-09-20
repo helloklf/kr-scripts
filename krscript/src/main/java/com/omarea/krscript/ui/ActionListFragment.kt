@@ -18,80 +18,9 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 
-class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
+class ActionListFragment : PreferenceFragment(), PageLayoutRender.OnItemClickListener {
     private lateinit var mContext: Context
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
-    private fun findItemByKey(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
-        for (item in actionInfos) {
-            if (item.id == key) {
-                return item
-            } else if (item is GroupInfo && item.children.size > 0) {
-                val result = findItemByKey(key, item.children)
-                if (result != null) {
-                    return  result
-                }
-            }
-        }
-        return null
-    }
-
-    override fun onPreferenceClick(preference: Preference?): Boolean {
-        val handler = Handler(Looper.getMainLooper())
-        if (preference != null) {
-            val key = preference.key
-            try {
-                val item = findItemByKey(key, actionInfos)
-                if (item == null) {
-                    Log.e("onPreferenceClick", "找不到指定ID的项 key: " + key)
-                    return true
-                }
-                if (item is PageInfo) {
-                    onPageClick(item, Runnable {
-                        handler.post {
-                            if (item.descPollingShell.isNotEmpty()) {
-                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                            }
-                            preference.summary = item.desc
-                        }
-                    })
-                } else if (item is ActionInfo) {
-                    onActionClick(item, Runnable {
-                        handler.post {
-                            if (item.descPollingShell.isNotEmpty()) {
-                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                            }
-                            preference.summary = item.desc
-                        }
-                    })
-                } else if (item is PickerInfo) {
-                    onPickerClick(item, Runnable {
-                        handler.post {
-                            if (item.descPollingShell.isNotEmpty()) {
-                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                            }
-                            preference.summary = item.desc
-                        }
-                    })
-                } else if (item is SwitchInfo) {
-                    onSwitchClick(item, Runnable {
-                        handler.post {
-                            if (item.descPollingShell.isNotEmpty()) {
-                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                            }
-                            if (item.getState != null && !item.getState.isEmpty()) {
-                                val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                                item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
-                            }
-                            preference.summary = item.desc
-                            (preference as SwitchPreference).isChecked = item.selected
-                        }
-                    })
-                }
-            } catch (ex: Exception) {
-            }
-        }
-        return true
-    }
 
     private lateinit var progressBarDialog: ProgressBarDialog
     private var fileChooser: FileChooserRender.FileChooserInterface? = null
@@ -124,121 +53,9 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
         val preferenceScreen = this.preferenceManager.createPreferenceScreen(mContext)
         this.preferenceScreen = preferenceScreen
-        mapConfigList(preferenceScreen, actionInfos)
+        PageLayoutRender(mContext, preferenceManager, actionInfos, this, preferenceScreen).render()
     }
 
-    private fun mapConfigList(preferenceScreen: PreferenceGroup, actionInfos: ArrayList<ConfigItemBase>) {
-        var preferenceCategory: PreferenceCategory? = null
-        for (index in 0 until actionInfos.size) {
-            val it = actionInfos[index]
-            var preference: Preference? = null
-            if (it is PageInfo) {
-                preference = createPagePreference(it)
-            } else if (it is SwitchInfo) {
-                preference = createSwitchPreference(it)
-            } else if (it is ActionInfo) {
-                preference = createActionPreference(it)
-            } else if (it is PickerInfo) {
-                preference = createListPreference(it)
-            } else if (it is GroupInfo) {
-                preferenceCategory = createPreferenceGroup(it)
-                preferenceScreen.addPreference(preferenceCategory)
-                if (it.children.size > 0) {
-                    mapConfigList(preferenceCategory, it.children)
-                }
-            }
-
-            if (preference != null) {
-                if (preferenceCategory == null) {
-                    preferenceScreen.addPreference(preference)
-                } else {
-                    preferenceCategory.addPreference(preference)
-                }
-            }
-        }
-    }
-
-    private fun createListPreference(info: PickerInfo): Preference {
-        /*
-        // 不够自由
-        val item = ListPreference(mContext)
-        item.key = index.toString()
-        item.title = "" + pickerInfo.title
-        item.summary = "" + pickerInfo.desc
-        item.onPreferenceClickListener = this
-        item.dialogTitle = item.title
-        item.value = "" + pickerInfo.value
-        item.layoutResource = R.layout.kr_picker_list_item
-
-        if (pickerInfo.options != null) {
-            item.entries = pickerInfo.options!!.map {  it.desc }.toTypedArray()
-            item.entryValues = pickerInfo.options!!.map {  it.value }.toTypedArray()
-        } else {
-            item.entries = arrayOf()
-            item.entryValues = arrayOf()
-        }
-
-        return item
-        */
-
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = this
-        item.layoutResource = R.layout.kr_action_list_item2
-        // item.widgetLayoutResource = R.layout.kr_action_list_item2
-
-        return item
-    }
-
-
-    private fun createPagePreference(info: PageInfo): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = this
-        item.layoutResource = R.layout.kr_page_list_item2
-        // item.widgetLayoutResource = R.layout.kr_action_list_item2
-
-        return item
-    }
-
-    private fun createSwitchPreference(info: SwitchInfo): Preference {
-        val item = SwitchPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = this
-        item.isChecked = info.selected
-        item.layoutResource = R.layout.kr_switch_list_item2
-
-        return item
-    }
-
-    private fun createActionPreference(info: ActionInfo): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = this
-        item.layoutResource = R.layout.kr_action_list_item2
-        // item.widgetLayoutResource = R.layout.kr_action_list_item2
-
-        return item
-    }
-
-    private fun createPreferenceGroup(info: GroupInfo): PreferenceCategory {
-        val preferenceCategory = PreferenceCategory(mContext)
-        preferenceCategory.title = info.separator
-        preferenceCategory.layoutResource = R.layout.kr_group_list_item
-
-        return preferenceCategory
-    }
 
     override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
         Log.d("onPreferenceTreeClick", "" + preference?.key)
@@ -252,7 +69,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
     /**
      * 当switch项被点击
      */
-    private fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
+    override fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
         val toValue = !switchInfo.selected
         if (switchInfo.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(mContext)
@@ -282,7 +99,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
     }
 
 
-    private fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
+    override fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
         pageClickHandler?.openPage(pageInfo)
     }
 
@@ -290,7 +107,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
     /**
      * 单选列表点击
      */
-    private fun onPickerClick(pickerInfo: PickerInfo, onExit: Runnable) {
+    override fun onPickerClick(pickerInfo: PickerInfo, onExit: Runnable) {
         val paramInfo = ActionParamInfo()
         paramInfo.options = pickerInfo.options
         paramInfo.optionsSh = pickerInfo.optionsSh
@@ -308,7 +125,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
         var index = -1
         if (coalescentOptions != null) {
-            index = LayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
+            index = ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
         }
 
         DialogHelper.animDialog(
@@ -340,7 +157,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
     /**
      * 列表项点击时（如果需要确认界面，则显示确认界面，否则直接准备执行）
      */
-    private fun onActionClick(action: ActionInfo, onExit: Runnable) {
+    override fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(mContext)
                     .setTitle(action.title)
@@ -386,7 +203,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                         progressBarDialog.showDialog(mContext.getString(R.string.kr_params_render))
                     }
                     handler.post {
-                        val render = LayoutRender(linearLayout)
+                        val render = ActionParamsLayoutRender(linearLayout)
                         render.renderList(actionParamInfos, fileChooser)
                         progressBarDialog.hideDialog()
                         if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,

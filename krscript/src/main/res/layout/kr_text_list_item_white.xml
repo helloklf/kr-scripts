@@ -2,14 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/krscript_item_ripple"
     android:orientation="vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
     android:paddingLeft="23dp"
-    android:paddingTop="10dp"
+    android:paddingTop="5dp"
     android:paddingRight="23dp"
-    android:paddingBottom="10dp">
+    android:paddingBottom="10dp"
+    android:background="@drawable/krscript_item_ripple_inactive">
 
     <TextView
         android:id="@android:id/title"

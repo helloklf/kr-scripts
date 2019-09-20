@@ -43,6 +43,7 @@ class PageConfigReader(private var context: Context) {
             var picker: PickerInfo? = null
             var group: GroupInfo? = null
             var page: PageInfo? = null
+            var text: TextInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG ->
@@ -64,6 +65,8 @@ class PageConfigReader(private var context: Context) {
                                 switch = mainNode(SwitchInfo(), parser) as SwitchInfo?
                             } else if ("picker" == parser.name) {
                                 picker = mainNode(PickerInfo(), parser) as PickerInfo?
+                            } else if ("text" == parser.name) {
+                                text = mainNode(TextInfo(), parser) as TextInfo?
                             } else if (page != null) {
                                 tagStartInPage(page, parser)
                             } else if (action != null) {
@@ -72,6 +75,8 @@ class PageConfigReader(private var context: Context) {
                                 tagStartInSwitch(switch, parser)
                             } else if (picker != null) {
                                 tagStartInPicker(picker, parser)
+                            } else if (text != null) {
+                                tagStartInText(text, parser)
                             } else if ("resource" == parser.name) {
                                 resourceNode(parser)
                             }
@@ -111,6 +116,13 @@ class PageConfigReader(private var context: Context) {
                                 }
                                 picker = null
                             }
+                            else if ("text" == parser.name) {
+                                tagEndInText(text, parser)
+                                if (text != null) {
+                                    group.children.add(text)
+                                }
+                                text = null
+                            }
                         } else {
                             if ("page" == parser.name) {
                                 tagEndInPage(page, parser)
@@ -139,6 +151,13 @@ class PageConfigReader(private var context: Context) {
                                     mainList.add(picker)
                                 }
                                 picker = null
+                            }
+                            else if ("text" == parser.name) {
+                                tagEndInText(text, parser)
+                                if (text != null) {
+                                    mainList.add(text)
+                                }
+                                text = null
                             }
                         }
                 }
@@ -385,6 +404,15 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
+    private fun tagStartInText(textInfo: TextInfo, parser: XmlPullParser) {
+        if ("title" == parser.name) {
+            textInfo.title = parser.nextText()
+        }
+        else if ("desc" == parser.name) {
+            descNode(textInfo, parser)
+        }
+    }
+
     private fun tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
         if ("title" == parser.name) {
             pickerInfo.title = parser.nextText()
@@ -429,6 +457,14 @@ class PageConfigReader(private var context: Context) {
             }
             if (pickerInfo.id.isEmpty() && pickerInfo.title.isNotEmpty()) {
                 pickerInfo.id = pickerInfo.title
+            }
+        }
+    }
+
+    private fun tagEndInText(textInfo: TextInfo?, parser: XmlPullParser) {
+        if (textInfo != null) {
+            if (textInfo.id.isEmpty() && textInfo.title.isNotEmpty()) {
+                textInfo.id = textInfo.title
             }
         }
     }

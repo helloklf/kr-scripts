@@ -14,7 +14,7 @@ import com.omarea.krscript.model.ParamInfoFilter
 import java.util.*
 import kotlin.collections.HashMap
 
-class LayoutRender {
+class ActionParamsLayoutRender {
     companion object {
         /**
          * 获取当前选中项索引
@@ -63,7 +63,7 @@ class LayoutRender {
                 val spinner = Spinner(context)
                 val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 
-                spinner.adapter = SimpleAdapter(context, options, R.layout.kr_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
+                spinner.adapter = SimpleAdapter(context, options, R.layout.kr_simple_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
                 spinner.isEnabled = !actionParamInfo.readonly
 
                 addToLayout(spinner, actionParamInfo)
