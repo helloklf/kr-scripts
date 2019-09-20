@@ -50,7 +50,7 @@
     config="config_xml/for_aosp.xml" />
 ```
 
-> support 是个共通属性，适用于page、action、switch，将在后文单独介绍
+> support 是个共通属性，适用于page、group、action、switch，将在后文单独介绍
 
 
 ### 补充说明
@@ -121,7 +121,7 @@
     <!-- 此处省略 -->
 </action>
 ```
-> support 是个共通属性，适用于page、action、switch，将在后文单独介绍
+> support 是个共通属性，适用于page、group、action、switch，将在后文单独介绍
 
 
 ### 动态 desc
@@ -472,7 +472,7 @@ echo "progress:[-1/0]"
 ```
 
 ## support 属性
-- 定义在page、action、switch以及action中的param节点
+- 定义在page、group、action、switch以及action中的param节点
 - 你需要写一段脚本，输出`0`或者`1`，用来表示该功能是否支持（支持则显示，否则隐藏）
 - 例如，下面的例子，通过一个名叫`is_huawei_mphone.sh`的脚本文件来判断`action`是否要显示
 
