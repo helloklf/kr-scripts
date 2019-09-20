@@ -18,7 +18,17 @@ import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
-    private lateinit var mContext: Context
+    companion object {
+        fun create(
+                actionInfos: ArrayList<ConfigItemBase>?,
+                fileChooser: FileChooserRender.FileChooserInterface,
+                actionShortClickHandler: ActionShortClickHandler? = null,
+                pageClickHandler: PageClickHandler): ActionListFragment {
+            val fragment = ActionListFragment()
+            fragment.setListData(actionInfos, fileChooser, actionShortClickHandler, pageClickHandler)
+            return fragment
+        }
+    }
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
 
     private lateinit var progressBarDialog: ProgressBarDialog
@@ -26,14 +36,11 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private var actionShortClickHandler: ActionShortClickHandler? = null
     private var pageClickHandler: PageClickHandler? = null
 
-    fun setListData(
-            context: Context,
+    private fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
             fileChooser: FileChooserRender.FileChooserInterface,
             actionShortClickHandler: ActionShortClickHandler? = null,
             pageClickHandler: PageClickHandler) {
-        this.mContext = context
-        this.progressBarDialog = ProgressBarDialog(mContext)
         if (actionInfos != null) {
             this.actionInfos = actionInfos
             this.fileChooser = fileChooser
@@ -50,9 +57,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.progressBarDialog = ProgressBarDialog(this.context!!)
 
-        val layoutBuilder = ListItemView(mContext, R.layout.kr_group_list_root)
-        PageLayoutRender(mContext, actionInfos, this, layoutBuilder).render()
+        val layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
+        PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder).render()
         val layout = layoutBuilder.getView()
 
         (this.view as ViewGroup).addView(layout)
@@ -68,13 +76,13 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     override fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
         val toValue = !switchInfo.checked
         if (switchInfo.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(mContext)
+            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                     .setTitle(switchInfo.title)
                     .setMessage(switchInfo.desc)
-                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
                         switchExecute(switchInfo, toValue, onExit)
                     }
-                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ ->
+                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
                     })
         } else {
             switchExecute(switchInfo, toValue, onExit)
@@ -110,7 +118,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
         // 获取当前值
         if (pickerInfo.getState != null) {
-            paramInfo.valueFromShell = executeScriptGetResult(mContext, pickerInfo.getState!!)
+            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, pickerInfo.getState!!)
         }
 
         // 获取可选项（合并options-sh和静态options的结果）
@@ -125,15 +133,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         }
 
         DialogHelper.animDialog(
-                AlertDialog.Builder(mContext)
+                AlertDialog.Builder(this.context!!)
                         .setTitle(pickerInfo.title)
                         .setSingleChoiceItems(options, index) { _, which ->
                             index = which
                         }
-                        .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                        .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
                             pickerExecute(pickerInfo, "" + (if (index > -1) values[index] else ""), onExit)
                         }
-                        .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ ->
+                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
                         })
     }
 
@@ -155,13 +163,13 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
      */
     override fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(mContext)
+            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                     .setTitle(action.title)
                     .setMessage(action.desc)
-                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
                         actionExecute(action, onExit)
                     }
-                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ -> })
+                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> })
         } else {
             actionExecute(action, onExit)
         }
@@ -177,26 +185,26 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         if (action.params != null) {
             val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
-                val layoutInflater = LayoutInflater.from(mContext)
+                val layoutInflater = LayoutInflater.from(this.context!!)
                 val linearLayout = layoutInflater.inflate(R.layout.kr_params_list, null) as LinearLayout
 
                 val handler = Handler()
-                progressBarDialog.showDialog(mContext.getString(R.string.onloading))
+                progressBarDialog.showDialog(this.context!!.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         handler.post {
-                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(mContext, actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(this.context!!, actionParamInfo.valueShell!!)
                         }
                         handler.post {
-                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
                     }
                     handler.post {
-                        progressBarDialog.showDialog(mContext.getString(R.string.kr_params_render))
+                        progressBarDialog.showDialog(this.context!!.getString(R.string.kr_params_render))
                     }
                     handler.post {
                         val render = ActionParamsLayoutRender(linearLayout)
@@ -210,14 +218,14 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                                                 val params = render.readParamsValue(actionParamInfos)
                                                 actionExecute(action, script, onExit, params)
                                             } catch (ex: java.lang.Exception) {
-                                                Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
+                                                Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                             }
                                         })) {
                         } else {
                             val dialogView = layoutInflater.inflate(R.layout.kr_params_dialog, null)
                             dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
                             dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
-                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(mContext).setView(dialogView))
+                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(this.context!!).setView(dialogView))
 
                             dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
                                 dialog!!.dismiss()
@@ -228,7 +236,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                                     dialog!!.dismiss()
                                     actionExecute(action, script, onExit, params)
                                 } catch (ex: java.lang.Exception) {
-                                    Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -248,7 +256,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(mContext, actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(this.context!!, actionParamInfo.optionsSh)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -295,7 +303,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
     private fun executeScriptGetResult(context: Context, shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(mContext, shellScript);
+        return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
@@ -304,6 +312,6 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
             shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
         }
 
-        SimpleShellExecutor().execute(mContext, configItem, script, onExit, params, shellHandler)
+        SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
     }
 }

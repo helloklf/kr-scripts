@@ -347,14 +347,7 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        val fragment = ActionListFragment()
-                        supportFragmentManager.beginTransaction()
-                                .add(R.id.main_list, fragment)
-                                .commit()
-
-                        fragment.setListData(
-                                this,
-                                items,
+                        val fragment = ActionListFragment.create(items,
                                 object : FileChooserRender.FileChooserInterface {
                                     override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                                         return chooseFilePath(fileSelectedInterface)
@@ -366,6 +359,10 @@ class ActionPage : AppCompatActivity() {
                                         _openPage(pageInfo)
                                     }
                                 })
+                        supportFragmentManager.beginTransaction()
+                                .add(R.id.main_list, fragment)
+                                .commit()
+
                         if (autoRun.isNotEmpty()) {
                             val onCompleted = Runnable {
                                 // finish()

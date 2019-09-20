@@ -138,11 +138,11 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     private fun createTextItem(info: TextInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_text_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemText(mContext, R.layout.kr_text_list_item, info).setOnClickListener(onItemClickListener)
     }
 
     private fun createTextItemWhite(info: TextInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_text_list_item_white, info).setOnClickListener(onItemClickListener)
+        return ListItemText(mContext, R.layout.kr_text_list_item_white, info).setOnClickListener(onItemClickListener)
     }
 
     private fun createListItem(info: PickerInfo): ListItemView {

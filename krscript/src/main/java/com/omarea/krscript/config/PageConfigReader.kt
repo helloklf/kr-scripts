@@ -1,6 +1,7 @@
 package com.omarea.krscript.config
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -167,9 +168,9 @@ class PageConfigReader(private var context: Context) {
             return mainList
         } catch (ex: Exception) {
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
             }
-            Log.e("VTools ReadConfig Fail！", "" + ex.message)
+            Log.e("KrConfig Fail！", "" + ex.message)
         }
 
         return null
@@ -290,8 +291,8 @@ class PageConfigReader(private var context: Context) {
         when {
             "title" == parser.name -> switchInfo.title = parser.nextText()
             "desc" == parser.name -> descNode(switchInfo, parser)
-            "getstate" == parser.name -> switchInfo.getState = parser.nextText()
-            "setstate" == parser.name -> switchInfo.setState = parser.nextText()
+            "get" == parser.name || "getstate" == parser.name -> switchInfo.getState = parser.nextText()
+            "set" == parser.name || "setstate" == parser.name -> switchInfo.setState = parser.nextText()
             "resource" == parser.name -> resourceNode(parser)
         }
     }
@@ -323,12 +324,11 @@ class PageConfigReader(private var context: Context) {
                         return null
                     }
                 }
-                /*
-                "options-sh", "options-su" -> {
-                    if (configItemBase.options == null)
-                        configItemBase.options = ArrayList()
-                    configItemBase.optionsSh = attrValue
-                }
+                /* "options-sh", "options-su" -> {
+                        if (configItemBase.options == null)
+                            configItemBase.options = ArrayList()
+                        configItemBase.optionsSh = attrValue
+                    }
                 */
             }
         }
@@ -411,6 +411,38 @@ class PageConfigReader(private var context: Context) {
         else if ("desc" == parser.name) {
             descNode(textInfo, parser)
         }
+        else if ("row" == parser.name) {
+            rowNode(textInfo, parser)
+        }
+    }
+
+    private fun rowNode(textInfo: TextInfo, parser: XmlPullParser) {
+        try {
+            val count = parser.attributeCount
+            for (i in 0 until count) {
+                val attrName = parser.getAttributeName(i)
+                val attrValue = parser.getAttributeValue(i)
+                val textRow = TextInfo.TextRow()
+                try {
+                    when (attrName) {
+                        "bold" -> textRow.bold = (attrValue == "1" || attrValue == "true" || attrValue == "bold")
+                        "italic" -> textRow.italic = (attrValue == "1" || attrValue == "true" || attrValue == "italic")
+                        "color" -> textRow.color = Color.parseColor(attrValue)
+                        "size" -> textRow.size = attrValue.toInt()
+                        "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
+                    }
+                } catch (ex: Exception) {
+                }
+                try {
+                    textRow.text = parser.nextText()
+                    textInfo.rows.add(textRow)
+                } catch (ex: java.lang.Exception) {
+                    Log.e("KrConfig rowNode", "" + ex.message)
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+            Log.e("KrConfig rowNode", "" + ex.message)
+        }
     }
 
     private fun tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
@@ -436,10 +468,10 @@ class PageConfigReader(private var context: Context) {
                 option.value = option.desc
             pickerInfo.options!!.add(option)
         }
-        else if ("getstate" == parser.name) {
+        else if ("getstate" == parser.name || "get" == parser.name) {
             pickerInfo.getState = parser.nextText()
         }
-        else if ("setstate" == parser.name) {
+        else if ("setstate" == parser.name || "set" == parser.name) {
             pickerInfo.setState = parser.nextText()
         }
     }

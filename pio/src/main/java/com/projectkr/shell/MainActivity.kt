@@ -107,21 +107,18 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                val favoritesFragment = ActionListFragment()
-                val allItemFragment = ActionListFragment()
-                supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
-                supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
-
 
                 if (favorites != null && favorites.size > 0) {
-                    favoritesFragment.setListData( this, favorites, filePickerHandler, null, openPageHandler)
+                    val favoritesFragment = ActionListFragment.create(favorites, filePickerHandler, null, openPageHandler)
+                    supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE
                 }
 
                 if (pages != null && pages.size > 0) {
-                    allItemFragment.setListData(this, pages, filePickerHandler, null, openPageHandler)
+                    val allItemFragment = ActionListFragment.create(pages, filePickerHandler, null, openPageHandler)
+                    supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
                     main_tabhost_3.visibility = View.GONE

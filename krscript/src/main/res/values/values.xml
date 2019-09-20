@@ -3,4 +3,5 @@
     <item name="kr_desc" type="id" />
     <item name="kr_title" type="id" />
     <item name="kr_switch" type="id" />
+    <item name="kr_rows" type="id" />
 </resources>
