@@ -42,6 +42,7 @@ class PageConfigReader(private var context: Context) {
             var switch: SwitchInfo? = null
             var picker: PickerInfo? = null
             var group: GroupInfo? = null
+            var page: PageInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG ->
@@ -52,12 +53,17 @@ class PageConfigReader(private var context: Context) {
                             // 如果 group.supported !- true 跳过group内所有项
                         }
                         else {
-                            if ("action" == parser.name) {
-                                action = mainNode(ActionInfo(), parser) as ActionInfo
+                            if ("page" == parser.name) {
+                                page = mainNode(PageInfo(), parser) as PageInfo?
+                                if (page != null) {
+                                    page = pageNode(page, parser)
+                                }
+                            } else if ("action" == parser.name) {
+                                action = mainNode(ActionInfo(), parser) as ActionInfo?
                             } else if ("switch" == parser.name) {
-                                switch = mainNode(SwitchInfo(), parser) as SwitchInfo
+                                switch = mainNode(SwitchInfo(), parser) as SwitchInfo?
                             } else if ("picker" == parser.name) {
-                                picker = mainNode(PickerInfo(), parser) as PickerInfo
+                                picker = mainNode(PickerInfo(), parser) as PickerInfo?
                             } else if (action != null) {
                                 tagStartInAction(action, parser)
                             } else if (switch != null) {
@@ -75,7 +81,14 @@ class PageConfigReader(private var context: Context) {
                             }
                             group = null
                         } else if (group != null) {
-                            if ("action" == parser.name) {
+                            if ("page" == parser.name) {
+                                tagEndInPage(page, parser)
+                                if (page != null) {
+                                    group.children.add(page)
+                                }
+                                page = null
+                            }
+                            else if ("action" == parser.name) {
                                 tagEndInAction(action, parser)
                                 if (action != null) {
                                     group.children.add(action)
@@ -97,7 +110,14 @@ class PageConfigReader(private var context: Context) {
                                 picker = null
                             }
                         } else {
-                            if ("action" == parser.name) {
+                            if ("page" == parser.name) {
+                                tagEndInPage(page, parser)
+                                if (page != null) {
+                                    mainList.add(page)
+                                }
+                                page = null
+                            }
+                            else if ("action" == parser.name) {
                                 tagEndInAction(action, parser)
                                 if (action != null) {
                                     mainList.add(action)
@@ -213,6 +233,17 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
+
+    private fun tagEndInPage(page: PageInfo?, parser: XmlPullParser) {
+        if (page != null) {
+            if (page.id.isEmpty() && page.title.isNotEmpty()) {
+                page.id = page.title
+            }
+
+            actionParamInfos = null
+        }
+    }
+
     private fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
         if (action != null) {
             if (action.script == null)
@@ -276,6 +307,27 @@ class PageConfigReader(private var context: Context) {
             configItemBase.id = UUID.randomUUID().toString()
         }
         return configItemBase
+    }
+
+
+    private fun pageNode(page: PageInfo, parser: XmlPullParser): PageInfo {
+        for (attrIndex in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(attrIndex)
+            if (attrName == "config") {
+                val value = parser.getAttributeValue(attrIndex)
+                page.pageConfigPath = value
+            } else if (attrName == "html") {
+                val value = parser.getAttributeValue(attrIndex)
+                page.onlineHtmlPage = value
+            } else if (attrName == "title") {
+                val value = parser.getAttributeValue(attrIndex)
+                page.title = value
+            } else if (attrName == "desc") {
+                val value = parser.getAttributeValue(attrIndex)
+                page.desc = value
+            }
+        }
+        return page
     }
 
     private fun descNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {

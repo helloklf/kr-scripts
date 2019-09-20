@@ -45,7 +45,16 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                     Log.e("onPreferenceClick", "找不到指定ID的项 key: " + key)
                     return true
                 }
-                if (item is ActionInfo) {
+                if (item is PageInfo) {
+                    onPageClick(item, Runnable {
+                        handler.post {
+                            if (item.descPollingShell.isNotEmpty()) {
+                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                            }
+                            preference.summary = item.desc
+                        }
+                    })
+                } else if (item is ActionInfo) {
                     onActionClick(item, Runnable {
                         handler.post {
                             if (item.descPollingShell.isNotEmpty()) {
@@ -120,7 +129,9 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
             var preference: Preference? = null
-            if (it is SwitchInfo) {
+            if (it is PageInfo) {
+                preference = createPagePreference(it)
+            } else if (it is SwitchInfo) {
                 preference = createSwitchPreference(it)
             } else if (it is ActionInfo) {
                 preference = createActionPreference(it)
@@ -144,7 +155,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         }
     }
 
-    private fun createListPreference(pickerInfo: PickerInfo): Preference {
+    private fun createListPreference(info: PickerInfo): Preference {
         /*
         // 不够自由
         val item = ListPreference(mContext)
@@ -169,9 +180,9 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
 
         val item = this.preferenceManager.createPreferenceScreen(mContext)
         // val item = EditTextPreference(mContext)
-        item.key = pickerInfo.id
-        item.title = "" + pickerInfo.title
-        item.summary = "" + pickerInfo.desc
+        item.key = info.id
+        item.title = "" + info.title
+        item.summary = "" + info.desc
         item.onPreferenceClickListener = this
         item.layoutResource = R.layout.kr_action_list_item2
         // item.widgetLayoutResource = R.layout.kr_action_list_item2
@@ -179,24 +190,38 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         return item
     }
 
-    private fun createSwitchPreference(switchInfo: SwitchInfo): Preference {
-        val item = SwitchPreference(mContext)
-        item.key = switchInfo.id
-        item.title = "" + switchInfo.title
-        item.summary = "" + switchInfo.desc
+
+    private fun createPagePreference(info: PageInfo): Preference {
+        val item = this.preferenceManager.createPreferenceScreen(mContext)
+        // val item = EditTextPreference(mContext)
+        item.key = info.id
+        item.title = "" + info.title
+        item.summary = "" + info.desc
         item.onPreferenceClickListener = this
-        item.isChecked = switchInfo.selected
+        item.layoutResource = R.layout.kr_action_list_item2
+        // item.widgetLayoutResource = R.layout.kr_action_list_item2
+
+        return item
+    }
+
+    private fun createSwitchPreference(info: SwitchInfo): Preference {
+        val item = SwitchPreference(mContext)
+        item.key = info.id
+        item.title = "" + info.title
+        item.summary = "" + info.desc
+        item.onPreferenceClickListener = this
+        item.isChecked = info.selected
         item.layoutResource = R.layout.kr_switch_list_item2
 
         return item
     }
 
-    private fun createActionPreference(actionInfo: ActionInfo): Preference {
+    private fun createActionPreference(info: ActionInfo): Preference {
         val item = this.preferenceManager.createPreferenceScreen(mContext)
         // val item = EditTextPreference(mContext)
-        item.key = actionInfo.id
-        item.title = "" + actionInfo.title
-        item.summary = "" + actionInfo.desc
+        item.key = info.id
+        item.title = "" + info.title
+        item.summary = "" + info.desc
         item.onPreferenceClickListener = this
         item.layoutResource = R.layout.kr_action_list_item2
         // item.widgetLayoutResource = R.layout.kr_action_list_item2
@@ -204,9 +229,9 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         return item
     }
 
-    private fun createPreferenceGroup(groupInfo: GroupInfo): PreferenceCategory {
+    private fun createPreferenceGroup(info: GroupInfo): PreferenceCategory {
         val preferenceCategory = PreferenceCategory(mContext)
-        preferenceCategory.title = groupInfo.separator
+        preferenceCategory.title = info.separator
         preferenceCategory.layoutResource = R.layout.kr_group_list_item
 
         return preferenceCategory
@@ -251,6 +276,11 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                 put("state", if (toValue) "1" else "0")
             }
         })
+    }
+
+
+    private fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
+
     }
 
 

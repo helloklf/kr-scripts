@@ -80,4 +80,12 @@
             </setstate>
         </picker>
     </group>
+
+    <group title="更多">
+        <page title="测试页面" desc="脚本框架测试页面" config="kr-script/pages/custom_testpage.xml" />
+        <page title="内核调谐器" desc="框架测试界面，演示实时模式的使用" config="kr-script/pages/custom_kernel_tuner.xml" />
+        <page title="在线页面测试" desc="在线脚本测试" html="https://www.lanzous.com/b838135" />
+        <!--html属性不支持省略file:///android_asset/前缀-->
+        <page title="本地页面测试" desc="加载APK中集成的HTML文件" html="file:///android_asset/html-test/index.html" />
+    </group>
 </items>
