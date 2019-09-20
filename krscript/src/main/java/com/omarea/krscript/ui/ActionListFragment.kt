@@ -57,7 +57,10 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
                 } else if (item is PickerInfo) {
                     onPickerClick(item, Runnable {
                         handler.post {
-
+                            if (item.descPollingShell.isNotEmpty()) {
+                                item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                            }
+                            preference.summary = item.desc
                         }
                     })
                 } else if (item is SwitchInfo) {
