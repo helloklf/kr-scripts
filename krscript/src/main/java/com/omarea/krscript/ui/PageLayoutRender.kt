@@ -3,18 +3,16 @@ package com.omarea.krscript.ui
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.preference.*
 import android.util.Log
+import android.widget.Toast
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
-import java.lang.Exception
 
 class PageLayoutRender(private val mContext: Context,
-                       private var preferenceManager: PreferenceManager,
-                       private val actionInfos: ArrayList<ConfigItemBase>,
+                       private val itemConfigList: ArrayList<ConfigItemBase>,
                        private val clickListener: OnItemClickListener,
-                       private val preferenceScreen: PreferenceScreen) {
+                       private val parent: ListItemView) {
 
     interface OnItemClickListener {
         fun onPageClick(item: PageInfo, onCompleted: Runnable)
@@ -39,202 +37,131 @@ class PageLayoutRender(private val mContext: Context,
     }
 
 
-    private val preferenceClickListener:Preference.OnPreferenceClickListener = object : Preference.OnPreferenceClickListener{
-        override fun onPreferenceClick(preference: Preference?): Boolean {
+    private val onItemClickListener: ListItemView.OnClickListener = object : ListItemView.OnClickListener{
+        override fun onClick(listItemView: ListItemView) {
             val handler = Handler(Looper.getMainLooper())
-            if (preference != null) {
-                val key = preference.key
-                try {
-                    val item = findItemByKey(key, actionInfos)
-                    if (item == null) {
-                        Log.e("onPreferenceClick", "找不到指定ID的项 key: " + key)
-                        return false
-                    } else {
-                        if (item is PageInfo) {
-                            clickListener.onPageClick(item, Runnable {
-                                handler.post {
-                                    if (item.descPollingShell.isNotEmpty()) {
-                                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                    }
-                                    preference.summary = item.desc
+            val key = listItemView.key
+            try {
+                val item = findItemByKey(key, itemConfigList)
+                if (item == null) {
+                    Log.e("onItemClick", "找不到指定ID的项 key: " + key)
+                    return
+                } else {
+                    when (item) {
+                        is PageInfo -> clickListener.onPageClick(item, Runnable {
+                            handler.post {
+                                if (item.descPollingShell.isNotEmpty()) {
+                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                                 }
-                            })
-                        } else if (item is ActionInfo) {
-                            clickListener.onActionClick(item, Runnable {
-                                handler.post {
-                                    if (item.descPollingShell.isNotEmpty()) {
-                                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                    }
-                                    preference.summary = item.desc
+                                listItemView.summary = item.desc
+                            }
+                        })
+                        is ActionInfo -> clickListener.onActionClick(item, Runnable {
+                            handler.post {
+                                if (item.descPollingShell.isNotEmpty()) {
+                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                                 }
-                            })
-                        } else if (item is PickerInfo) {
-                            clickListener.onPickerClick(item, Runnable {
-                                handler.post {
-                                    if (item.descPollingShell.isNotEmpty()) {
-                                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                    }
-                                    preference.summary = item.desc
+                                listItemView.summary = item.desc
+                            }
+                        })
+                        is PickerInfo -> clickListener.onPickerClick(item, Runnable {
+                            handler.post {
+                                if (item.descPollingShell.isNotEmpty()) {
+                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                                 }
-                            })
-                        } else if (item is SwitchInfo) {
-                            clickListener.onSwitchClick(item, Runnable {
-                                handler.post {
-                                    if (item.descPollingShell.isNotEmpty()) {
-                                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                    }
-                                    if (item.getState != null && !item.getState.isEmpty()) {
-                                        val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                                        item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
-                                    }
-                                    preference.summary = item.desc
-                                    (preference as SwitchPreference).isChecked = item.selected
+                                listItemView.summary = item.desc
+                            }
+                        })
+                        is SwitchInfo -> clickListener.onSwitchClick(item, Runnable {
+                            handler.post {
+                                if (item.descPollingShell.isNotEmpty()) {
+                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                                 }
-                            })
-                        }
+                                if (item.getState != null && !item.getState.isEmpty()) {
+                                    val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
+                                    item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
+                                }
+                                listItemView.summary = item.desc
+                                (listItemView as ListItemSwitch).checked = item.checked
+                            }
+                        })
                     }
-                } catch (ex: Exception) {
                 }
+            } catch (ex: Exception) {
             }
-            return false
         }
     }
 
     fun render() {
-        mapConfigList(preferenceScreen, actionInfos)
+        mapConfigList(parent, itemConfigList)
     }
 
-    private fun mapConfigList(preferenceScreen: PreferenceGroup, actionInfos: ArrayList<ConfigItemBase>) {
-        var preferenceCategory: PreferenceCategory? = null
+    private fun mapConfigList(parent: ListItemView, actionInfos: ArrayList<ConfigItemBase>) {
+        var smallGroup: ListItemGroup? = null
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
-            var preference: Preference? = null
-            if (it is PageInfo) {
-                preference = createPagePreference(it)
-            } else if (it is SwitchInfo) {
-                preference = createSwitchPreference(it)
-            } else if (it is ActionInfo) {
-                preference = createActionPreference(it)
-            } else if (it is PickerInfo) {
-                preference = createListPreference(it)
-            } else if (it is TextInfo) {
-                if (preferenceScreen is PreferenceCategory) {
-                    preference = createTextPreferenceWhite(it)
-                } else {
-                    preference = createTextPreference(it)
-                }
-            } else if (it is GroupInfo) {
-                preferenceCategory = createPreferenceGroup(it)
-                preferenceScreen.addPreference(preferenceCategory)
-                if (it.children.size > 0) {
-                    mapConfigList(preferenceCategory, it.children)
-                }
-            }
+           try {
+               var preference: ListItemView? = null
+               if (it is PageInfo) {
+                   preference = createPageItem(it)
+               } else if (it is SwitchInfo) {
+                   preference = createSwitchItem(it)
+               } else if (it is ActionInfo) {
+                   preference = createActionItem(it)
+               } else if (it is PickerInfo) {
+                   preference = createListItem(it)
+               } else if (it is TextInfo) {
+                   preference = if (parent is ListItemGroup) {
+                       createTextItemWhite(it)
+                   } else {
+                       createTextItem(it)
+                   }
+               } else if (it is GroupInfo) {
+                   smallGroup = createItemGroup(it)
+                   parent.addView(smallGroup)
+                   if (it.children.size > 0) {
+                       mapConfigList(smallGroup, it.children)
+                   }
+               }
 
-            if (preference != null) {
-                if (preferenceCategory == null) {
-                    preferenceScreen.addPreference(preference)
-                } else {
-                    preferenceCategory.addPreference(preference)
-                }
-            }
+               if (preference != null) {
+                   if (smallGroup == null) {
+                       parent.addView(preference)
+                   } else {
+                       smallGroup.addView(preference)
+                   }
+               }
+           } catch (ex: Exception) {
+               Toast.makeText(mContext, it.title + "界面渲染异常" + ex.message, Toast.LENGTH_SHORT).show()
+           }
         }
     }
 
-    private fun createTextPreference(info: TextInfo): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.layoutResource = R.layout.kr_text_list_item
-
-        return item
+    private fun createTextItem(info: TextInfo): ListItemView {
+        return ListItemView(mContext, R.layout.kr_text_list_item, info).setOnClickListener(onItemClickListener)
     }
 
-    private fun createTextPreferenceWhite(info: TextInfo): Preference {
-        val item = createTextPreference(info)
-
-        item.layoutResource = R.layout.kr_text_list_item_white
-
-        return  item
+    private fun createTextItemWhite(info: TextInfo): ListItemView {
+        return ListItemView(mContext, R.layout.kr_text_list_item_white, info).setOnClickListener(onItemClickListener)
     }
 
-    private fun createListPreference(info: PickerInfo): Preference {
-        /*
-        // 不够自由
-        val item = ListPreference(mContext)
-        item.key = index.toString()
-        item.title = "" + pickerInfo.title
-        item.summary = "" + pickerInfo.desc
-        item.onPreferenceClickListener = this
-        item.dialogTitle = item.title
-        item.value = "" + pickerInfo.value
-        item.layoutResource = R.layout.kr_picker_list_item
-
-        if (pickerInfo.options != null) {
-            item.entries = pickerInfo.options!!.map {  it.desc }.toTypedArray()
-            item.entryValues = pickerInfo.options!!.map {  it.value }.toTypedArray()
-        } else {
-            item.entries = arrayOf()
-            item.entryValues = arrayOf()
-        }
-
-        return item
-        */
-
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = preferenceClickListener
-        item.layoutResource = R.layout.kr_action_list_item
-
-        return item
+    private fun createListItem(info: PickerInfo): ListItemView {
+        return ListItemView(mContext, R.layout.kr_action_list_item, info).setOnClickListener(onItemClickListener)
     }
 
-
-    private fun createPagePreference(info: PageInfo): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = preferenceClickListener
-        item.layoutResource = R.layout.kr_page_list_item2
-
-        return item
+    private fun createPageItem(info: PageInfo): ListItemView {
+        return ListItemView(mContext, R.layout.kr_page_list_item2, info).setOnClickListener(onItemClickListener)
     }
 
-    private fun createSwitchPreference(info: SwitchInfo): Preference {
-        val item = SwitchPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = preferenceClickListener
-        item.isChecked = info.selected
-        item.layoutResource = R.layout.kr_switch_list_item2
-
-        return item
+    private fun createSwitchItem(info: SwitchInfo): ListItemView {
+        return ListItemSwitch(mContext, R.layout.kr_switch_list_item2, info).setOnClickListener(onItemClickListener)
     }
 
-    private fun createActionPreference(info: ActionInfo): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = info.id
-        item.title = "" + info.title
-        item.summary = "" + info.desc
-        item.onPreferenceClickListener = preferenceClickListener
-        item.layoutResource = R.layout.kr_action_list_item
-
-        return item
+    private fun createActionItem(info: ActionInfo): ListItemView {
+        return ListItemView(mContext, R.layout.kr_action_list_item, info).setOnClickListener(onItemClickListener)
     }
 
-    private fun createPreferenceGroup(info: GroupInfo): PreferenceCategory {
-        val preferenceCategory = PreferenceCategory(mContext)
-        preferenceCategory.title = info.separator
-        preferenceCategory.layoutResource = R.layout.kr_group_list_item
-
-        return preferenceCategory
+    private fun createItemGroup(info: GroupInfo): ListItemGroup {
+        return ListItemGroup(mContext, R.layout.kr_group_list_item, info).setOnClickListener(onItemClickListener) as ListItemGroup
     }
 }

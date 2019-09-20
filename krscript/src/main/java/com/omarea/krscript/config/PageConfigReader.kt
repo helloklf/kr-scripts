@@ -393,7 +393,7 @@ class PageConfigReader(private var context: Context) {
                 switchInfo.getState = ""
             } else {
                 val shellResult = executeResultRoot(context, switchInfo.getState)
-                switchInfo.selected = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
+                switchInfo.checked = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
             }
             if (switchInfo.setState == null) {
                 switchInfo.setState = ""

@@ -348,8 +348,8 @@ class ActionPage : AppCompatActivity() {
                 handler.post {
                     if (items != null && items.size != 0) {
                         val fragment = ActionListFragment()
-                        getFragmentManager().beginTransaction()
-                                .add(R.id.main_list, fragment as android.app.Fragment)        //.addToBackStack("fname")
+                        supportFragmentManager.beginTransaction()
+                                .add(R.id.main_list, fragment)
                                 .commit()
 
                         fragment.setListData(

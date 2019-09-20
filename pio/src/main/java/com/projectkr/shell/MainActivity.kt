@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val pages = PageListReader(this.applicationContext).readPageList(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!)
+            val pages = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!)
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
             handler.post {
                 progressBarDialog.hideDialog()
@@ -100,30 +100,28 @@ class MainActivity : AppCompatActivity() {
                         _openPage(pageInfo)
                     }
                 }
-                list_pages.setListData(pages, openPageHandler)
 
-                val fragment = ActionListFragment()
-                getFragmentManager().beginTransaction()
-                        .add(R.id.list_favorites, fragment as android.app.Fragment)        //.addToBackStack("fname")
-                        .commit()
+                val filePickerHandler = object : FileChooserRender.FileChooserInterface {
+                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                        return chooseFilePath(fileSelectedInterface)
+                    }
+                }
 
-                fragment.setListData(
-                        this,
-                        favorites,
-                        object : FileChooserRender.FileChooserInterface {
-                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
-                                return chooseFilePath(fileSelectedInterface)
-                            }
-                        },
-                        null,
-                        openPageHandler)
+                val favoritesFragment = ActionListFragment()
+                val allItemFragment = ActionListFragment()
+                supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
+                supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
+
 
                 if (favorites != null && favorites.size > 0) {
+                    favoritesFragment.setListData( this, favorites, filePickerHandler, null, openPageHandler)
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE
                 }
-                if (list_pages.count > 0) {
+
+                if (pages != null && pages.size > 0) {
+                    allItemFragment.setListData(this, pages, filePickerHandler, null, openPageHandler)
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
                     main_tabhost_3.visibility = View.GONE

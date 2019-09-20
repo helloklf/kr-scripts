@@ -4,11 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
-import android.preference.*
-import android.util.Log
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -18,7 +17,7 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 
-class ActionListFragment : PreferenceFragment(), PageLayoutRender.OnItemClickListener {
+class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private lateinit var mContext: Context
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
 
@@ -43,23 +42,20 @@ class ActionListFragment : PreferenceFragment(), PageLayoutRender.OnItemClickLis
         }
     }
 
-
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val rootView = getView()
-        val list = rootView!!.findViewById<View>(android.R.id.list) as ListView
-        list.divider = null
-
-        val preferenceScreen = this.preferenceManager.createPreferenceScreen(mContext)
-        this.preferenceScreen = preferenceScreen
-        PageLayoutRender(mContext, preferenceManager, actionInfos, this, preferenceScreen).render()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.kr_action_list_fragment, container, false)
     }
 
 
-    override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
-        Log.d("onPreferenceTreeClick", "" + preference?.key)
-        return super.onPreferenceTreeClick(preferenceScreen, preference)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val layoutBuilder = ListItemView(mContext, R.layout.kr_group_list_root)
+        PageLayoutRender(mContext, actionInfos, this, layoutBuilder).render()
+        val layout = layoutBuilder.getView()
+
+        (this.view as ViewGroup).addView(layout)
     }
 
     fun triggerAction(id: String, onCompleted: Runnable): Boolean {
@@ -70,7 +66,7 @@ class ActionListFragment : PreferenceFragment(), PageLayoutRender.OnItemClickLis
      * 当switch项被点击
      */
     override fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
-        val toValue = !switchInfo.selected
+        val toValue = !switchInfo.checked
         if (switchInfo.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(mContext)
                     .setTitle(switchInfo.title)

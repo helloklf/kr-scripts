@@ -17,24 +17,21 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@android:id/title"
+            android:id="@id/kr_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
             android:alpha="0.8"
-            android:clickable="false"
-            android:focusable="false"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="13dp"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@android:id/summary"
+            android:id="@id/kr_desc"
+            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10dp"
-            android:visibility="gone" />
+            android:textSize="10dp" />
     </LinearLayout>
     <ImageView
         android:src="@drawable/krscript_arrow"

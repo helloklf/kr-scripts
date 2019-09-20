@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
+    <action>
+        <title>测试 时间获取</title>
+        <script>file:///android_asset/kr-script/test/View_Time.sh</script>
+    </action>
+
     <group title="工具测试">
         <action>
             <title>busybox 测试</title>
@@ -33,10 +38,22 @@
         <script>file:///android_asset/kr-script/test/check_root.sh</script>
     </action>
 
-    <switch>
-        <title>测试环境变量</title>
-        <desc>查看环境变量</desc>
-        <setstate>file:///android_asset/kr-script/test/var.sh</setstate>
+    <switch auto-off="false">
+        <title>开关测试</title>
+        <desc>测试开关功能</desc>
+        <getstate>
+            getprop xxx.xxx.xxx2
+        </getstate>
+        <setstate>
+            echo "设置前："
+            getprop xxx.xxx.xxx2
+
+            echo "设置为：" "$state"
+            setprop xxx.xxx.xxx2 "$state"
+
+            echo "设置后："
+            getprop xxx.xxx.xxx2
+        </setstate>
     </switch>
 
     <action>
