@@ -64,6 +64,8 @@ class PageConfigReader(private var context: Context) {
                                 switch = mainNode(SwitchInfo(), parser) as SwitchInfo?
                             } else if ("picker" == parser.name) {
                                 picker = mainNode(PickerInfo(), parser) as PickerInfo?
+                            } else if (page != null) {
+                                tagStartInPage(page, parser)
                             } else if (action != null) {
                                 tagStartInAction(action, parser)
                             } else if (switch != null) {
@@ -254,6 +256,14 @@ class PageConfigReader(private var context: Context) {
             }
 
             actionParamInfos = null
+        }
+    }
+
+    private fun tagStartInPage(info: PageInfo, parser: XmlPullParser) {
+        when {
+            "title" == parser.name -> info.title = parser.nextText()
+            "desc" == parser.name -> descNode(info, parser)
+            "resource" == parser.name -> resourceNode(parser)
         }
     }
 
