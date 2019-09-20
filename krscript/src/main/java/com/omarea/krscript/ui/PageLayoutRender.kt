@@ -150,11 +150,11 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     private fun createPageItem(info: PageInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_page_list_item2, info).setOnClickListener(onItemClickListener)
+        return ListItemView(mContext, R.layout.kr_page_list_item, info).setOnClickListener(onItemClickListener)
     }
 
     private fun createSwitchItem(info: SwitchInfo): ListItemView {
-        return ListItemSwitch(mContext, R.layout.kr_switch_list_item2, info).setOnClickListener(onItemClickListener)
+        return ListItemSwitch(mContext, R.layout.kr_switch_list_item, info).setOnClickListener(onItemClickListener)
     }
 
     private fun createActionItem(info: ActionInfo): ListItemView {
