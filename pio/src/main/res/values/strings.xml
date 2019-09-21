@@ -47,12 +47,6 @@
     <string name="monitor_cache_cleared">已回收用于缓存的RAM</string>
     <string name="monitor_ram_cleared">RAM碎片已整理</string>
 
-    <string name="shortcut_create_fail">快捷方式创建失败</string>
-    <string name="shortcut_create_success">已发送创建快捷方式申请</string>
-    <string name="shortcut_create">添加快捷方式</string>
-    <string name="shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
-    <string name="ushortcut_nsupported">该功能不支持添加快捷方式</string>
-
     <string name="btn_copy">复制输出</string>
     <string name="copy_success">复制成功</string>
     <string name="copy_fail">复制失败</string>

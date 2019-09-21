@@ -19,6 +19,7 @@ class PageLayoutRender(private val mContext: Context,
         fun onActionClick(item: ActionInfo, onCompleted: Runnable)
         fun onSwitchClick(item: SwitchInfo, onCompleted: Runnable)
         fun onPickerClick(item: PickerInfo, onCompleted: Runnable)
+        fun onItemLongClick(item: ConfigItemBase)
     }
 
 
@@ -92,6 +93,15 @@ class PageLayoutRender(private val mContext: Context,
         }
     }
 
+    private val onItemLongClickListener = object : ListItemView.OnLongClickListener {
+        override fun onLongClick(listItemView: ListItemView) {
+            val item = findItemByKey(listItemView.key, itemConfigList)
+            item?.run {
+                clickListener.onItemLongClick(item)
+            }
+        }
+    }
+
     fun render() {
         mapConfigList(parent, itemConfigList)
     }
@@ -126,6 +136,7 @@ class PageLayoutRender(private val mContext: Context,
 
                if (uiRender != null) {
                    uiRender.setOnClickListener(this.onItemClickListener)
+                   uiRender.setOnLongClickListener(this.onItemLongClickListener)
                    if (subGroup == null) {
                        parent.addView(uiRender)
                    } else {

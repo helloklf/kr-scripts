@@ -52,9 +52,9 @@ class ActionPage : AppCompatActivity() {
         // 显示返回按钮
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener({ _ ->
+        toolbar.setNavigationOnClickListener {
             finish()
-        })
+        }
 
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -103,53 +103,19 @@ class ActionPage : AppCompatActivity() {
         }
     }
 
-    /**
-     *  “添加收藏”功能实现
-     */
-    private var addToFavorites = object : ActionLongClickHandler {
-        fun addToFavorites(configItemBase: ConfigItemBase) {
-            val context = this@ActionPage
+    private var actionShortClickHandler = object : KrScriptActionHandler {
+        override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+            val intent = Intent()
 
-            if (configItemBase.id.isEmpty()) {
-                DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.shortcut_create_fail)
-                        .setMessage(R.string.ushortcut_nsupported)
-                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
-                        })
-                )
-            } else {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.shortcut_create))
-                        .setMessage(String.format(getString(R.string.shortcut_create_desc), configItemBase.title))
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            val intent = Intent()
-                            intent.component = ComponentName(context.applicationContext, context.javaClass.name)
-                            intent.putExtra("config", pageConfig)
-                            intent.putExtra("title", "" + title)
-                            intent.putExtra("autoRunItemId", configItemBase.id)
-                            val result = ActionShortcutManager(context)
-                                    .addShortcut(intent, getDrawable(R.drawable.shortcut_logo)!!, configItemBase)
-                            if (!result) {
-                                Toast.makeText(context, R.string.shortcut_create_fail, Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(context, getString(R.string.shortcut_create_success), Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
-            }
+            intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
+            intent.putExtra("config", pageConfig)
+            intent.putExtra("title", "" + title)
+            intent.putExtra("autoRunItemId", configItemBase.id)
+
+            addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
         }
 
-        override fun addToFavorites(switchInfo: SwitchInfo) {
-            addToFavorites(switchInfo as ConfigItemBase)
-        }
-
-        override fun addToFavorites(actionInfo: ActionInfo) {
-            addToFavorites(actionInfo as ConfigItemBase)
-        }
-    }
-
-    private var actionShortClickHandler = object : ActionShortClickHandler {
-        override fun onParamsView(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
+        override fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
             if (actionInfo.params!!.size > 3) {
                 action_params_editor.removeAllViews()
                 action_params_editor.addView(view)
@@ -168,7 +134,7 @@ class ActionPage : AppCompatActivity() {
             return false
         }
 
-        override fun onExecute(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
+        override fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
             var forceStopRunnable: Runnable? = null
 
             btn_hide.setOnClickListener {
@@ -183,9 +149,8 @@ class ActionPage : AppCompatActivity() {
             btn_copy.setOnClickListener {
                 try {
                     val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val myClip: ClipData
-                    myClip = ClipData.newPlainText("text", shell_output.text.toString())
-                    myClipboard.setPrimaryClip(myClip)
+                    val myClip: ClipData = ClipData.newPlainText("text", shell_output.text.toString())
+                    myClipboard.primaryClip = myClip
                     Toast.makeText(this@ActionPage, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
                 } catch (ex: Exception) {
                     Toast.makeText(this@ActionPage, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
@@ -231,6 +196,14 @@ class ActionPage : AppCompatActivity() {
 
             }, shell_output, action_progress)
         }
+
+        override fun onSubPageClick(pageInfo: PageInfo) {
+            _openPage(pageInfo)
+        }
+
+        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+            return chooseFilePath(fileSelectedInterface)
+        }
     }
 
     @FunctionalInterface
@@ -273,10 +246,10 @@ class ActionPage : AppCompatActivity() {
 
         override fun updateLog(msg: SpannableString?) {
             if (msg != null) {
-                this.logView.post({
+                this.logView.post {
                     logView.append(msg)
                     (logView.parent as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
-                })
+                }
             }
         }
     }
@@ -301,15 +274,15 @@ class ActionPage : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             return false
         } else {
-            try {
+            return try {
                 val intent = Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*")
+                intent.type = "*/*"
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
                 this.fileSelectedInterface = fileSelectedInterface
-                return true;
+                true;
             } catch (ex: java.lang.Exception) {
-                return false
+                false
             }
         }
     }
@@ -331,10 +304,10 @@ class ActionPage : AppCompatActivity() {
     }
 
     private fun getPath(uri: Uri): String? {
-        try {
-            return FilePathResolver().getPath(this, uri)
+        return try {
+            FilePathResolver().getPath(this, uri)
         } catch (ex: java.lang.Exception) {
-            return null
+            null
         }
     }
 
@@ -347,21 +320,8 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        val fragment = ActionListFragment.create(items,
-                                object : FileChooserRender.FileChooserInterface {
-                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
-                                        return chooseFilePath(fileSelectedInterface)
-                                    }
-                                },
-                                actionShortClickHandler,
-                                object : PageClickHandler {
-                                    override fun openPage(pageInfo: PageInfo) {
-                                        _openPage(pageInfo)
-                                    }
-                                })
-                        supportFragmentManager.beginTransaction()
-                                .add(R.id.main_list, fragment)
-                                .commit()
+                        val fragment = ActionListFragment.create(items, actionShortClickHandler)
+                        supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
 
                         if (autoRun.isNotEmpty()) {
                             val onCompleted = Runnable {

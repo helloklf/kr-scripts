@@ -22,17 +22,16 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
-import com.omarea.krscript.config.PageListReader
-import com.omarea.krscript.model.PageClickHandler
-import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
-    val progressBarDialog = ProgressBarDialog(this)
+    private val progressBarDialog = ProgressBarDialog(this)
     private var handler = Handler()
     private var useHomePage = false
 
@@ -45,9 +44,9 @@ class MainActivity : AppCompatActivity() {
                     .setTitle(getString(R.string.need_root_permissions))
                     .setMessage(getString(R.string.need_root_permissions_desc))
                     .setCancelable(false)
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        System.exit(0)
-                    }))
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        exitProcess(0)
+                    })
             return
         }
 
@@ -95,13 +94,23 @@ class MainActivity : AppCompatActivity() {
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
             handler.post {
                 progressBarDialog.hideDialog()
-                val openPageHandler = object : PageClickHandler {
-                    override fun openPage(pageInfo: PageInfo) {
+
+                val itemClickHandler = object : KrScriptActionHandler {
+                    override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+                    }
+
+                    override fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
+                        return null
+                    }
+
+                    override fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
+                        return false
+                    }
+
+                    override fun onSubPageClick(pageInfo: PageInfo) {
                         _openPage(pageInfo)
                     }
-                }
 
-                val filePickerHandler = object : FileChooserRender.FileChooserInterface {
                     override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
@@ -109,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
 
                 if (favorites != null && favorites.size > 0) {
-                    val favoritesFragment = ActionListFragment.create(favorites, filePickerHandler, null, openPageHandler)
+                    val favoritesFragment = ActionListFragment.create(favorites, itemClickHandler)
                     supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
@@ -117,7 +126,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (pages != null && pages.size > 0) {
-                    val allItemFragment = ActionListFragment.create(pages, filePickerHandler, null, openPageHandler)
+                    val allItemFragment = ActionListFragment.create(pages, itemClickHandler)
                     supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
@@ -148,7 +157,7 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
                 this.fileSelectedInterface = fileSelectedInterface
                 return true;
-            } catch (ex: java.lang.Exception) {
+            } catch (ex: Exception) {
                 return false
             }
         }
@@ -173,7 +182,7 @@ class MainActivity : AppCompatActivity() {
     private fun getPath(uri: Uri): String? {
         try {
             return FilePathResolver().getPath(this, uri)
-        } catch (ex: java.lang.Exception) {
+        } catch (ex: Exception) {
             return null
         }
     }
@@ -191,7 +200,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("title", pageInfo.title)
                 startActivity(intent)
             }
-        } catch (ex: java.lang.Exception) {
+        } catch (ex: Exception) {
             Log.e("_openPage", "" + ex.message)
         }
     }
@@ -240,7 +249,13 @@ class MainActivity : AppCompatActivity() {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                         intent.data = Uri.fromParts("package", this.packageName, null)
+
                         Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
+
+                        try {
+                            startActivity(intent)
+                        } catch (ex: Exception){
+                        }
                     }
                 } else {
                     FloatMonitor(this).showPopupWindow()

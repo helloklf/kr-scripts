@@ -15,6 +15,7 @@ open class ListItemView(private val context: Context,
                         private val config: ConfigItemBase = ConfigItemBase()) {
     protected var layout = LayoutInflater.from(context).inflate(layoutId, null)
     protected var mOnClickListener: OnClickListener? = null
+    protected var mOnLongClickListener: OnLongClickListener? = null
 
     protected var summaryView = layout.findViewById<TextView?>(R.id.kr_desc)
     protected var titleView = layout.findViewById<TextView?>(R.id.kr_title)
@@ -75,6 +76,12 @@ open class ListItemView(private val context: Context,
         return this
     }
 
+    fun setOnLongClickListener(onLongClickListener: OnLongClickListener): ListItemView {
+        this.mOnLongClickListener = onLongClickListener
+
+        return this
+    }
+
     init {
         if (summaryView == null && config is ActionInfo) {
             summaryView = layout.rootView.findViewById<TextView?>(R.id.kr_desc)
@@ -88,8 +95,16 @@ open class ListItemView(private val context: Context,
         this.layout.setOnClickListener {
             this.mOnClickListener?.onClick(this)
         }
+        this.layout.setOnLongClickListener {
+            this.mOnLongClickListener?.onLongClick(this)
+            true
+        }
     }
     interface OnClickListener{
         fun onClick(listItemView: ListItemView)
+    }
+
+    interface OnLongClickListener{
+        fun onLongClick(listItemView: ListItemView)
     }
 }

@@ -2,6 +2,7 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -16,36 +17,29 @@ import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
+import com.omarea.krscript.shortcut.ActionShortcutManager
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
         fun create(
                 actionInfos: ArrayList<ConfigItemBase>?,
-                fileChooser: FileChooserRender.FileChooserInterface,
-                actionShortClickHandler: ActionShortClickHandler? = null,
-                pageClickHandler: PageClickHandler): ActionListFragment {
+                krScriptActionHandler: KrScriptActionHandler? = null): ActionListFragment {
             val fragment = ActionListFragment()
-            fragment.setListData(actionInfos, fileChooser, actionShortClickHandler, pageClickHandler)
+            fragment.setListData(actionInfos, krScriptActionHandler)
             return fragment
         }
     }
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
 
     private lateinit var progressBarDialog: ProgressBarDialog
-    private var fileChooser: FileChooserRender.FileChooserInterface? = null
-    private var actionShortClickHandler: ActionShortClickHandler? = null
-    private var pageClickHandler: PageClickHandler? = null
+    private var krScriptActionHandler: KrScriptActionHandler? = null
 
     private fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
-            fileChooser: FileChooserRender.FileChooserInterface,
-            actionShortClickHandler: ActionShortClickHandler? = null,
-            pageClickHandler: PageClickHandler) {
+            krScriptActionHandler: KrScriptActionHandler? = null) {
         if (actionInfos != null) {
             this.actionInfos = actionInfos
-            this.fileChooser = fileChooser
-            this.actionShortClickHandler = actionShortClickHandler
-            this.pageClickHandler = pageClickHandler
+            this.krScriptActionHandler = krScriptActionHandler
         }
     }
 
@@ -104,9 +98,39 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
 
     override fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
-        pageClickHandler?.openPage(pageInfo)
+        krScriptActionHandler?.onSubPageClick(pageInfo)
     }
 
+    // 长按 添加收藏
+    override fun onItemLongClick(configItemBase: ConfigItemBase) {
+        if (configItemBase.id.isEmpty()) {
+            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
+                    .setMessage(R.string.kr_ushortcut_nsupported)
+                    .setNeutralButton(R.string.btn_cancel) { _, _ ->
+                    }
+            )
+        } else {
+            krScriptActionHandler?.addToFavorites(configItemBase, object : KrScriptActionHandler.AddToFavoritesHandler {
+                override fun onAddToFavorites(configItemBase: ConfigItemBase, intent: Intent?) {
+                    if (intent != null) {
+                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                                .setTitle(getString(R.string.kr_shortcut_create))
+                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItemBase.title))
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItemBase)
+                                    if (!result) {
+                                        Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(context, getString(R.string.kr_shortcut_create_success), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .setNegativeButton(R.string.btn_cancel) { _, _ ->
+                                })
+                    }
+                }
+            })
+        }
+    }
 
     /**
      * 单选列表点击
@@ -208,9 +232,17 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                     }
                     handler.post {
                         val render = ActionParamsLayoutRender(linearLayout)
-                        render.renderList(actionParamInfos, fileChooser)
+                        render.renderList(actionParamInfos, object : FileChooserRender.FileChooserInterface{
+                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                                return if (krScriptActionHandler == null) {
+                                    false
+                                } else {
+                                    krScriptActionHandler!!.openFileChooser(fileSelectedInterface)
+                                }
+                            }
+                        })
                         progressBarDialog.hideDialog()
-                        if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,
+                        if (krScriptActionHandler != null && krScriptActionHandler!!.openParamsPage(action,
                                         linearLayout,
                                         Runnable { },
                                         Runnable {
@@ -308,8 +340,8 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         var shellHandler: ShellHandlerBase? = null
-        if (actionShortClickHandler != null) {
-            shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
+        if (krScriptActionHandler != null) {
+            shellHandler = krScriptActionHandler!!.openExecutor(configItem, onExit)
         }
 
         SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)

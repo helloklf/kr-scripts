@@ -25,4 +25,14 @@
     <string name="kr_download_downloading">文件下载中</string>
     <string name="kr_color_picker">请选择颜色</string>
     <string name="kr_invalid_color">输入的色值无效，仅支持类似 #ff88aa00 的格式</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="kr_shortcut_create_fail">快捷方式创建失败</string>
+    <string name="kr_shortcut_create_success">已发送创建快捷方式申请</string>
+    <string name="kr_shortcut_create">添加快捷方式</string>
+    <string name="kr_shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
+    <string name="kr_ushortcut_nsupported">该功能不支持添加快捷方式</string>
 </resources>
