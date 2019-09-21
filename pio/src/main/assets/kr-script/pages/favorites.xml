@@ -38,7 +38,7 @@
         <script>file:///android_asset/kr-script/test/check_root.sh</script>
     </action>
 
-    <switch auto-off="false">
+    <switch auto-off="true">
         <title>开关测试</title>
         <desc>测试开关功能</desc>
         <getstate>

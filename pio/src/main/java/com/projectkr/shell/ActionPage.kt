@@ -3,7 +3,8 @@ package com.projectkr.shell
 import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
-import android.content.*
+import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
@@ -12,14 +13,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.SpannableString
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.widget.ProgressBar
-import android.widget.ScrollView
-import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
@@ -27,8 +23,6 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
-import kotlinx.android.synthetic.main.activity_action_page.*
-
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -88,16 +82,6 @@ class ActionPage : AppCompatActivity() {
                 }
             }
         }
-
-        action_page_tabhost.setup()
-        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("a").setContent(R.id.main_list).setIndicator(""))
-        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("b").setContent(R.id.action_params).setIndicator(""))
-        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("c").setContent(R.id.action_log).setIndicator(""))
-        action_page_tabhost.setOnTabChangedListener {
-            if (action_page_tabhost.currentTab == 0) {
-                title = pageTitle
-            }
-        }
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
@@ -113,85 +97,11 @@ class ActionPage : AppCompatActivity() {
         }
 
         override fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
-            if (actionInfo.params!!.size > 3) {
-                action_params_editor.removeAllViews()
-                action_params_editor.addView(view)
-                action_page_tabhost.currentTab = 1
-                action_cancel.setOnClickListener {
-                    action_page_tabhost.currentTab = 0
-                    onCancel.run()
-                }
-                btn_confirm.setOnClickListener {
-                    // action_params_editor.removeAllViews()
-                    onComplete.run()
-                }
-                title = actionInfo.title
-                return true
-            }
             return false
         }
 
         override fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
-            var forceStopRunnable: Runnable? = null
-
-            btn_hide.setOnClickListener {
-                action_page_tabhost.currentTab = 0
-            }
-            btn_exit.setOnClickListener {
-                action_page_tabhost.currentTab = 0
-                if (running && forceStopRunnable != null) {
-                    forceStopRunnable!!.run()
-                }
-            }
-            btn_copy.setOnClickListener {
-                try {
-                    val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val myClip: ClipData = ClipData.newPlainText("text", shell_output.text.toString())
-                    myClipboard.primaryClip = myClip
-                    Toast.makeText(this@ActionPage, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
-                } catch (ex: Exception) {
-                    Toast.makeText(this@ActionPage, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
-                }
-            }
-            if (configItem.interruptible) {
-                btn_hide.visibility = View.VISIBLE
-                btn_exit.visibility = View.VISIBLE
-            } else {
-                btn_hide.visibility = View.GONE
-                btn_exit.visibility = View.GONE
-            }
-
-            action_page_tabhost.currentTab = 2
-            title = configItem.title
-            action_progress.isIndeterminate = true
-            action_progress.progress = 0
-            action_progress.visibility = View.VISIBLE
-            return MyShellHandler(object : IActionEventHandler {
-                override fun onExit() {
-                    running = false
-
-                    onExit.run()
-                    btn_hide.visibility = View.GONE
-                    btn_exit.visibility = View.VISIBLE
-                    action_progress.visibility = View.GONE
-
-                    if (configItem.autoOff) {
-                        action_page_tabhost.currentTab = 0
-                    }
-                }
-
-                override fun onStart(forceStop: Runnable?) {
-                    running = true
-
-                    if (configItem.interruptible && forceStop != null) {
-                        btn_exit.visibility = View.VISIBLE
-                    } else {
-                        btn_exit.visibility = View.GONE
-                    }
-                    forceStopRunnable = forceStop
-                }
-
-            }, shell_output, action_progress)
+            return null
         }
 
         override fun onSubPageClick(pageInfo: PageInfo) {
@@ -201,66 +111,6 @@ class ActionPage : AppCompatActivity() {
         override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
             return chooseFilePath(fileSelectedInterface)
         }
-    }
-
-    @FunctionalInterface
-    private interface IActionEventHandler {
-        fun onStart(forceStop: Runnable?)
-        fun onExit()
-    }
-
-    private class MyShellHandler(private var actionEventHandler: IActionEventHandler, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase() {
-        override fun onStart(forceStop: Runnable?) {
-            actionEventHandler.onStart(forceStop)
-        }
-
-        override fun onProgress(current: Int, total: Int) {
-            if (current == -1) {
-                this.shellProgress.visibility = View.VISIBLE
-                this.shellProgress.isIndeterminate = true
-            } else if (current == total) {
-                this.shellProgress.visibility = View.GONE
-            } else {
-                this.shellProgress.visibility = View.VISIBLE
-                this.shellProgress.isIndeterminate = false
-                this.shellProgress.max = total
-                this.shellProgress.progress = current
-            }
-        }
-
-        override fun cleanUp() {
-        }
-
-        override fun onStart(msg: Any?) {
-            this.logView.text = ""
-            updateLog(msg, Color.GRAY)
-        }
-
-        override fun onExit(msg: Any?) {
-            updateLog("\n\n脚本运行结束\n\n", Color.BLUE)
-            actionEventHandler.onExit()
-        }
-
-        override fun updateLog(msg: SpannableString?) {
-            if (msg != null) {
-                this.logView.post {
-                    logView.append(msg)
-                    (logView.parent as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
-                }
-            }
-        }
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && action_page_tabhost.currentTab != 0) {
-            if (action_page_tabhost.currentTab == 1) {
-                action_page_tabhost.currentTab = 0
-            } else if (action_page_tabhost.currentTab == 2 && !running) {
-                action_page_tabhost.currentTab = 0
-            }
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null

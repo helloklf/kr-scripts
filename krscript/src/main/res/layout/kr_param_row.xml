@@ -3,8 +3,6 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="23dp"
-    android:paddingRight="23dp"
     android:paddingBottom="2dp">
     <TextView
         android:id="@+id/kr_param_title"

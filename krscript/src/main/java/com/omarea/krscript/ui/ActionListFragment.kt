@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.OverScrollView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
@@ -18,6 +19,7 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import java.lang.Exception
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -57,9 +59,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder).render()
         val layout = layoutBuilder.getView()
 
-        (this.view as ViewGroup).addView(layout)
+        (this.view?.findViewById<OverScrollView?>(R.id.kr_content))?.addView(layout)
     }
 
+    // TODO:完善逻辑
     fun triggerAction(id: String, onCompleted: Runnable): Boolean {
         return false
     }
@@ -242,32 +245,40 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                             }
                         })
                         progressBarDialog.hideDialog()
-                        if (krScriptActionHandler != null && krScriptActionHandler!!.openParamsPage(action,
-                                        linearLayout,
-                                        Runnable { },
-                                        Runnable {
-                                            try {
-                                                val params = render.readParamsValue(actionParamInfos)
-                                                actionExecute(action, script, onExit, params)
-                                            } catch (ex: java.lang.Exception) {
-                                                Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
-                                            }
-                                        })) {
-                        } else {
-                            val dialogView = layoutInflater.inflate(R.layout.kr_params_dialog, null)
-                            dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
-                            dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
-                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(this.context!!).setView(dialogView))
 
-                            dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                        // 自定义参数输入界面
+                        val customRunner = krScriptActionHandler?.openParamsPage(action,
+                                linearLayout,
+                                Runnable { },
+                                Runnable {
+                                    try {
+                                        val params = render.readParamsValue(actionParamInfos)
+                                        actionExecute(action, script, onExit, params)
+                                    } catch (ex: Exception) {
+                                        Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
+                                    }
+                                })
+
+                        // 内置的参数输入界面
+                        if (customRunner != true) {
+                            val dialogView = LayoutInflater.from(context).inflate(R.layout.kr_dialog_params, null)
+                            val center = dialogView.findViewById<ScrollView>(R.id.kr_params_center)
+                            center.removeAllViews()
+                            center.addView(linearLayout)
+                            val dialog = AlertDialog.Builder(this.context, R.style.kr_full_screen_dialog).setView(dialogView).create()
+                            dialog.show()
+
+                            dialogView.findViewById<TextView>(R.id.title).text = action.title
+
+                            dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                                 dialog!!.dismiss()
                             }
-                            dialogView.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
+                            dialogView.findViewById<View>(R.id.btn_confirm).setOnClickListener {
                                 try {
                                     val params = render.readParamsValue(actionParamInfos)
                                     dialog!!.dismiss()
                                     actionExecute(action, script, onExit, params)
-                                } catch (ex: java.lang.Exception) {
+                                } catch (ex: Exception) {
                                     Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
                             }
@@ -343,7 +354,12 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         if (krScriptActionHandler != null) {
             shellHandler = krScriptActionHandler!!.openExecutor(configItem, onExit)
         }
-
-        SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
+        if (shellHandler == null) {
+            val dialog = DialogLogFragment.create(configItem, onExit, script, params)
+            dialog.show(fragmentManager, "")
+            dialog.isCancelable = false
+        } else {
+            SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
+        }
     }
 }

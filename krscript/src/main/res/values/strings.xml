@@ -26,9 +26,6 @@
     <string name="kr_color_picker">请选择颜色</string>
     <string name="kr_invalid_color">输入的色值无效，仅支持类似 #ff88aa00 的格式</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 
     <string name="kr_shortcut_create_fail">快捷方式创建失败</string>
     <string name="kr_shortcut_create_success">已发送创建快捷方式申请</string>
