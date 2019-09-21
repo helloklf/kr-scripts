@@ -358,8 +358,8 @@
 <picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
     <title>测试单选界面</title>
     <desc>测试单选界面</desc>
-    <getstate>getprop xxx.xxx.xxx3</getstate>
-    <setstate>setprop xxx.xxx.xxx3 $state</setstate>
+    <get>getprop xxx.xxx.xxx3</get>
+    <set>setprop xxx.xxx.xxx3 $state</set>
 </picker>
 ```
 
