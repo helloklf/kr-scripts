@@ -25,7 +25,7 @@ class PageLayoutRender(private val mContext: Context,
 
     private fun findItemByKey(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
         for (item in actionInfos) {
-            if (item.id == key) {
+            if (item.index == key) {
                 return item
             } else if (item is GroupInfo && item.children.size > 0) {
                 val result = findItemByKey(key, item.children)
@@ -45,7 +45,7 @@ class PageLayoutRender(private val mContext: Context,
             try {
                 val item = findItemByKey(key, itemConfigList)
                 if (item == null) {
-                    Log.e("onItemClick", "找不到指定ID的项 key: " + key)
+                    Log.e("onItemClick", "找不到指定ID的项 index: " + key)
                     return
                 } else {
                     when (item) {

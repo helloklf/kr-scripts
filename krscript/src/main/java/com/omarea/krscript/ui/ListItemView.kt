@@ -49,7 +49,7 @@ open class ListItemView(private val context: Context,
 
     val key: String
         get () {
-            return config.id
+            return config.index
         }
 
     fun getView(): View {

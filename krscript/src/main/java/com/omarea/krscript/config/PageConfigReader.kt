@@ -261,13 +261,6 @@ class PageConfigReader(private var context: Context) {
     }
 
     private fun tagEndInPage(page: PageInfo?, parser: XmlPullParser) {
-        if (page != null) {
-            if (page.id.isEmpty() && page.title.isNotEmpty()) {
-                page.id = page.title
-            }
-
-            actionParamInfos = null
-        }
     }
 
     private fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
@@ -275,9 +268,6 @@ class PageConfigReader(private var context: Context) {
             if (action.setState == null)
                 action.setState = ""
             action.params = actionParamInfos
-            if (action.id.isEmpty() && action.title.isNotEmpty()) {
-                action.id = action.title
-            }
 
             actionParamInfos = null
         }
@@ -321,7 +311,7 @@ class PageConfigReader(private var context: Context) {
         for (i in 0 until parser.attributeCount) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
-                "id" -> configItemBase.id = attrValue
+                "id", "key", "index" -> configItemBase.key = attrValue
                 "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
                 "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
                 "interruptible" -> configItemBase.interruptible = (attrValue.isEmpty() || attrValue == "true" || attrValue == "1")
@@ -337,9 +327,6 @@ class PageConfigReader(private var context: Context) {
                     }
                 */
             }
-        }
-        if (configItemBase.id.isEmpty()) {
-            configItemBase.id = UUID.randomUUID().toString()
         }
         return configItemBase
     }
@@ -411,9 +398,6 @@ class PageConfigReader(private var context: Context) {
             }
             if (switchInfo.setState == null) {
                 switchInfo.setState = ""
-            }
-            if (switchInfo.id.isEmpty() && switchInfo.title.isNotEmpty()) {
-                switchInfo.id = switchInfo.title
             }
         }
     }
@@ -514,18 +498,10 @@ class PageConfigReader(private var context: Context) {
             if (pickerInfo.setState == null) {
                 pickerInfo.setState = ""
             }
-            if (pickerInfo.id.isEmpty() && pickerInfo.title.isNotEmpty()) {
-                pickerInfo.id = pickerInfo.title
-            }
         }
     }
 
     private fun tagEndInText(textInfo: TextInfo?, parser: XmlPullParser) {
-        if (textInfo != null) {
-            if (textInfo.id.isEmpty() && textInfo.title.isNotEmpty()) {
-                textInfo.id = textInfo.title
-            }
-        }
     }
 
     private fun executeResultRoot(context: Context, scriptIn: String): String {

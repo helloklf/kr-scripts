@@ -254,7 +254,7 @@ class FloatMonitor(context: Context) {
             }, 2000)
             true
         }
-        // val opt = view!!.findViewById(R.id.fw_monitor_opt)
+        // val opt = view!!.findViewById(R.index.fw_monitor_opt)
         view!!.setOnLongClickListener {
             hidePopupWindow()
             true

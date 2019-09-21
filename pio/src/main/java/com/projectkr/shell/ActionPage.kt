@@ -3,7 +3,6 @@ package com.projectkr.shell
 import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -23,11 +22,9 @@ import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
-import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
-import com.omarea.krscript.shortcut.ActionShortcutManager
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page.*
@@ -110,7 +107,7 @@ class ActionPage : AppCompatActivity() {
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
             intent.putExtra("config", pageConfig)
             intent.putExtra("title", "" + title)
-            intent.putExtra("autoRunItemId", configItemBase.id)
+            intent.putExtra("autoRunItemId", configItemBase.key)
 
             addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
         }

@@ -103,7 +103,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     // 长按 添加收藏
     override fun onItemLongClick(configItemBase: ConfigItemBase) {
-        if (configItemBase.id.isEmpty()) {
+        if (configItemBase.key.isEmpty()) {
             DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
                     .setMessage(R.string.kr_ushortcut_nsupported)
                     .setNeutralButton(R.string.btn_cancel) { _, _ ->
