@@ -88,13 +88,14 @@
                 <option value="123">测试123</option>
                 <option value="234">测试234</option>
             </options>
-            <getstate>
-                getprop xxx.xxx.xxx
-            </getstate>
-            <setstate>
-                echo 执行参数：$state
-                setprop xxx.xxx.xxx $state
-            </setstate>
+            <getstate>getprop xxx.xxx.xxx</getstate>
+            <setstate>setprop xxx.xxx.xxx $state</setstate>
+        </picker>
+        <picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
+            <title>测试单选界面</title>
+            <desc>测试单选界面</desc>
+            <getstate>getprop xxx.xxx.xxx3</getstate>
+            <setstate>setprop xxx.xxx.xxx3 $state</setstate>
         </picker>
     </group>
 
