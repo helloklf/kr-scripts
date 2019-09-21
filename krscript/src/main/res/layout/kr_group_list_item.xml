@@ -14,7 +14,7 @@
         android:paddingRight="23dp"
         android:alpha="0.5"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="13dp" />
+        android:textSize="@dimen/kr_title_size" />
 
     <LinearLayout
         android:id="@android:id/content"

@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:alpha="0.8"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="13dp"
+        android:textSize="@dimen/kr_title_size"
         android:textStyle="bold" />
 
     <TextView
@@ -25,5 +25,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
-        android:textSize="10dp" />
+        android:textSize="@dimen/kr_desc_size" />
 </LinearLayout>

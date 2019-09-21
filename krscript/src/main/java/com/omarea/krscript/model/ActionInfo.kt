@@ -4,6 +4,7 @@ import com.omarea.krscript.config.ActionParamInfo
 import java.util.ArrayList
 
 class ActionInfo : ConfigItemBase() {
-    var script: String? = null
+    var getState: String? = null
+    var setState: String? = null
     var params: ArrayList<ActionParamInfo>? = null
 }

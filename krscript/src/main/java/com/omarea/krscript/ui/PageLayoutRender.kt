@@ -97,38 +97,39 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     private fun mapConfigList(parent: ListItemView, actionInfos: ArrayList<ConfigItemBase>) {
-        var smallGroup: ListItemGroup? = null
+        var subGroup: ListItemGroup? = null
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
            try {
-               var preference: ListItemView? = null
+               var uiRender: ListItemView? = null
                if (it is PageInfo) {
-                   preference = createPageItem(it)
+                   uiRender = createPageItem(it)
                } else if (it is SwitchInfo) {
-                   preference = createSwitchItem(it)
+                   uiRender = createSwitchItem(it)
                } else if (it is ActionInfo) {
-                   preference = createActionItem(it)
+                   uiRender = createActionItem(it)
                } else if (it is PickerInfo) {
-                   preference = createListItem(it)
+                   uiRender = createListItem(it)
                } else if (it is TextInfo) {
-                   preference = if (parent is ListItemGroup) {
+                   uiRender = if (parent is ListItemGroup) {
                        createTextItemWhite(it)
                    } else {
                        createTextItem(it)
                    }
                } else if (it is GroupInfo) {
-                   smallGroup = createItemGroup(it)
-                   parent.addView(smallGroup)
+                   subGroup = createItemGroup(it)
+                   parent.addView(subGroup)
                    if (it.children.size > 0) {
-                       mapConfigList(smallGroup, it.children)
+                       mapConfigList(subGroup, it.children)
                    }
                }
 
-               if (preference != null) {
-                   if (smallGroup == null) {
-                       parent.addView(preference)
+               if (uiRender != null) {
+                   uiRender.setOnClickListener(this.onItemClickListener)
+                   if (subGroup == null) {
+                       parent.addView(uiRender)
                    } else {
-                       smallGroup.addView(preference)
+                       subGroup.addView(uiRender)
                    }
                }
            } catch (ex: Exception) {
@@ -138,30 +139,30 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     private fun createTextItem(info: TextInfo): ListItemView {
-        return ListItemText(mContext, R.layout.kr_text_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemText(mContext, R.layout.kr_text_list_item, info)
     }
 
     private fun createTextItemWhite(info: TextInfo): ListItemView {
-        return ListItemText(mContext, R.layout.kr_text_list_item_white, info).setOnClickListener(onItemClickListener)
+        return ListItemText(mContext, R.layout.kr_text_list_item_white, info)
     }
 
     private fun createListItem(info: PickerInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_action_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemPicker(mContext, R.layout.kr_action_list_item, info)
     }
 
     private fun createPageItem(info: PageInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_page_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemView(mContext, R.layout.kr_page_list_item, info)
     }
 
     private fun createSwitchItem(info: SwitchInfo): ListItemView {
-        return ListItemSwitch(mContext, R.layout.kr_switch_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemSwitch(mContext, R.layout.kr_switch_list_item, info)
     }
 
     private fun createActionItem(info: ActionInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_action_list_item, info).setOnClickListener(onItemClickListener)
+        return ListItemAction(mContext, R.layout.kr_action_list_item, info)
     }
 
     private fun createItemGroup(info: GroupInfo): ListItemGroup {
-        return ListItemGroup(mContext, R.layout.kr_group_list_item, info).setOnClickListener(onItemClickListener) as ListItemGroup
+        return ListItemGroup(mContext, R.layout.kr_group_list_item, info)
     }
 }

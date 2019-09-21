@@ -180,7 +180,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
      * action执行参数界面
      */
     private fun actionExecute(action: ActionInfo, onExit: Runnable) {
-        val script = action.script ?: return
+        val script = action.setState ?: return
 
         if (action.params != null) {
             val actionParamInfos = action.params!!

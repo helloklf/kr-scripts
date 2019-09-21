@@ -186,8 +186,8 @@ class PageConfigReader(private var context: Context) {
         else if ("desc" == parser.name) {
             descNode(action, parser)
         }
-        else if ("script" == parser.name) {
-            action.script = parser.nextText().trim()
+        else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
+            action.setState = parser.nextText().trim()
         }
         else if ("param" == parser.name) {
             if (actionParamInfos == null) {
@@ -256,7 +256,6 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-
     private fun tagEndInPage(page: PageInfo?, parser: XmlPullParser) {
         if (page != null) {
             if (page.id.isEmpty() && page.title.isNotEmpty()) {
@@ -269,8 +268,8 @@ class PageConfigReader(private var context: Context) {
 
     private fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
         if (action != null) {
-            if (action.script == null)
-                action.script = ""
+            if (action.setState == null)
+                action.setState = ""
             action.params = actionParamInfos
             if (action.id.isEmpty() && action.title.isNotEmpty()) {
                 action.id = action.title

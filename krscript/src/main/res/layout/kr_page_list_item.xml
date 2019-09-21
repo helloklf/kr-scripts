@@ -8,7 +8,7 @@
     android:gravity="center_vertical"
     android:paddingLeft="23dp"
     android:paddingTop="10dp"
-    android:paddingRight="23dp"
+    android:paddingRight="20dp"
     android:paddingBottom="10dp">
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.8"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="13dp"
+            android:textSize="@dimen/kr_title_size"
             android:textStyle="bold" />
 
         <TextView
@@ -31,10 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10dp" />
+            android:textSize="@dimen/kr_desc_size" />
     </LinearLayout>
     <ImageView
-        android:src="@drawable/krscript_arrow"
+        android:src="@drawable/kr_arrow"
+        android:alpha="0.8"
+        android:tint="?colorAccent"
         android:padding="5dp"
         android:layout_width="30dp"
         android:layout_height="30dp" />

@@ -6,9 +6,9 @@
     android:orientation="horizontal"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
-    android:paddingLeft="23dp"
+    android:paddingStart="23dp"
     android:paddingTop="10dp"
-    android:paddingRight="23dp"
+    android:paddingEnd="23dp"
     android:paddingBottom="10dp">
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:alpha="0.8"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="13dp"
+            android:textSize="@dimen/kr_title_size"
             android:textStyle="bold" />
 
         <TextView
@@ -31,12 +31,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10dp" />
+            android:textSize="@dimen/kr_desc_size" />
     </LinearLayout>
     <Switch
         android:id="@id/kr_switch"
         android:elevation="5dp"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:alpha="0.8"
