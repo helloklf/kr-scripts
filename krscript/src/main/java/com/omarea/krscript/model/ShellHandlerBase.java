@@ -1,16 +1,11 @@
 package com.omarea.krscript.model;
 
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.util.regex.Pattern;
 
@@ -47,7 +42,9 @@ public abstract class ShellHandlerBase extends Handler {
     protected abstract void onProgress(int current, int total);
 
     protected abstract void onStart(Object msg);
+
     public abstract void onStart(Runnable forceStop);
+
     protected abstract void onExit(Object msg);
 
     /**

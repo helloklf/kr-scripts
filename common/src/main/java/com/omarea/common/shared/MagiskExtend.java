@@ -1,5 +1,7 @@
 package com.omarea.common.shared;
+
 import android.content.Context;
+
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.RootFile;
 
@@ -13,7 +15,8 @@ public class MagiskExtend {
     private static String MAGISK_ROOT_PATH1 = "/sbin/.core/img";
     private static String MAGISK_ROOT_PATH2 = "/sbin/.magisk/img";
 
-    private static String MAGISK_MODULE_NAME = "scene_systemless";;
+    private static String MAGISK_MODULE_NAME = "scene_systemless";
+    ;
     //magisk 19 /data/adb/modules
     private static int supported = -1;
     private static int MagiskVersion = 0;
@@ -32,6 +35,7 @@ public class MagiskExtend {
 
     /**
      * 自动调整镜像大小
+     *
      * @param require
      */
     private static boolean spaceValidation(long require) {
@@ -51,6 +55,7 @@ public class MagiskExtend {
 
     /**
      * 创建简单的文件替换模块
+     *
      * @param newfile
      * @param orginPath
      * @param moduleName
@@ -58,7 +63,7 @@ public class MagiskExtend {
      */
     public static boolean createFileReplaceModule(String orginPath, String newfile, String moduleName, String moduleTitle) {
         if (MagiskExtend.magiskSupported() && RootFile.INSTANCE.itemExists(newfile)) {
-            String moduleProp = "id=" + moduleName +  "\\n" +
+            String moduleProp = "id=" + moduleName + "\\n" +
                     "name=" + moduleTitle + "\\n" +
                     "version=v1\\n" +
                     "versionCode=1\\n" +
@@ -199,7 +204,7 @@ public class MagiskExtend {
                     MagiskVersion = Integer.parseInt(magiskVersion) / 1000;
                     supported = MagiskVersion >= 17 ? 1 : 0;
 
-                    if(supported == 1) {
+                    if (supported == 1) {
                         if (MagiskVersion >= 19) {
                             MAGISK_PATH = MAGISK_PATH_19 + "/" + MAGISK_MODULE_NAME + "/";
                         } else if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH1)) {
@@ -219,6 +224,7 @@ public class MagiskExtend {
 
     /**
      * 是否已安装模块
+     *
      * @return
      */
     public static boolean moduleInstalled() {
@@ -231,8 +237,8 @@ public class MagiskExtend {
         }
 
         KeepShellPublic.INSTANCE.doCmdSync(
-            "sed -i '/" + prop + "=/'d " +  MAGISK_PATH + "system.prop\n" +
-            "echo " + prop + "=\"" + value  +"\" >> " + MAGISK_PATH + "system.prop\n");
+                "sed -i '/" + prop + "=/'d " + MAGISK_PATH + "system.prop\n" +
+                        "echo " + prop + "=\"" + value + "\" >> " + MAGISK_PATH + "system.prop\n");
         return true;
     }
 
@@ -251,8 +257,8 @@ public class MagiskExtend {
                 String dir = new File(output).getParent();
                 KeepShellPublic.INSTANCE.doCmdSync(
                         "mkdir -p \"" + dir + "\"\n" +
-                        "cp \"" + newfile + "\" \"" + output + "\"\n" +
-                        "chmod 777 \"" + output + "\"");
+                                "cp \"" + newfile + "\" \"" + output + "\"\n" +
+                                "chmod 777 \"" + output + "\"");
                 return true;
             }
         }
@@ -279,10 +285,10 @@ public class MagiskExtend {
 
     public static void cancelReplace(String orginPath) {
         String output = getMagiskReplaceFilePath(orginPath);
-        KeepShellPublic.INSTANCE.doCmdSync("rm -f \""+ output + "\"");
+        KeepShellPublic.INSTANCE.doCmdSync("rm -f \"" + output + "\"");
     }
 
-    public static String getProps () {
+    public static String getProps() {
         if (moduleInstalled()) {
             return KeepShellPublic.INSTANCE.doCmdSync("cat " + MAGISK_PATH + "system.prop");
         }
@@ -300,7 +306,7 @@ public class MagiskExtend {
         return false;
     }
 
-    public static String getServiceSH () {
+    public static String getServiceSH() {
         if (moduleInstalled()) {
             return KeepShellPublic.INSTANCE.doCmdSync("cat " + MAGISK_PATH + "service.sh");
         }
@@ -311,7 +317,7 @@ public class MagiskExtend {
         return updateFile(fromFile, "service.sh");
     }
 
-    public static String getFsPostDataSH () {
+    public static String getFsPostDataSH() {
         if (moduleInstalled()) {
             return KeepShellPublic.INSTANCE.doCmdSync("cat " + MAGISK_PATH + "post-fs-data.sh");
         }

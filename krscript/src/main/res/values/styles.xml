@@ -1,4 +1,5 @@
 <resources>
+
     <style name="textTitle">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textStyle">bold</item>
@@ -9,11 +10,16 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>
     </style>
+
     <style name="kr_full_screen_dialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
-    <item name="android:windowBackground">@android:color/transparent</item>
-    <item name="android:windowNoTitle">true</item>
-    <item name="android:windowFullscreen">true</item>
-    <item name="android:windowIsTranslucent">true</item>
+            
+        <item name="android:windowBackground">@android:color/transparent</item>
+            
+        <item name="android:windowNoTitle">true</item>
+            
+        <item name="android:windowFullscreen">true</item>
+            
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:layout_width">match_parent</item>

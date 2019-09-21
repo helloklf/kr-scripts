@@ -30,7 +30,7 @@ class PageLayoutRender(private val mContext: Context,
             } else if (item is GroupInfo && item.children.size > 0) {
                 val result = findItemByDynamicIndex(key, item.children)
                 if (result != null) {
-                    return  result
+                    return result
                 }
             }
         }
@@ -81,7 +81,7 @@ class PageLayoutRender(private val mContext: Context,
         }
     }
 
-    private val onItemClickListener: ListItemView.OnClickListener = object : ListItemView.OnClickListener{
+    private val onItemClickListener: ListItemView.OnClickListener = object : ListItemView.OnClickListener {
         override fun onClick(listItemView: ListItemView) {
             val key = listItemView.index
             try {
@@ -110,42 +110,42 @@ class PageLayoutRender(private val mContext: Context,
         var subGroup: ListItemGroup? = null
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
-           try {
-               var uiRender: ListItemView? = null
-               if (it is PageInfo) {
-                   uiRender = createPageItem(it)
-               } else if (it is SwitchInfo) {
-                   uiRender = createSwitchItem(it)
-               } else if (it is ActionInfo) {
-                   uiRender = createActionItem(it)
-               } else if (it is PickerInfo) {
-                   uiRender = createListItem(it)
-               } else if (it is TextInfo) {
-                   uiRender = if (parent is ListItemGroup) {
-                       createTextItemWhite(it)
-                   } else {
-                       createTextItem(it)
-                   }
-               } else if (it is GroupInfo) {
-                   subGroup = createItemGroup(it)
-                   parent.addView(subGroup)
-                   if (it.children.size > 0) {
-                       mapConfigList(subGroup, it.children)
-                   }
-               }
+            try {
+                var uiRender: ListItemView? = null
+                if (it is PageInfo) {
+                    uiRender = createPageItem(it)
+                } else if (it is SwitchInfo) {
+                    uiRender = createSwitchItem(it)
+                } else if (it is ActionInfo) {
+                    uiRender = createActionItem(it)
+                } else if (it is PickerInfo) {
+                    uiRender = createListItem(it)
+                } else if (it is TextInfo) {
+                    uiRender = if (parent is ListItemGroup) {
+                        createTextItemWhite(it)
+                    } else {
+                        createTextItem(it)
+                    }
+                } else if (it is GroupInfo) {
+                    subGroup = createItemGroup(it)
+                    parent.addView(subGroup)
+                    if (it.children.size > 0) {
+                        mapConfigList(subGroup, it.children)
+                    }
+                }
 
-               if (uiRender != null) {
-                   uiRender.setOnClickListener(this.onItemClickListener)
-                   uiRender.setOnLongClickListener(this.onItemLongClickListener)
-                   if (subGroup == null) {
-                       parent.addView(uiRender)
-                   } else {
-                       subGroup.addView(uiRender)
-                   }
-               }
-           } catch (ex: Exception) {
-               Toast.makeText(mContext, it.title + "界面渲染异常" + ex.message, Toast.LENGTH_SHORT).show()
-           }
+                if (uiRender != null) {
+                    uiRender.setOnClickListener(this.onItemClickListener)
+                    uiRender.setOnLongClickListener(this.onItemLongClickListener)
+                    if (subGroup == null) {
+                        parent.addView(uiRender)
+                    } else {
+                        subGroup.addView(uiRender)
+                    }
+                }
+            } catch (ex: Exception) {
+                Toast.makeText(mContext, it.title + "界面渲染异常" + ex.message, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

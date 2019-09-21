@@ -11,10 +11,10 @@ class ListItemSwitch(private val context: Context,
     protected var switchView = layout.findViewById<Switch?>(R.id.kr_switch)
 
     var checked: Boolean
-        get () {
+        get() {
             return if (switchView != null) switchView!!.isChecked else false
         }
-        set (value) {
+        set(value) {
             switchView?.isChecked = value
         }
 

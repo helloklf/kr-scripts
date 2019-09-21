@@ -1,7 +1,7 @@
 package com.omarea.krscript.model
 
 import com.omarea.krscript.config.ActionParamInfo
-import java.util.ArrayList
+import java.util.*
 
 class ActionInfo : ConfigItemBase() {
     var getState: String? = null

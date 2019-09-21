@@ -9,7 +9,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollView
 import com.omarea.common.ui.ProgressBarDialog
@@ -19,7 +22,6 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
-import java.lang.Exception
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -32,6 +34,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
             return fragment
         }
     }
+
     private lateinit var actionInfos: ArrayList<ConfigItemBase>
 
     private lateinit var progressBarDialog: ProgressBarDialog
@@ -244,7 +247,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                     }
                     handler.post {
                         val render = ActionParamsLayoutRender(linearLayout)
-                        render.renderList(actionParamInfos, object : FileChooserRender.FileChooserInterface{
+                        render.renderList(actionParamInfos, object : FileChooserRender.FileChooserInterface {
                             override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                                 return if (krScriptActionHandler == null) {
                                     false

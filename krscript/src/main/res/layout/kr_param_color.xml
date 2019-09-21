@@ -9,34 +9,36 @@
 
     <EditText
         android:id="@+id/kr_param_color_text"
-        android:background="@android:color/transparent"
         android:layout_width="0dp"
-        android:marqueeRepeatLimit="marquee_forever"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
         android:layout_gravity="center_vertical"
-        android:hint="@string/kr_please_input_color" />
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:hint="@string/kr_please_input_color"
+        android:marqueeRepeatLimit="marquee_forever" />
+
     <ImageView
         android:id="@+id/kr_param_color_invalid"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
         android:layout_gravity="center_vertical"
         android:padding="2dp"
-        android:src="@drawable/kr_warn"
-        android:layout_width="22dp"
-        android:layout_height="22dp" />
+        android:src="@drawable/kr_warn" />
+
     <View
         android:id="@+id/kr_param_color_preview"
-        android:layout_gravity="center_vertical"
-        android:padding="2dp"
         android:layout_width="22dp"
-        android:layout_height="22dp"></View>
+        android:layout_height="22dp"
+        android:layout_gravity="center_vertical"
+        android:padding="2dp"></View>
 
     <ImageButton
         android:id="@+id/kr_param_color_picker"
-        android:layout_marginLeft="4dp"
-        android:layout_gravity="center_vertical"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
         android:background="@android:color/transparent"
         android:padding="5dp"
         android:scaleType="centerInside"

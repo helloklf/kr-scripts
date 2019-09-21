@@ -1,7 +1,6 @@
 package com.omarea.krscript.config
 
 import android.content.Context
-import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.krscript.executor.ExtractAssets

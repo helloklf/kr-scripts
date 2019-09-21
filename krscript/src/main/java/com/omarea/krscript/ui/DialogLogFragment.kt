@@ -9,18 +9,18 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.text.SpannableString
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.krscript.R
+import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.ConfigItemBase
 import com.omarea.krscript.model.ShellHandlerBase
 import kotlinx.android.synthetic.main.kr_dialog_log.*
-import android.view.LayoutInflater
-import android.view.ViewGroup
-import com.omarea.krscript.R
-import com.omarea.krscript.executor.SimpleShellExecutor
 
 
 class DialogLogFragment : DialogFragment() {

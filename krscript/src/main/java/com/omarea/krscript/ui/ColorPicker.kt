@@ -12,7 +12,6 @@ import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
-import java.lang.Exception
 
 class ColorPicker(private val actionParamInfo: ActionParamInfo, private val context: Context) {
     fun render(): View {
@@ -24,8 +23,10 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
         textView.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun afterTextChanged(s: Editable?) {
                 updateColorPreview(textView, invalidView, preview, s!!.toString())
             }
@@ -44,7 +45,7 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
         return layout
     }
 
-    private fun updateColorPreview(textView: TextView,invalidView: ImageView, preview: View, colorStr: String): Boolean {
+    private fun updateColorPreview(textView: TextView, invalidView: ImageView, preview: View, colorStr: String): Boolean {
         try {
             val color = Color.parseColor(colorStr)
             // textView.setBackgroundColor(Color.TRANSPARENT)
@@ -70,7 +71,7 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
         return (0xff000000).toInt()
     }
 
-    private fun openColorPicker(textView: TextView,invalidView: ImageView, preview: View) {
+    private fun openColorPicker(textView: TextView, invalidView: ImageView, preview: View) {
         val view = LayoutInflater.from(context).inflate(R.layout.kr_color_picker, null)
         val defValue = currentColor(textView.text)
 
@@ -111,7 +112,8 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
                         textView.text = String.format("#%02x%02x%02x%02x", alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress)
                         invalidView.visibility = View.GONE
                         preview.background = ColorDrawable(color)
-                    } catch (ex: Exception) {}
+                    } catch (ex: Exception) {
+                    }
                     // Integer.toHexString(color) // "argb(${alphaBar.progress}, ${redBar.progress}, ${greenBar.progress}, ${blueBar.progress}, )"
                 }
                 .setNegativeButton(context.getString(R.string.btn_cancel)) { _, _ -> })

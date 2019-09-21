@@ -4,6 +4,7 @@ import android.text.Layout
 
 class TextInfo : ConfigItemBase() {
     val rows = ArrayList<TextRow>()
+
     class TextRow {
         internal var size: Int = -1
         internal var color: Int = -1

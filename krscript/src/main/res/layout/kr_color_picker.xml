@@ -27,14 +27,14 @@
 
             <SeekBar
                 android:id="@+id/color_alpha"
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:progressDrawable="@android:color/transparent"
                 android:background="@drawable/alpha_gradient"
-                android:max="255" />
+                android:max="255"
+                android:progressDrawable="@android:color/transparent" />
         </LinearLayout>
 
         <LinearLayout
@@ -50,16 +50,15 @@
 
             <SeekBar
                 android:id="@+id/color_red"
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:progressDrawable="@android:color/transparent"
                 android:background="@drawable/red_gradient"
-                android:max="255" />
+                android:max="255"
+                android:progressDrawable="@android:color/transparent" />
         </LinearLayout>
-
 
 
         <LinearLayout
@@ -75,14 +74,14 @@
 
             <SeekBar
                 android:id="@+id/color_green"
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:progressDrawable="@android:color/transparent"
                 android:background="@drawable/green_gradient"
-                android:max="255" />
+                android:max="255"
+                android:progressDrawable="@android:color/transparent" />
         </LinearLayout>
 
         <LinearLayout
@@ -98,22 +97,22 @@
 
             <SeekBar
                 android:id="@+id/color_blue"
-                android:layout_marginLeft="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:layout_marginLeft="10dp"
                 android:layout_weight="1"
-                android:progressDrawable="@android:color/transparent"
                 android:background="@drawable/blue_gradient"
-                android:max="255" />
+                android:max="255"
+                android:progressDrawable="@android:color/transparent" />
         </LinearLayout>
 
         <Button
             android:id="@+id/color_preview"
-            android:layout_marginTop="20dp"
-            android:layout_gravity="center_horizontal"
             android:layout_width="50dp"
-            android:layout_height="35dp" />
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" />
     </LinearLayout>
 
 </LinearLayout>

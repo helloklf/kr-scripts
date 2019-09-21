@@ -47,6 +47,7 @@ class ActionParamsLayoutRender {
             return selectedIndex
         }
     }
+
     private var linearLayout: LinearLayout
     private var context: Context
 

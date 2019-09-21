@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
-import android.provider.Settings
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.*
 import android.view.View
@@ -31,7 +29,7 @@ class ListItemText(private val context: Context,
 
             rowsView.visibility = View.VISIBLE
             for (row in config.rows) {
-                if(row.breakRow || row.align != Layout.Alignment.ALIGN_NORMAL) {
+                if (row.breakRow || row.align != Layout.Alignment.ALIGN_NORMAL) {
                     rowsView.append("\n")
                 }
                 val text = row.text

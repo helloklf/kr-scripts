@@ -12,16 +12,31 @@
         android:layout_alignParentEnd="true"
         android:background="#aa000000" />-->
 
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="11dp"
+        android:background="@android:color/transparent"
+        android:padding="5dp"
+        android:rotation="180"
+        android:scaleType="centerInside"
+        android:src="@drawable/kr_script"
+        android:tint="@android:color/white" />
+
     <TextView
         android:id="@+id/title"
         style="@style/textTitle"
-        android:textSize="18dp"
-        android:layout_marginTop="6dp"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_toLeftOf="@+id/btn_hide"
-        android:textColor="@android:color/white" />
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="6dp"
+        android:layout_toStartOf="@id/btn_hide"
+        android:layout_toEndOf="@+id/icon"
+        android:textColor="@android:color/white"
+        android:textSize="18dp" />
 
     <ImageButton
         android:id="@+id/btn_hide"
@@ -29,7 +44,7 @@
         android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="11dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:padding="5dp"
         android:rotation="180"
@@ -38,11 +53,11 @@
         android:tint="@android:color/white" />
 
     <com.omarea.common.ui.OverScrollView
-        android:layout_marginTop="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_actions"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="50dp"
         android:background="@drawable/krscript_params_view"
         android:paddingBottom="50dp">
 
@@ -60,27 +75,28 @@
         android:layout_alignParentBottom="true"
         android:gravity="center_vertical"
         android:orientation="horizontal">
+
         <ImageButton
             android:id="@+id/btn_copy"
-            android:layout_centerVertical="true"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
-            android:padding="5dp"
+            android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/kr_copy"
             android:tint="?colorAccent" />
 
         <LinearLayout
             android:id="@+id/btn_exit"
-            android:layout_marginEnd="16dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentEnd="true"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="16dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:layout_width="40dp"
@@ -92,14 +108,14 @@
                 android:tint="@android:color/holo_red_dark" />
 
             <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingEnd="10dp"
                 android:text="@string/btn_exit"
                 android:textColor="@android:color/holo_red_dark"
-                android:paddingEnd="10dp"
-                android:layout_weight="1"
-                android:layout_width="0dp"
                 android:textSize="18dp"
-                android:textStyle="bold"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
         </LinearLayout>
     </RelativeLayout>
 

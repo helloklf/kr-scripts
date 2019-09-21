@@ -52,11 +52,9 @@ class PageConfigReader(private var context: Context) {
                     XmlPullParser.START_TAG ->
                         if ("group" == parser.name) {
                             group = groupNode(GroupInfo(), parser)
-                        }
-                        else if (group != null && !group.supported) {
+                        } else if (group != null && !group.supported) {
                             // 如果 group.supported !- true 跳过group内所有项
-                        }
-                        else {
+                        } else {
                             if ("page" == parser.name) {
                                 page = mainNode(PageInfo(), parser) as PageInfo?
                                 if (page != null) {
@@ -100,29 +98,25 @@ class PageConfigReader(private var context: Context) {
                                     group.children.add(page)
                                 }
                                 page = null
-                            }
-                            else if ("action" == parser.name) {
+                            } else if ("action" == parser.name) {
                                 tagEndInAction(action, parser)
                                 if (action != null) {
                                     group.children.add(action)
                                 }
                                 action = null
-                            }
-                            else if ("switch" == parser.name) {
+                            } else if ("switch" == parser.name) {
                                 tagEndInSwitch(switch, parser)
                                 if (switch != null) {
                                     group.children.add(switch)
                                 }
                                 switch = null
-                            }
-                            else if ("picker" == parser.name) {
+                            } else if ("picker" == parser.name) {
                                 tagEndInPicker(picker, parser)
                                 if (picker != null) {
                                     group.children.add(picker)
                                 }
                                 picker = null
-                            }
-                            else if ("text" == parser.name) {
+                            } else if ("text" == parser.name) {
                                 tagEndInText(text, parser)
                                 if (text != null) {
                                     group.children.add(text)
@@ -136,29 +130,25 @@ class PageConfigReader(private var context: Context) {
                                     mainList.add(page)
                                 }
                                 page = null
-                            }
-                            else if ("action" == parser.name) {
+                            } else if ("action" == parser.name) {
                                 tagEndInAction(action, parser)
                                 if (action != null) {
                                     mainList.add(action)
                                 }
                                 action = null
-                            }
-                            else if ("switch" == parser.name) {
+                            } else if ("switch" == parser.name) {
                                 tagEndInSwitch(switch, parser)
                                 if (switch != null) {
                                     mainList.add(switch)
                                 }
                                 switch = null
-                            }
-                            else if ("picker" == parser.name) {
+                            } else if ("picker" == parser.name) {
                                 tagEndInPicker(picker, parser)
                                 if (picker != null) {
                                     mainList.add(picker)
                                 }
                                 picker = null
-                            }
-                            else if ("text" == parser.name) {
+                            } else if ("text" == parser.name) {
                                 tagEndInText(text, parser)
                                 if (text != null) {
                                     mainList.add(text)
@@ -183,17 +173,14 @@ class PageConfigReader(private var context: Context) {
 
     var actionParamInfos: ArrayList<ActionParamInfo>? = null
     var actionParamInfo: ActionParamInfo? = null
-    private fun tagStartInAction(action: ActionInfo, parser:XmlPullParser) {
+    private fun tagStartInAction(action: ActionInfo, parser: XmlPullParser) {
         if ("title" == parser.name) {
             action.title = parser.nextText()
-        }
-        else if ("desc" == parser.name) {
+        } else if ("desc" == parser.name) {
             descNode(action, parser)
-        }
-        else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
+        } else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
             action.setState = parser.nextText().trim()
-        }
-        else if ("param" == parser.name) {
+        } else if ("param" == parser.name) {
             if (actionParamInfos == null) {
                 actionParamInfos = ArrayList()
             }
@@ -211,7 +198,7 @@ class PageConfigReader(private var context: Context) {
                     attrName == "type" -> actionParamInfo.type = attrValue.toLowerCase().trim { it <= ' ' }
                     attrName == "readonly" -> {
                         val value = attrValue.toLowerCase().trim { it <= ' ' }
-                        actionParamInfo.readonly =  (value == "readonly" || value == "true" || value == "1")
+                        actionParamInfo.readonly = (value == "readonly" || value == "true" || value == "1")
                     }
                     attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(attrValue)
                     attrName == "min" -> actionParamInfo.min = Integer.parseInt(attrValue)
@@ -237,8 +224,7 @@ class PageConfigReader(private var context: Context) {
             if (actionParamInfo.supported && actionParamInfo.name != null && actionParamInfo.name!!.isNotEmpty()) {
                 actionParamInfos!!.add(actionParamInfo)
             }
-        }
-        else if (actionParamInfo != null && "option" == parser.name) {
+        } else if (actionParamInfo != null && "option" == parser.name) {
             val actionParamInfo = actionParamInfo!!
             if (actionParamInfo.options == null) {
                 actionParamInfo.options = ArrayList()
@@ -254,8 +240,7 @@ class PageConfigReader(private var context: Context) {
             if (option.value == null)
                 option.value = option.desc
             actionParamInfo.options!!.add(option)
-        }
-        else if ("resource" == parser.name) {
+        } else if ("resource" == parser.name) {
             resourceNode(parser)
         }
     }
@@ -263,7 +248,7 @@ class PageConfigReader(private var context: Context) {
     private fun tagEndInPage(page: PageInfo?, parser: XmlPullParser) {
     }
 
-    private fun tagEndInAction(action: ActionInfo?, parser:XmlPullParser) {
+    private fun tagEndInAction(action: ActionInfo?, parser: XmlPullParser) {
         if (action != null) {
             if (action.setState == null)
                 action.setState = ""
@@ -283,7 +268,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    private fun tagStartInSwitch(switchInfo: SwitchInfo, parser:XmlPullParser) {
+    private fun tagStartInSwitch(switchInfo: SwitchInfo, parser: XmlPullParser) {
         when {
             "title" == parser.name -> switchInfo.title = parser.nextText()
             "desc" == parser.name -> descNode(switchInfo, parser)
@@ -388,7 +373,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    private fun tagEndInSwitch(switchInfo: SwitchInfo?, parser:XmlPullParser) {
+    private fun tagEndInSwitch(switchInfo: SwitchInfo?, parser: XmlPullParser) {
         if (switchInfo != null) {
             if (switchInfo.getState == null) {
                 switchInfo.getState = ""
@@ -405,14 +390,11 @@ class PageConfigReader(private var context: Context) {
     private fun tagStartInText(textInfo: TextInfo, parser: XmlPullParser) {
         if ("title" == parser.name) {
             textInfo.title = parser.nextText()
-        }
-        else if ("desc" == parser.name) {
+        } else if ("desc" == parser.name) {
             descNode(textInfo, parser)
-        }
-        else if ("slice" == parser.name) {
+        } else if ("slice" == parser.name) {
             rowNode(textInfo, parser)
-        }
-        else if ("resource" == parser.name) {
+        } else if ("resource" == parser.name) {
             resourceNode(parser)
         }
     }
@@ -453,14 +435,12 @@ class PageConfigReader(private var context: Context) {
         textInfo.rows.add(textRow)
     }
 
-    private fun  tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
+    private fun tagStartInPicker(pickerInfo: PickerInfo, parser: XmlPullParser) {
         if ("title" == parser.name) {
             pickerInfo.title = parser.nextText()
-        }
-        else if ("desc" == parser.name) {
+        } else if ("desc" == parser.name) {
             descNode(pickerInfo, parser)
-        }
-        else if ("option" == parser.name) {
+        } else if ("option" == parser.name) {
             if (pickerInfo.options == null) {
                 pickerInfo.options = ArrayList()
             }
@@ -475,19 +455,16 @@ class PageConfigReader(private var context: Context) {
             if (option.value == null)
                 option.value = option.desc
             pickerInfo.options!!.add(option)
-        }
-        else if ("getstate" == parser.name || "get" == parser.name) {
+        } else if ("getstate" == parser.name || "get" == parser.name) {
             pickerInfo.getState = parser.nextText()
-        }
-        else if ("setstate" == parser.name || "set" == parser.name) {
+        } else if ("setstate" == parser.name || "set" == parser.name) {
             pickerInfo.setState = parser.nextText()
-        }
-        else if ("resource" == parser.name) {
+        } else if ("resource" == parser.name) {
             resourceNode(parser)
         }
     }
 
-    private fun tagEndInPicker(pickerInfo: PickerInfo?, parser:XmlPullParser) {
+    private fun tagEndInPicker(pickerInfo: PickerInfo?, parser: XmlPullParser) {
         if (pickerInfo != null) {
             if (pickerInfo.getState == null) {
                 pickerInfo.getState = ""

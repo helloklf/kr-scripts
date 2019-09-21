@@ -1,7 +1,6 @@
 package com.omarea.krscript.ui
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +22,10 @@ open class ListItemView(private val context: Context,
 
 
     var title: String
-        get(){
+        get() {
             return titleView?.text.toString()
         }
-        set (value) {
+        set(value) {
             if (value.isEmpty()) {
                 titleView?.visibility = View.GONE
             } else {
@@ -36,10 +35,10 @@ open class ListItemView(private val context: Context,
         }
 
     var summary: String
-        get(){
+        get() {
             return summaryView?.text.toString()
         }
-        set (value) {
+        set(value) {
             if (value.isEmpty()) {
                 summaryView?.visibility = View.GONE
             } else {
@@ -49,12 +48,12 @@ open class ListItemView(private val context: Context,
         }
 
     val index: String
-        get () {
+        get() {
             return config.index
         }
 
     val key: String
-        get () {
+        get() {
             return config.key
         }
 
@@ -99,7 +98,7 @@ open class ListItemView(private val context: Context,
         return null
     }
 
-    fun triggerActionByKey(key: String) : Boolean {
+    fun triggerActionByKey(key: String): Boolean {
         if ((this.key == key)) {
             this.mOnClickListener?.onClick(this)
             return true
@@ -112,7 +111,7 @@ open class ListItemView(private val context: Context,
         return false
     }
 
-    fun triggerActionByIndex(index: String) : Boolean {
+    fun triggerActionByIndex(index: String): Boolean {
         if (this.index == index) {
             this.mOnClickListener?.onClick(this)
             return true
@@ -125,7 +124,7 @@ open class ListItemView(private val context: Context,
         return false
     }
 
-    fun setOnClickListener (onClickListener: OnClickListener): ListItemView {
+    fun setOnClickListener(onClickListener: OnClickListener): ListItemView {
         this.mOnClickListener = onClickListener
 
         return this
@@ -153,11 +152,12 @@ open class ListItemView(private val context: Context,
             true
         }
     }
-    interface OnClickListener{
+
+    interface OnClickListener {
         fun onClick(listItemView: ListItemView)
     }
 
-    interface OnLongClickListener{
+    interface OnLongClickListener {
         fun onLongClick(listItemView: ListItemView)
     }
 }

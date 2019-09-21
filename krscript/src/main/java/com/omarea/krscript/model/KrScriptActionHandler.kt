@@ -5,10 +5,10 @@ import android.view.View
 import com.omarea.krscript.ui.FileChooserRender
 
 interface KrScriptActionHandler {
-    fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean
+    fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean
     fun onSubPageClick(pageInfo: PageInfo)
     fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: AddToFavoritesHandler)
-    fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onCompleted: Runnable):Boolean {
+    fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onCompleted: Runnable): Boolean {
         return false
     }
 

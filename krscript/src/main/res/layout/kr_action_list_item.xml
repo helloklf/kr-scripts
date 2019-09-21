@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/krscript_item_ripple"
-    android:orientation="horizontal"
-    android:minHeight="?android:attr/listPreferredItemHeight"
     android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:orientation="horizontal"
     android:paddingLeft="23dp"
     android:paddingTop="10dp"
     android:paddingRight="20dp"
@@ -13,9 +13,10 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
+
         <TextView
             android:id="@id/kr_title"
             android:layout_width="match_parent"
@@ -27,17 +28,18 @@
 
         <TextView
             android:id="@id/kr_desc"
-            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="@dimen/kr_desc_size" />
     </LinearLayout>
+
     <ImageView
         android:id="@id/kr_widget"
-        android:alpha="0.8"
-        android:tint="?colorAccent"
-        android:padding="5dp"
         android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:layout_height="30dp"
+        android:alpha="0.8"
+        android:padding="5dp"
+        android:tint="?colorAccent" />
 </LinearLayout>
