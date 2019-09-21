@@ -25,9 +25,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
         fun create(
                 actionInfos: ArrayList<ConfigItemBase>?,
-                krScriptActionHandler: KrScriptActionHandler? = null): ActionListFragment {
+                krScriptActionHandler: KrScriptActionHandler? = null,
+                autoRunTask: AutoRunTask? = null): ActionListFragment {
             val fragment = ActionListFragment()
-            fragment.setListData(actionInfos, krScriptActionHandler)
+            fragment.setListData(actionInfos, krScriptActionHandler, autoRunTask)
             return fragment
         }
     }
@@ -35,13 +36,16 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     private lateinit var progressBarDialog: ProgressBarDialog
     private var krScriptActionHandler: KrScriptActionHandler? = null
+    private var autoRunTask: AutoRunTask? = null
 
     private fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
-            krScriptActionHandler: KrScriptActionHandler? = null) {
+            krScriptActionHandler: KrScriptActionHandler? = null,
+            autoRunTask: AutoRunTask? = null) {
         if (actionInfos != null) {
             this.actionInfos = actionInfos
             this.krScriptActionHandler = krScriptActionHandler
+            this.autoRunTask = autoRunTask
         }
     }
 
@@ -51,20 +55,25 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
 
+    private lateinit var layoutBuilder: ListItemView
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.progressBarDialog = ProgressBarDialog(this.context!!)
 
-        val layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
-        PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder).render()
+        layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
+        PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder)
         val layout = layoutBuilder.getView()
 
         (this.view?.findViewById<OverScrollView?>(R.id.kr_content))?.addView(layout)
+        triggerAction(autoRunTask)
     }
 
-    // TODO:完善逻辑
-    fun triggerAction(id: String, onCompleted: Runnable): Boolean {
-        return false
+    private fun triggerAction(autoRunTask: AutoRunTask?) {
+        autoRunTask?.run {
+            if (!key.isNullOrEmpty()) {
+                onCompleted(layoutBuilder.triggerActionByKey(key!!))
+            }
+        }
     }
 
     /**

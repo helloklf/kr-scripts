@@ -23,12 +23,12 @@ class PageLayoutRender(private val mContext: Context,
     }
 
 
-    private fun findItemByKey(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
+    private fun findItemByDynamicIndex(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
         for (item in actionInfos) {
             if (item.index == key) {
                 return item
             } else if (item is GroupInfo && item.children.size > 0) {
-                val result = findItemByKey(key, item.children)
+                val result = findItemByDynamicIndex(key, item.children)
                 if (result != null) {
                     return  result
                 }
@@ -38,55 +38,59 @@ class PageLayoutRender(private val mContext: Context,
     }
 
 
+    private fun onItemClick(item: ConfigItemBase, listItemView: ListItemView) {
+        val handler = Handler(Looper.getMainLooper())
+        when (item) {
+            is PageInfo -> clickListener.onPageClick(item, Runnable {
+                handler.post {
+                    if (item.descPollingShell.isNotEmpty()) {
+                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                    }
+                    listItemView.summary = item.desc
+                }
+            })
+            is ActionInfo -> clickListener.onActionClick(item, Runnable {
+                handler.post {
+                    if (item.descPollingShell.isNotEmpty()) {
+                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                    }
+                    listItemView.summary = item.desc
+                }
+            })
+            is PickerInfo -> clickListener.onPickerClick(item, Runnable {
+                handler.post {
+                    if (item.descPollingShell.isNotEmpty()) {
+                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                    }
+                    listItemView.summary = item.desc
+                }
+            })
+            is SwitchInfo -> clickListener.onSwitchClick(item, Runnable {
+                handler.post {
+                    if (item.descPollingShell.isNotEmpty()) {
+                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                    }
+                    if (item.getState != null && !item.getState.isEmpty()) {
+                        val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
+                        item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
+                    }
+                    listItemView.summary = item.desc
+                    (listItemView as ListItemSwitch).checked = item.checked
+                }
+            })
+        }
+    }
+
     private val onItemClickListener: ListItemView.OnClickListener = object : ListItemView.OnClickListener{
         override fun onClick(listItemView: ListItemView) {
-            val handler = Handler(Looper.getMainLooper())
-            val key = listItemView.key
+            val key = listItemView.index
             try {
-                val item = findItemByKey(key, itemConfigList)
+                val item = findItemByDynamicIndex(key, itemConfigList)
                 if (item == null) {
                     Log.e("onItemClick", "找不到指定ID的项 index: " + key)
                     return
                 } else {
-                    when (item) {
-                        is PageInfo -> clickListener.onPageClick(item, Runnable {
-                            handler.post {
-                                if (item.descPollingShell.isNotEmpty()) {
-                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                }
-                                listItemView.summary = item.desc
-                            }
-                        })
-                        is ActionInfo -> clickListener.onActionClick(item, Runnable {
-                            handler.post {
-                                if (item.descPollingShell.isNotEmpty()) {
-                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                }
-                                listItemView.summary = item.desc
-                            }
-                        })
-                        is PickerInfo -> clickListener.onPickerClick(item, Runnable {
-                            handler.post {
-                                if (item.descPollingShell.isNotEmpty()) {
-                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                }
-                                listItemView.summary = item.desc
-                            }
-                        })
-                        is SwitchInfo -> clickListener.onSwitchClick(item, Runnable {
-                            handler.post {
-                                if (item.descPollingShell.isNotEmpty()) {
-                                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                                }
-                                if (item.getState != null && !item.getState.isEmpty()) {
-                                    val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                                    item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
-                                }
-                                listItemView.summary = item.desc
-                                (listItemView as ListItemSwitch).checked = item.checked
-                            }
-                        })
-                    }
+                    onItemClick(item, listItemView)
                 }
             } catch (ex: Exception) {
             }
@@ -95,15 +99,11 @@ class PageLayoutRender(private val mContext: Context,
 
     private val onItemLongClickListener = object : ListItemView.OnLongClickListener {
         override fun onLongClick(listItemView: ListItemView) {
-            val item = findItemByKey(listItemView.key, itemConfigList)
+            val item = findItemByDynamicIndex(listItemView.index, itemConfigList)
             item?.run {
                 clickListener.onItemLongClick(item)
             }
         }
-    }
-
-    fun render() {
-        mapConfigList(parent, itemConfigList)
     }
 
     private fun mapConfigList(parent: ListItemView, actionInfos: ArrayList<ConfigItemBase>) {
@@ -175,5 +175,9 @@ class PageLayoutRender(private val mContext: Context,
 
     private fun createItemGroup(info: GroupInfo): ListItemGroup {
         return ListItemGroup(mContext, R.layout.kr_group_list_item, info)
+    }
+
+    init {
+        mapConfigList(parent, itemConfigList)
     }
 }

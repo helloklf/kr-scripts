@@ -169,9 +169,7 @@ public class WebViewInjector {
          */
         @JavascriptInterface
         public String extractAssets(String assets) {
-            Log.d("extractAssets", assets);
             String output = new ExtractAssets(context).extractResource(assets);
-            Log.d("extractAssets", "" + output);
             return output;
         }
 
@@ -220,7 +218,6 @@ public class WebViewInjector {
                                 final JSONObject message = new JSONObject();
                                 message.put("type", ShellHandlerBase.EVENT_REDE);
                                 message.put("message", line + "\n");
-                                Log.d("output", callbackFunction + "(" + message.toString() + ")");
                                 webView.post(new Runnable() {
                                     @Override
                                     public void run() {

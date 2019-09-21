@@ -80,11 +80,11 @@ class DialogLogFragment : DialogFragment() {
             }
         }
         if (configItem.interruptible) {
-            btn_hide.visibility = View.VISIBLE
-            btn_exit.visibility = View.VISIBLE
+            btn_hide?.visibility = View.VISIBLE
+            btn_exit?.visibility = View.VISIBLE
         } else {
-            btn_hide.visibility = View.GONE
-            btn_exit.visibility = View.GONE
+            btn_hide?.visibility = View.GONE
+            btn_exit?.visibility = View.GONE
         }
 
         title.text = configItem.title
@@ -94,13 +94,17 @@ class DialogLogFragment : DialogFragment() {
                 running = false
 
                 onExit.run()
-                btn_hide.visibility = View.GONE
-                btn_exit.visibility = View.VISIBLE
-                action_progress.visibility = View.GONE
+                if (btn_hide != null) {
+                    btn_hide.visibility = View.GONE
+                    btn_exit.visibility = View.VISIBLE
+                    action_progress.visibility = View.GONE
 
-                if (configItem.autoOff) {
-                    closeView()
+                    if (configItem.autoOff) {
+                        closeView()
+                    }
                 }
+
+                isCancelable = true
             }
 
             override fun onStart(forceStop: Runnable?) {
@@ -115,10 +119,6 @@ class DialogLogFragment : DialogFragment() {
             }
 
         }, shell_output, action_progress)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
     }
 
     @FunctionalInterface
@@ -168,7 +168,10 @@ class DialogLogFragment : DialogFragment() {
     }
 
     private fun closeView() {
-        dismiss()
+        try {
+            dismiss()
+        } catch (ex: java.lang.Exception) {
+        }
     }
 
     companion object {

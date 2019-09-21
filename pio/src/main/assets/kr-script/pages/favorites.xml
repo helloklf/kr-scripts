@@ -6,7 +6,7 @@
     </action>
 
     <group title="工具测试">
-        <action>
+        <action id="test_busybox">
             <title>busybox 测试</title>
             <desc>测试toolkit目录中放置的busybox是否生效</desc>
             <script>

@@ -311,7 +311,7 @@ class PageConfigReader(private var context: Context) {
         for (i in 0 until parser.attributeCount) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
-                "id", "key", "index" -> configItemBase.key = attrValue
+                "key", "index", "id" -> configItemBase.key = attrValue
                 "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
                 "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
                 "interruptible" -> configItemBase.interruptible = (attrValue.isEmpty() || attrValue == "true" || attrValue == "1")
@@ -461,7 +461,7 @@ class PageConfigReader(private var context: Context) {
             descNode(pickerInfo, parser)
         }
         else if ("option" == parser.name) {
-            if (pickerInfo.options === null) {
+            if (pickerInfo.options == null) {
                 pickerInfo.options = ArrayList()
             }
             val option = ActionParamInfo.ActionParamOption()

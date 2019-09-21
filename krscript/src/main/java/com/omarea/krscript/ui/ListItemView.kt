@@ -19,6 +19,7 @@ open class ListItemView(private val context: Context,
 
     protected var summaryView = layout.findViewById<TextView?>(R.id.kr_desc)
     protected var titleView = layout.findViewById<TextView?>(R.id.kr_title)
+    protected var children = ArrayList<ListItemView>()
 
 
     var title: String
@@ -47,27 +48,81 @@ open class ListItemView(private val context: Context,
             }
         }
 
-    val key: String
+    val index: String
         get () {
             return config.index
+        }
+
+    val key: String
+        get () {
+            return config.key
         }
 
     fun getView(): View {
         return layout
     }
 
-
-    fun addView(view: View): ListItemView {
-        layout.findViewById<ViewGroup>(android.R.id.content).addView(view)
-
-        return this
-    }
-
     fun addView(item: ListItemView): ListItemView {
         val content = layout.findViewById<ViewGroup>(android.R.id.content)
         content.addView(item.getView())
 
+        children.add(item)
+
         return this
+    }
+
+    fun findItemByKey(key: String): ListItemView? {
+        if (this.key == key) {
+            this.mOnClickListener?.onClick(this)
+            return this
+        }
+        for (child in this.children) {
+            val r = child.findItemByKey(key)
+            if (r != null) {
+                return r
+            }
+        }
+        return null
+    }
+
+    fun findItemByIndex(index: String): ListItemView? {
+        if (this.index == index) {
+            this.mOnClickListener?.onClick(this)
+            return this
+        }
+        for (child in this.children) {
+            val r = child.findItemByKey(index)
+            if (r != null) {
+                return r
+            }
+        }
+        return null
+    }
+
+    fun triggerActionByKey(key: String) : Boolean {
+        if ((this.key == key)) {
+            this.mOnClickListener?.onClick(this)
+            return true
+        }
+        for (child in this.children) {
+            if (child.triggerActionByKey(key)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun triggerActionByIndex(index: String) : Boolean {
+        if (this.index == index) {
+            this.mOnClickListener?.onClick(this)
+            return true
+        }
+        for (child in this.children) {
+            if (child.triggerActionByIndex(key)) {
+                return true
+            }
+        }
+        return false
     }
 
     fun setOnClickListener (onClickListener: OnClickListener): ListItemView {
@@ -85,8 +140,6 @@ open class ListItemView(private val context: Context,
     init {
         if (summaryView == null && config is ActionInfo) {
             summaryView = layout.rootView.findViewById<TextView?>(R.id.kr_desc)
-        } else {
-            Log.d("summaryView", "" + summaryView?.id + ">>" + config.javaClass.canonicalName)
         }
 
         title = config.title

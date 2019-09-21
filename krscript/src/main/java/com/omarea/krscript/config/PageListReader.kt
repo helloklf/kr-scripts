@@ -112,7 +112,6 @@ class PageListReader(private val context: Context) {
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-            Log.d("VTools ReadConfig Fail！", "" + ex.message)
         }
         return pages;
     }

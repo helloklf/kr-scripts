@@ -8,8 +8,13 @@ interface KrScriptActionHandler {
     fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean
     fun onSubPageClick(pageInfo: PageInfo)
     fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: AddToFavoritesHandler)
-    fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onCompleted: Runnable):Boolean
-    fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase?
+    fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onCompleted: Runnable):Boolean {
+        return false
+    }
+
+    fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
+        return null
+    }
 
     interface AddToFavoritesHandler {
         fun onAddToFavorites(configItem: ConfigItemBase, intent: Intent?)

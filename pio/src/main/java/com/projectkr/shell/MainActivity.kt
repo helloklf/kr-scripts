@@ -3,6 +3,7 @@ package com.projectkr.shell
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -28,6 +29,7 @@ import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlin.reflect.typeOf
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
@@ -90,35 +92,17 @@ class MainActivity : AppCompatActivity() {
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val pages = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!)
-            val favorites = PageConfigReader(this.applicationContext).readConfigXml(krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!)
+            val page2Config = krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!
+            val favoritesConfig = krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!
+
+            val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
+            val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
             handler.post {
                 progressBarDialog.hideDialog()
 
-                val itemClickHandler = object : KrScriptActionHandler {
-                    override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
-                    }
-
-                    override fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
-                        return null
-                    }
-
-                    override fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
-                        return false
-                    }
-
-                    override fun onSubPageClick(pageInfo: PageInfo) {
-                        _openPage(pageInfo)
-                    }
-
-                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
-                        return chooseFilePath(fileSelectedInterface)
-                    }
-                }
-
 
                 if (favorites != null && favorites.size > 0) {
-                    val favoritesFragment = ActionListFragment.create(favorites, itemClickHandler)
+                    val favoritesFragment = ActionListFragment.create(favorites, getKrScriptActionHandler(favoritesConfig))
                     supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
@@ -126,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (pages != null && pages.size > 0) {
-                    val allItemFragment = ActionListFragment.create(pages, itemClickHandler)
+                    val allItemFragment = ActionListFragment.create(pages, getKrScriptActionHandler(page2Config))
                     supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
@@ -140,6 +124,29 @@ class MainActivity : AppCompatActivity() {
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_tabhost_cpu, home)
         transaction.commit()
+    }
+
+    private fun getKrScriptActionHandler(pageConfig: String): KrScriptActionHandler {
+        return object : KrScriptActionHandler {
+            override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+                val intent = Intent()
+
+                intent.component = ComponentName(this@MainActivity.applicationContext, ActionPage::class.java)
+                intent.putExtra("config", pageConfig)
+                intent.putExtra("title", "" + title)
+                intent.putExtra("autoRunItemId", configItemBase.key)
+
+                addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
+            }
+
+            override fun onSubPageClick(pageInfo: PageInfo) {
+                _openPage(pageInfo)
+            }
+
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                return chooseFilePath(fileSelectedInterface)
+            }
+        }
     }
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null

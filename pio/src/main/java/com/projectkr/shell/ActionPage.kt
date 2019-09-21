@@ -167,17 +167,15 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        val fragment = ActionListFragment.create(items, actionShortClickHandler)
+                        val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
+                            override val key = autoRun
+                            override fun onCompleted(result: Boolean?) {
+                                if (result != true) {
+                                    Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        })
                         supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
-
-                        if (autoRun.isNotEmpty()) {
-                            val onCompleted = Runnable {
-                                // finish()
-                            }
-                            if (!fragment.triggerAction(autoRun, onCompleted)) {
-                                Toast.makeText(this, "指定项已丢失", Toast.LENGTH_SHORT).show()
-                            }
-                        }
                     }
                     progressBarDialog.hideDialog()
                 }

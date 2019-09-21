@@ -291,7 +291,6 @@ public class ScriptEnvironmen {
         }
         try {
             dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
-            Log.d("envpCmds", envpCmds.toString());
 
             dataOutputStream.write(String.format("cd \"%s\"\n\n", getStartPath(context)).getBytes("UTF-8"));
 
