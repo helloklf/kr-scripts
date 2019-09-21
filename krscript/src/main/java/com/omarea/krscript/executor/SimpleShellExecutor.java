@@ -25,7 +25,7 @@ public class SimpleShellExecutor {
     /**
      * 执行脚本
      */
-    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase customHandler) {
+    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
         if (started) {
             return false;
         }
@@ -50,7 +50,6 @@ public class SimpleShellExecutor {
                     }
                 }
             }) : null;
-            final ShellHandlerBase shellHandlerBase = ((customHandler == null) ? (new SimpleShellHandler(context, configItem.getTitle(), configItem.getAutoOff())) : customHandler);
             new SimpleShellWatcher().setHandler(process, shellHandlerBase, onExit);
 
             final OutputStream outputStream = process.getOutputStream();

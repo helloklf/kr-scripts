@@ -128,6 +128,7 @@ class DialogLogFragment : DialogFragment() {
     }
 
     class MyShellHandler(private var actionEventHandler: IActionEventHandler, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase() {
+        private val context = logView.context
         override fun onStart(forceStop: Runnable?) {
             actionEventHandler.onStart(forceStop)
         }
@@ -146,16 +147,13 @@ class DialogLogFragment : DialogFragment() {
             }
         }
 
-        override fun cleanUp() {
-        }
-
         override fun onStart(msg: Any?) {
             this.logView.text = ""
             // updateLog(msg, Color.GRAY)
         }
 
         override fun onExit(msg: Any?) {
-            updateLog("\n\n脚本运行结束\n\n", Color.BLUE)
+            updateLog(context.getString(R.string.kr_shell_completed), Color.BLUE)
             actionEventHandler.onExit()
         }
 

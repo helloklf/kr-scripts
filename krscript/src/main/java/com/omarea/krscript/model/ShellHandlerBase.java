@@ -44,15 +44,12 @@ public abstract class ShellHandlerBase extends Handler {
      */
     public static final int EVENT_EXIT = -2;
 
-    public boolean finished;
-
     protected abstract void onProgress(int current, int total);
 
     protected abstract void onStart(Object msg);
     public abstract void onStart(Runnable forceStop);
     protected abstract void onExit(Object msg);
 
-    protected abstract void cleanUp();
     /**
      * 输出格式化内容
      *
