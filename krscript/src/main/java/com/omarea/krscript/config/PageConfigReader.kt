@@ -68,6 +68,9 @@ class PageConfigReader(private var context: Context) {
                                 switch = mainNode(SwitchInfo(), parser) as SwitchInfo?
                             } else if ("picker" == parser.name) {
                                 picker = mainNode(PickerInfo(), parser) as PickerInfo?
+                                if (picker != null) {
+                                    pickerNode(picker, parser)
+                                }
                             } else if ("text" == parser.name) {
                                 text = mainNode(TextInfo(), parser) as TextInfo?
                             } else if (page != null) {
@@ -356,6 +359,20 @@ class PageConfigReader(private var context: Context) {
         return page
     }
 
+    private fun pickerNode(pickerInfo: PickerInfo, parser: XmlPullParser) {
+        for (attrIndex in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(attrIndex)
+            val attrValue = parser.getAttributeValue(attrIndex)
+            when (attrName) {
+                "options-sh", "options-su" -> {
+                    if (pickerInfo.options == null)
+                        pickerInfo.options = ArrayList()
+                    pickerInfo.optionsSh = attrValue
+                }
+            }
+        }
+    }
+
     private fun descNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
@@ -452,7 +469,7 @@ class PageConfigReader(private var context: Context) {
         textInfo.rows.add(textRow)
     }
 
-    private fun tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
+    private fun  tagStartInPicker(pickerInfo: PickerInfo, parser:XmlPullParser) {
         if ("title" == parser.name) {
             pickerInfo.title = parser.nextText()
         }
