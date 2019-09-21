@@ -66,7 +66,7 @@ public abstract class ShellHandlerBase extends Handler {
                 break;
             }
             case ShellHandlerBase.EVENT_REDE:
-                onReader(msg.obj);
+                onReaderMsg(msg.obj);
                 break;
             case ShellHandlerBase.EVENT_READ_ERROR:
                 onError(msg.obj);
@@ -78,7 +78,7 @@ public abstract class ShellHandlerBase extends Handler {
         }
     }
 
-    private void onReader(Object msg) {
+    protected void onReaderMsg(Object msg) {
         if (msg != null) {
             String log = msg.toString().trim();
             if (Pattern.matches("^progress:\\[[\\-0-9\\\\]{1,}/[0-9\\\\]{1,}]$", log)) {
@@ -87,16 +87,18 @@ public abstract class ShellHandlerBase extends Handler {
                 int total = Integer.parseInt(values[1]);
                 onProgress(start, total);
             } else {
-                updateLog(msg, "#00cc55");
+                onReader(msg);
             }
         }
     }
 
-    private void onWrite(Object msg) {
+    protected void onReader(Object msg) { updateLog(msg, "#00cc55"); }
+
+    protected void onWrite(Object msg) {
         updateLog(msg, "#808080");
     }
 
-    private void onError(Object msg) {
+    protected void onError(Object msg) {
         updateLog(msg, "#ff0000");
     }
 

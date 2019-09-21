@@ -7,6 +7,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Message
 import android.support.v4.app.DialogFragment
 import android.text.SpannableString
 import android.view.LayoutInflater
@@ -129,6 +130,38 @@ class DialogLogFragment : DialogFragment() {
 
     class MyShellHandler(private var actionEventHandler: IActionEventHandler, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase() {
         private val context = logView.context
+        private val errorColor = Color.parseColor(context.getString(R.string.kr_shell_log_error))
+        private val basicColor = Color.parseColor(context.getString(R.string.kr_shell_log_basic))
+        private val scriptColor = Color.parseColor(context.getString(R.string.kr_shell_log_script))
+        private val endColor = Color.parseColor(context.getString(R.string.kr_shell_log_end))
+
+
+        override fun handleMessage(msg: Message) {
+            when (msg.what) {
+                EVENT_EXIT -> onExit(msg.obj)
+                EVENT_START -> {
+                    onStart(msg.obj)
+                }
+                EVENT_REDE -> onReaderMsg(msg.obj)
+                EVENT_READ_ERROR -> onError(msg.obj)
+                EVENT_WRITE -> {
+                    onWrite(msg.obj)
+                }
+            }
+        }
+
+        override fun onReader(msg: Any) {
+            updateLog(msg, basicColor)
+        }
+
+        override fun onWrite(msg: Any) {
+            updateLog(msg, scriptColor)
+        }
+
+        override fun onError(msg: Any) {
+            updateLog(msg, errorColor)
+        }
+
         override fun onStart(forceStop: Runnable?) {
             actionEventHandler.onStart(forceStop)
         }
@@ -149,11 +182,11 @@ class DialogLogFragment : DialogFragment() {
 
         override fun onStart(msg: Any?) {
             this.logView.text = ""
-            // updateLog(msg, Color.GRAY)
+            updateLog(msg, scriptColor)
         }
 
         override fun onExit(msg: Any?) {
-            updateLog(context.getString(R.string.kr_shell_completed), Color.BLUE)
+            updateLog(context.getString(R.string.kr_shell_completed), endColor)
             actionEventHandler.onExit()
         }
 
