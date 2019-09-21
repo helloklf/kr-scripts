@@ -351,6 +351,18 @@
 </picker>
 ```
 
+- 或者，如果你还希望通过脚本动态生成选项，picker也提供了`options-sh`属性
+- 用法和action的param一样，如：
+
+```xml
+<picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
+    <title>测试单选界面</title>
+    <desc>测试单选界面</desc>
+    <getstate>getprop xxx.xxx.xxx3</getstate>
+    <setstate>setprop xxx.xxx.xxx3 $state</setstate>
+</picker>
+```
+
 ## Text (3.4.5+)
 - `text`是在3.4.5版本后增加的一个新功能，用于自定义纯文本节点
 - `title` 和 `desc` 的显示样式会和其它功能节点保持一致
