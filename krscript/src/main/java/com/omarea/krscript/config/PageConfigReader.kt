@@ -2,6 +2,7 @@ package com.omarea.krscript.config
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.text.Layout
@@ -207,7 +208,7 @@ class PageConfigReader(private var context: Context) {
                     attrName == "type" -> actionParamInfo.type = attrValue.toLowerCase().trim { it <= ' ' }
                     attrName == "readonly" -> {
                         val value = attrValue.toLowerCase().trim { it <= ' ' }
-                        actionParamInfo.readonly =  value == "readonly" || value == "true" || value == "1"
+                        actionParamInfo.readonly =  (value == "readonly" || value == "true" || value == "1")
                     }
                     attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(attrValue)
                     attrName == "min" -> actionParamInfo.min = Integer.parseInt(attrValue)
@@ -284,6 +285,8 @@ class PageConfigReader(private var context: Context) {
             "title" == parser.name -> info.title = parser.nextText()
             "desc" == parser.name -> descNode(info, parser)
             "resource" == parser.name -> resourceNode(parser)
+            "html" == parser.name -> info.onlineHtmlPage = parser.nextText()
+            "config" == parser.name -> info.pageConfigPath = parser.nextText()
         }
     }
 
@@ -316,9 +319,9 @@ class PageConfigReader(private var context: Context) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
                 "id" -> configItemBase.id = attrValue
-                "confirm" -> configItemBase.confirm = attrValue == "true"
-                "auto-off" -> configItemBase.autoOff = attrValue == "true"
-                "interruptible" -> configItemBase.interruptible = attrValue != "false"
+                "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
+                "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
+                "interruptible" -> configItemBase.interruptible = (attrValue.isEmpty() || attrValue == "true" || attrValue == "1")
                 "support" -> {
                     if (executeResultRoot(context, attrValue) != "1") {
                         return null
@@ -408,6 +411,9 @@ class PageConfigReader(private var context: Context) {
         else if ("slice" == parser.name) {
             rowNode(textInfo, parser)
         }
+        else if ("resource" == parser.name) {
+            resourceNode(parser)
+        }
     }
 
     private fun rowNode(textInfo: TextInfo, parser: XmlPullParser) {
@@ -421,15 +427,19 @@ class PageConfigReader(private var context: Context) {
                     "italic", "i" -> textRow.italic = (attrValue == "1" || attrValue == "true" || attrValue == "italic")
                     "underline", "u" -> textRow.underline = (attrValue == "1" || attrValue == "true" || attrValue == "underline")
                     "foreground", "color" -> textRow.color = Color.parseColor(attrValue)
-                    "background", "bgcolor" -> textRow.bgColor = Color.parseColor(attrValue)
+                    "bg", "background", "bgcolor" -> textRow.bgColor = Color.parseColor(attrValue)
                     "size" -> textRow.size = attrValue.toInt()
                     "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
                     "link", "href" -> textRow.link = attrValue
                     "activity", "a" -> textRow.activity = attrValue
                     "align" -> {
                         when (attrValue) {
-                            "left" -> textRow.align = Layout.Alignment.ALIGN_LEFT
-                            "right" -> textRow.align = Layout.Alignment.ALIGN_RIGHT
+                            "left" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                textRow.align = Layout.Alignment.ALIGN_LEFT
+                            }
+                            "right" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                                textRow.align = Layout.Alignment.ALIGN_RIGHT
+                            }
                             "center" -> textRow.align = Layout.Alignment.ALIGN_CENTER
                             "normal" -> textRow.align = Layout.Alignment.ALIGN_NORMAL
                         }
@@ -470,6 +480,9 @@ class PageConfigReader(private var context: Context) {
         }
         else if ("setstate" == parser.name || "set" == parser.name) {
             pickerInfo.setState = parser.nextText()
+        }
+        else if ("resource" == parser.name) {
+            resourceNode(parser)
         }
     }
 

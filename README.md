@@ -14,12 +14,13 @@
 | page | 页面 | 一个xml配置文件，就是一个页面，里面可以包含action和switch |
 | action | 动作 | 定义在页面中的具体功能项，表现为：点击后执行某些操作 |
 | switch | 开关 | 定义在页面中的具体功能项，表现为：点击后切换开关状态 |
-| group | 分组 | 定义在页面中，用于对action和switch进行分组 |
+| picker | 单选 | 比switch能提供更多可选项，表现为：点击后弹出单选列表 |
+| text | 文本 | 用于显示文本文字 |
+| group | 分组 | 用于包裹其它(action、switch等功能节点)实现分组效果 |
 | resource | 资源 | 定义小容量的静态资源文件，解析配置时自动提取 |
 
-## 页面列表
-- 如果你不修改程序源码，框架将默认从解析`pages.xml`开始
-- pages.xml的配置格式如：
+## Page 节点
+- 指定一个配置文件 `[config]` 或网页 `[html]` 作为一个子页面入口
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -29,18 +30,19 @@
         config="file:///android_asset/config_xml/for_aosp.xml" />
     <page title="Flyme专属"
         desc="用于Meizu Flyme系统的选项"
-        config="file:///android_asset/config_xml/for_flyme.xml" />
+        html="https://www.lanzous.com/b838135" />
 </pages>
 ```
 
 - 属性说明
 
-| 属性 | 名称 | 用途 | 是否可空 |
+| 属性 | 名称 | 用途 |
 | :-: | :-: | :- | :-: |
-| title | 标题 | 功能主标题，建议不要为空 | 是 |
-| desc | 描述 | 显示在标题下的小字，可以不设置 | 是 |
-| config | 配置 | 页面具体功能的配置文件路径 | 否 |
-| support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
+| title | 标题 | 功能主标题，建议不要为空 |
+| desc | 描述 | 显示在标题下的小字，可以不设置 |
+| support | 是否支持 | `support` 属性用法会在后面单独介绍 |
+| config | 配置 | 指定另一个配置文件作为子页面的内容 |
+| html | 网页 | 指定一个网页作为子页面的内容 |
 
 - **注意：** config只支持读取应用assets下的文件，其中`file:///android_asset/`是固定前缀，也可以省略不写，就像这样：
 
@@ -50,39 +52,15 @@
     config="config_xml/for_aosp.xml" />
 ```
 
-> support 是个共通属性，适用于page、group、action、switch，将在后文单独介绍
-
-
 ### 补充说明
-- 为了更友好的设置较长的desc内容，这里做了额外兼容，page节点也允许写成这样
+- 为与action、switch定义语法保持一致，title、desc也可以作为page下的节点定义
+
 ```xml
-<page>
+<page config="file:///android_asset/config_xml/for_miui.xml">
   <title>MIUI专属</title>
   <desc>用于Xiaomi MIUI的选项</desc>
-  <config>file:///android_asset/config_xml/for_miui.xml</config>
 </page>
 ```
-
-
-## 页面内容
-- page的定义格式大体如下，只需要**囫囵吞枣**瞄一眼
-- action和switch的具体配置会在后文介绍
-
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<page>
-    <!--定义一个点击后执行的动作-->
-    <action>
-        <!-- ... 此处省略action的功能细节 -->
-    </action>
-
-    <!--定义一个开关选项-->
-    <switch>
-        <!-- ... 此处省略action的功能细节 -->
-    </switch>
-</page>
-```
-
 
 ## Action
 
@@ -98,11 +76,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <page>
     <action>
-        <title>功能标题</title>
-        <desc>这是描述信息</desc>
-        <script>
+        <title>Hello world！</title>
+        <desc>点击我，用脚本输出Hello world！</desc>
+        <set>
             echo 'Hello world！'
-        </script>
+        </set>
     </action>
 </page>
 ```
@@ -111,17 +89,9 @@
 | 属性 | 作用 | 有效值 | 必需 | 示例 |
 | - | - | - | :-: | :- |
 | confirm | 是否在执行操作前让用户确认，默认`false` | `true`、`false` | 否 | `false` |
-| support | 自定义脚本使用echo输出1或0，用于决定该action要不要显示 | 脚本代码 | 否 | `echo '1'` |
-| interruptible | 是否允许中断执行，默认`true` | `true`、`false` | 否 | `false` |
+| support | 自定义一段脚本，用于检测该功能是否支持 | 由脚本输出 `1` 或 `0` | 否 | `echo '1'` |
+| interruptible | 是否允许中断脚本执行，默认`true` | `true`、`false` | 否 | `false` |
 | auto-off | 脚本执行完后，是否执行完自动关闭日志输出界面，默认`false` | `true`、`false` | 否 | `false` |
-
-> 示例
-```xml
-<action confirm="true">
-    <!-- 此处省略 -->
-</action>
-```
-> support 是个共通属性，适用于page、group、action、switch，将在后文单独介绍
 
 
 ### 动态 desc
@@ -144,17 +114,17 @@
     <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，执行内嵌的脚本文件</desc>
-        <script>file:///android_asset/scripts/test.sh</script>
+        <set>file:///android_asset/scripts/test.sh</set>
     </action>
     <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，直接执行代码段</desc>
-        <script>
+        <set>
             echo '现在，开始执行脚本了！';
             testvalue='1'
             echo 'testvalue=$testvalue';
             echo '好了，代码执行完毕！';
-        </script>
+        </set>
     </action>
 </page>
 ```
@@ -190,7 +160,7 @@
 | switch | 开关 | `1`或`0` |
 | seekbar | 滑块，**必需**配合`min`、`max`属性适用 | `min`和`max`之间的整数 |
 | file | 文件路径选择器 | 选中文件的绝对路径 |
-| color | 颜色输入和选择界面 | 输入形如#445566或#ff445566的色值 |
+| color | 颜色输入和选择界面 | 输入形如`#445566`或`#ff445566`的色值 |
 | text | 任意文本输入（默认） | 任意自定义输入的文本 |
 
 
@@ -204,7 +174,7 @@
 <action>
     <title>自定义DPI</title>
     <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
-    <script>wm density $dpi;</script>
+    <set>wm density $dpi;</set>
     <!--通过params定义脚本执行参数-->
     <params>
         <param name="dpi" desc="请输入DPI" type="int" max="96" min="160" value="480" />
@@ -219,7 +189,7 @@
 <action>
     <title>自定义DPI</title>
     <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
-    <script>wm density $dpi;</script>
+    <set>wm density $dpi;</set>
     <!--通过params定义脚本执行参数-->
     <params>
         <param name="dpi" desc="请输入DPI" type="int" value-sh="echo '480'" />
@@ -236,14 +206,14 @@
     <title>切换状态栏风格</title>
     <desc>选择状态栏布局，[时间居中/默认]</desc>
     <!--可以在script中使用定义的参数-->
-    <script>
+    <set>
         echo "mode参数的值：$mode"
         if [ "$mode" = "time_center" ]; then
             echo '刚刚点了 时间居中'
         else
             echo '刚刚点击了 默认布局'
         fi;
-    </script>
+    </set>
     <!--params 用于在执行脚本前，先通过用户交互的方式定义变量，参数数量不限于一个，但不建议定义太多-->
     <params>
         <param name="mode" value="default" desc="请选择布局">
@@ -263,10 +233,10 @@
 <action>
     <title>自定义DPI</title>
     <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
-    <script>
+    <set>
         wm density $dpi;
         wm size ${width}x${height};
-    </script>
+    </set>
     <params>
         <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
         <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
@@ -285,11 +255,11 @@
 <action>
     <title>调整DPI</title>
     <desc sh="echo '快速调整手机DPI，不需要重启，当前设置：';echo `wm density`;" polling="2000">快速调整手机DPI，不需要重启</desc>
-    <script>
+    <set>
         wm size reset;
         wm density $dpi;
         busybox killall com.android.systemui;
-    </script>
+    </set>
     <params>
         <param name="dpi" value="440" options-sh="echo '380|很小';echo '410|较小';echo '440|适中';echo '480|较大';" />
     </params>
@@ -316,8 +286,8 @@
     <switch>
         <title>流畅模式</title>
         <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
-        <getstate>file:///android_asset/switchs/booster_get.sh</getstate>
-        <setstate>file:///android_asset/switchs/booster_set.sh</setstate>
+        <get>file:///android_asset/switchs/booster_get.sh</get>
+        <set>file:///android_asset/switchs/booster_set.sh</set>
     </switch>
     <switch>...</switch>
     ...
@@ -327,10 +297,10 @@
 ### switch > desc
 - 配置方式与 Action 的 desc相同，不再重复描述
 
-### switch > getstate
+### switch > get
 - 自定义一段脚本，通过echo输出结果，（1或0，1表示选中），如 echo '1'
 
-### switch > setstate
+### switch > set
 - 自定义一段脚本，用户切换选中状态时传入1或0，并执行代码
 - 你可以通过参数 $state 来获取当前是否选中（1或0，1表示选中）
 
@@ -340,14 +310,14 @@
 <switch>
     <title>模拟全面屏</title>
     <desc>显示设置中的“全面屏”选项</desc>
-    <getstate>
+    <get>
         if [ `grep qemu\.hw\.mainkeys= /system/build.prop|cut -d'=' -f2` = 1 ]; then
             echo 0;
         else
             echo 1;
         fi;
-    </getstate>
-    <setstate>
+    </get>
+    <set>
         busybox mount -o remount,rw -t auto /system;
         if [ $state == 1 ];then
             sed -i 's/^qemu\.hw\.mainkeys.*/qemu.hw.mainkeys=0/g' /system/build.prop
@@ -358,9 +328,76 @@
         fi
         sync;
         echo '重启后生效！'
-    </setstate>
+    </set>
 </switch>
 ```
+
+## Picker (3.5.0+)
+- `picker`是在3.5.0版本后增加的一个新功能，即加强版的`switch`
+- `picker`和`switch`一样，通过`get`读取当前状态，通过`set`保存状态
+- 其它配置项也和`switch`一致
+- `picker`需要你自己定义选项(`option`)，就像这样
+
+```xml
+<picker>
+    <title>单选列表</title>
+    <desc>测试单选列表</desc>
+    <options>
+        <option value="a1">选项1</option>
+        <option value="a2">选项1</option>
+    </options>
+    <get>getprop xxx.xxx.xxx</get>
+    <set>setprop xxx.xxx.xxx $state</set>
+</picker>
+```
+
+## Text (3.5.0+)
+- `text`是在3.5.0版本后增加的一个新功能，用于自定义纯文本节点
+- `title` 和 `desc` 的显示样式会和其它功能节点保持一致
+- 支持通过`support`属性判断是否**显示\隐藏**
+- 如果你不需要自定义文本格式，那么按下面这种方式使用就行了
+
+```xml
+<text>
+    <title>标题文本</title>
+    <desc>小文本</desc>
+</text>  
+```
+
+#### Text > Slice
+- 除了支持`title`和`desc`，Text还单独增加了`slice`节点
+- 如果你需要定义个性化的文本样式，`slice`节点有一些简单的样式属性可以使用
+
+| 属性 | 说明 | 有效值 |
+| - | - | - |
+| bold **(简写: `b`)** | 是否加粗 | `true`、`false` |
+| italic **(简写: `i`)** | 是否倾斜 | `true`、`false` |
+| underline **(简写: `u`)** | 是否显示下划线 | `true`、`false` |
+| break | 是否换行后显示 | `true`、`false` |
+| size | 字体大小(dp) | 整数值 例如：`20` |
+| align | 文字对齐 | `normal`、`center`、`right`、`left` |
+| color | 文字颜色| #开头的十六进制色，如：`#445566` |
+| background **(简写: `bg`)** | 文字背景色 | #开头的十六进制色，如：`#000000` |
+| link **(或者: `href`)** | 文本链接，点击后打开网页 | 如 `http://vtools.omarea.com/` |
+| activity **(简写: `a`)** | activity，点击后打开Activity | 如 `android.settings.APN_SETTINGS` |
+
+
+> 注意：`align`属性的`left`、`right`目前只支持`Android P`及更高版本系统
+
+- 使用示例
+```xml
+<text>
+    <slice bold="true">显示为加粗</slice>
+    <slice italic="true">显示为斜体</slice>
+    <slice break="true">换行</slice>
+    <slice bold="true" italic="true">显示为粗斜体</slice>
+    <slice size="20">字体显示为20dp</slice>
+    <slice color="#ff0000">显示为红色</slice>
+    <slice link="http://vtools.omarea.com/">Scene 官网</slice>
+    <slice activity="android.settings.APN_SETTINGS">打开APN设置</slice>
+</text>
+```
+
 
 ## 静态资源
 - 在page功能配置文件的任意位置，通过resource标签定义公共资源
@@ -376,7 +413,7 @@
     <action>
         <title>测试使用resource</title>
         <desc>试试使用resource导入公共函数库，并使用静态文件</desc>
-        <script>
+        <set>
             # 点击action后执行的脚本
             # source是Linux shell自身语法，并非本应用所定制，因此其工作原理也不会有什么不同
             source ./resource/common.sh
@@ -390,7 +427,7 @@
             fi
 
             echo '>>> 测试完毕'
-        </script>
+        </set>
     </action>
 </page>
 ```
@@ -418,6 +455,7 @@
 
 ## 分组
 - 使用`group`标签的`title`属性，对功能进行分组
+- 支持通过`support`属性判断是否**显示\隐藏**
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -436,7 +474,8 @@
 
 ## 脚本使用
 - 在配置文件中你有两种方式来定义脚本
-- 适用场景：所有定义脚本的位置（sh、value-sh、script、options-sh、getstate、setstate 等）
+- 适用场景：所有定义脚本的位置（sh、value-sh、script、options-sh、get、set、support 等）
+- 基本上所有能写脚本的属性或节点，都支持`file:///android_asset/...`路径使用assets中的脚本文件
 
 > 1 直接写脚本代码（不推荐）
 ```
@@ -472,34 +511,21 @@ echo "progress:[-1/0]"
 ```
 
 ## support 属性
-- 定义在page、group、action、switch以及action中的param节点
+- 定义在page、group、action、switch、picker、text 以及 action中的param 节点
 - 你需要写一段脚本，输出`0`或者`1`，用来表示该功能是否支持（支持则显示，否则隐藏）
 - 例如，下面的例子，通过一个名叫`is_huawei_mphone.sh`的脚本文件来判断`action`是否要显示
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
-<items>
-    <action support="file:///android_asset/is_huawei_mphone.sh">
-        <title>行为1</title>
-        <desc>行为1的说明</desc>
-        <script>
+<group>
+    <action support="echo 1">
+        <title>华为专用功能</title>
+        <desc>我这是华为手机专用的功能，如果不是华为手机则不可见</desc>
+        <set>
             echo '脚本执行了呢'
-        </script>
+        </set>
     </action>
-</items>
-```
-
-- 又或者，直接在定义pege的时候就加上support属性
-- 例如：
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<pages>
-    <page
-        support="file:///android_asset/is_huawei_mphone.sh"
-        title="华为专用"
-        desc="只适用于华为手机的选项"
-        config="file:///android_asset/config_xml/for_huawei.xml" />
-</pages>
+</group>
 ```
 
 
@@ -565,7 +591,7 @@ alert('输出内容：' + result)
 ##### KrScriptCore.executeShellAsync
 - 执行脚本，并以回调的方式返回输出日志
 - `executeShellAsync`执行脚本时，会开启一个新的进程
-- 就像执行`action`的`script`或`switch`的`setstate`部分一样
+- 就像执行`action`的`set`或`switch`的`set`部分一样
 - 调用格式： `KrScriptCore.executeShellAsync([要执行的脚本], [日志回调函数名], [字符串化的参数对象])`
 - 调用返回：是否调用成功（只表示是否成功启动进程，不表示执行代码时是否出现错误）
 - 例如：
@@ -647,7 +673,7 @@ alert('输出内容：' + result)
 ```
 
 ##### 代码迁移
-- 举个例子来看看，如何在网页中还原`action`的`script`执行过程
+- 举个例子来看看，如何在网页中还原`action`的`set`执行过程
 
 > 通过`action`定义调用
 
@@ -657,7 +683,7 @@ alert('输出内容：' + result)
     <params>
         <param name="param_one" label="普通变量 param_one" value="张飞" />
     </params>
-    <script>file:///android_asset/kr-script/test/var.sh</script>
+    <set>file:///android_asset/kr-script/test/var.sh</set>
 </action>
 ```
 
