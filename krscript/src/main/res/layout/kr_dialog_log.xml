@@ -5,61 +5,44 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!--<FrameLayout
+    <RelativeLayout
+        android:id="@+id/top_bar"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:background="#aa000000" />-->
+        android:layout_height="?actionBarSize">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="11dp"
-        android:background="@android:color/transparent"
-        android:padding="5dp"
-        android:rotation="180"
-        android:scaleType="centerInside"
-        android:src="@drawable/kr_script"
-        android:tint="@android:color/white" />
+        <TextView
+            android:id="@+id/title"
+            style="@style/textTitle"
+            android:maxLines="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toStartOf="@id/btn_hide"
+            android:layout_alignParentStart="true"
+            android:textSize="18dp" />
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/textTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="6dp"
-        android:layout_marginTop="6dp"
-        android:layout_toStartOf="@id/btn_hide"
-        android:layout_toEndOf="@+id/icon"
-        android:textColor="@android:color/white"
-        android:textSize="18dp" />
-
-    <ImageButton
-        android:id="@+id/btn_hide"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@android:color/transparent"
-        android:padding="5dp"
-        android:rotation="180"
-        android:scaleType="centerInside"
-        android:src="@drawable/kr_hide"
-        android:tint="@android:color/white" />
+        <ImageButton
+            android:id="@+id/btn_hide"
+            style="@style/kr_action_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:rotation="180"
+            android:scaleType="centerInside"
+            android:src="@drawable/kr_hide" />
+    </RelativeLayout>
 
     <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_actions"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="50dp"
+        android:layout_below="@+id/top_bar"
         android:background="@drawable/krscript_params_view"
-        android:paddingBottom="50dp">
+        android:layout_above="@id/bottom_actions">
 
         <TextView
             android:id="@+id/shell_output"
@@ -78,24 +61,23 @@
 
         <ImageButton
             android:id="@+id/btn_copy"
+            style="@style/kr_action_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
-            android:padding="8dp"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:src="@drawable/kr_copy"
             android:tint="?colorAccent" />
 
         <LinearLayout
             android:id="@+id/btn_exit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/kr_action_button"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="16dp"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <ImageButton
@@ -123,10 +105,10 @@
         android:id="@+id/action_progress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="7dp"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
+        android:layout_height="8dp"
+        android:layout_below="@+id/top_bar"
         android:indeterminate="true"
+        android:layout_marginTop="-4dp"
         android:max="100"
         android:progress="0" />
 </RelativeLayout>

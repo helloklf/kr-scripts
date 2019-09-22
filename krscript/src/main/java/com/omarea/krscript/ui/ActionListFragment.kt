@@ -261,7 +261,6 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                         // 自定义参数输入界面
                         val customRunner = krScriptActionHandler?.openParamsPage(action,
                                 linearLayout,
-                                Runnable { },
                                 Runnable {
                                     try {
                                         val params = render.readParamsValue(actionParamInfos)
@@ -273,12 +272,19 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
                         // 内置的参数输入界面
                         if (customRunner != true) {
-                            val dialogView = LayoutInflater.from(context).inflate(R.layout.kr_dialog_params, null)
-                            val center = dialogView.findViewById<ScrollView>(R.id.kr_params_center)
+                            val isLongList = (action.params != null && action.params!!.size > 4)
+                            val dialogView = LayoutInflater.from(context).inflate(if(isLongList) R.layout.kr_dialog_params else R.layout.kr_dialog_params_small, null)
+                            val center = dialogView.findViewById<ViewGroup>(R.id.kr_params_center)
                             center.removeAllViews()
                             center.addView(linearLayout)
-                            val dialog = AlertDialog.Builder(this.context, R.style.kr_full_screen_dialog).setView(dialogView).create()
-                            dialog.show()
+
+                            val builder = if (isLongList) AlertDialog.Builder(this.context, R.style.kr_full_screen_dialog) else AlertDialog.Builder(this.context)
+                            val dialog = builder.setView(dialogView).create()
+                            if (!isLongList) {
+                                DialogHelper.animDialog(dialog)
+                            } else {
+                                dialog.show()
+                            }
 
                             dialogView.findViewById<TextView>(R.id.title).text = action.title
 

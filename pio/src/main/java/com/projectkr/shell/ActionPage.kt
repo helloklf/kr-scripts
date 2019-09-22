@@ -96,14 +96,6 @@ class ActionPage : AppCompatActivity() {
             addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
         }
 
-        override fun openParamsPage(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
-            return false
-        }
-
-        override fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
-            return null
-        }
-
         override fun onSubPageClick(pageInfo: PageInfo) {
             _openPage(pageInfo)
         }

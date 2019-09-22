@@ -8,10 +8,10 @@ android {
 
     defaultConfig {
         resConfigs "zh"
-        minSdkVersion 23
+        minSdkVersion 21
         targetSdkVersion 28
-        versionCode 70
-        versionName "3.5.0"
+        versionCode 71
+        versionName "3.5.1"
     }
     buildTypes {
         release {

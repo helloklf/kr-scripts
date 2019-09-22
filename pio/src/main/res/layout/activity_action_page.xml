@@ -11,6 +11,7 @@
 
     <FrameLayout
         android:id="@+id/main_list"
+        android:background="@color/window_bg_light"
         android:layout_marginTop="?android:actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

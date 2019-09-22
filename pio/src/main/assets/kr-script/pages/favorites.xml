@@ -113,6 +113,22 @@
         </text>
     </group>
 
+    <action>
+        <title>测试少量选项的界面样式</title>
+        <param name="a">
+            <option>123</option>
+            <option>123</option>
+        </param>
+        <param name="b">
+            <option>cc</option>
+            <option>dd</option>
+        </param>
+        <script>
+            echo $a
+            echo $b
+        </script>
+    </action>
+
     <text>
         <title>测试文本组</title>
         <desc>测试大段文本内容，测试大段文本内容，测试大段文本内容，测试大段文本内容，测试大段文本内容，测试大段文本内容，测试大段文本内容，
