@@ -25,7 +25,6 @@
 
         <ImageButton
             android:id="@+id/btn_cancel"
-            style="@style/kr_action_button"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerVertical="true"
