@@ -92,8 +92,8 @@ class MainActivity : AppCompatActivity() {
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val page2Config = krScriptConfig.get(KrScriptConfigLoader.PAGE_LIST_CONFIG)!!
-            val favoritesConfig = krScriptConfig.get(KrScriptConfigLoader.FAVORITE_CONFIG)!!
+            val page2Config = krScriptConfig[KrScriptConfigLoader.PAGE_LIST_CONFIG]!!
+            val favoritesConfig = krScriptConfig[KrScriptConfigLoader.FAVORITE_CONFIG]!!
 
             val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
