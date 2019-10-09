@@ -3,16 +3,17 @@
     android:shareInterpolator="false"
     android:zAdjustment="bottom">
     <translate
-        android:duration="@android:integer/config_mediumAnimTime"
-        android:fromXDelta="0%p"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:toXDelta="150%p"></translate>
+        android:fromXDelta="0%p"
+        android:toXDelta="150%p"
+        android:duration="@android:integer/config_mediumAnimTime">
+    </translate>
     <scale
         android:duration="@android:integer/config_mediumAnimTime"
-        android:fromXScale="1"
-        android:fromYScale="1"
         android:pivotX="100%"
         android:pivotY="50%"
+        android:fromXScale="1"
+        android:fromYScale="1"
         android:toXScale="0.5"
         android:toYScale="0.5" />
     <alpha

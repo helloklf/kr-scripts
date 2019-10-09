@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <action>
-        <title>测试 时间获取</title>
-        <script>file:///android_asset/kr-script/test/View_Time.sh</script>
-    </action>
+    <group>
+        <action>
+            <title>测试 时间获取</title>
+            <script>file:///android_asset/kr-script/test/View_Time.sh</script>
+        </action>
+    </group>
 
     <group title="工具测试">
         <action id="test_busybox">
@@ -26,59 +28,61 @@
         </action>
     </group>
 
-    <action>
-        <title>卸载系统自带的busybox</title>
-        <desc>卸载安装到system分区的busybox</desc>
-        <script>file:///android_asset/kr-script/test/delete_busybox.sh</script>
-    </action>
+    <group>
+        <action>
+            <title>卸载系统自带的busybox</title>
+            <desc>卸载安装到system分区的busybox</desc>
+            <script>file:///android_asset/kr-script/test/delete_busybox.sh</script>
+        </action>
 
-    <action>
-        <title>用户身份测试</title>
-        <desc>检查当前用户名</desc>
-        <script>file:///android_asset/kr-script/test/check_root.sh</script>
-    </action>
+        <action>
+            <title>用户身份测试</title>
+            <desc>检查当前用户名</desc>
+            <script>file:///android_asset/kr-script/test/check_root.sh</script>
+        </action>
 
-    <switch auto-off="true">
-        <title>开关测试</title>
-        <desc>测试开关功能</desc>
-        <getstate>
-            getprop xxx.xxx.xxx2
-        </getstate>
-        <setstate>
-            echo "设置前："
-            getprop xxx.xxx.xxx2
+        <switch auto-off="true">
+            <title>开关测试</title>
+            <desc>测试开关功能</desc>
+            <getstate>
+                getprop xxx.xxx.xxx2
+            </getstate>
+            <setstate>
+                echo "设置前："
+                getprop xxx.xxx.xxx2
 
-            echo "设置为：" "$state"
-            setprop xxx.xxx.xxx2 "$state"
+                echo "设置为：" "$state"
+                setprop xxx.xxx.xxx2 "$state"
 
-            echo "设置后："
-            getprop xxx.xxx.xxx2
-        </setstate>
-    </switch>
+                echo "设置后："
+                getprop xxx.xxx.xxx2
+            </setstate>
+        </switch>
 
-    <action>
-        <title>参数类型列举</title>
-        <params>
-            <param name="param_one" label="普通变量 param_one">
-                <option value="A">测试一下 A</option>
-                <option value="B">测试一下 B</option>
-            </param>
-            <param name="param_two" label="普通变量 param_two">
-                <option value="Z">测试一下 Z</option>
-                <option value="X">测试一下 X</option>
-            </param>
-            <param name="param_int" desc="只能输入数字，数值在10~100以内，不能为空" label="数字" max="100" min="10"
-                required="required" type="int" />
-            <param name="param_seekbar" max="100" min="10" title="数字（滑块）" type="seekbar"
-                value="50" />
-            <param name="param_bool" label="选框" type="bool" />
-            <param name="param_file" label="文件选择" type="file"
-                value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
-            <param name="color" type="color" label="颜色输入">
-            </param>
-        </params>
-        <script>file:///android_asset/kr-script/test/var.sh</script>
-    </action>
+        <action>
+            <title>参数类型列举</title>
+            <params>
+                <param name="param_one" label="普通变量 param_one">
+                    <option value="A">测试一下 A</option>
+                    <option value="B">测试一下 B</option>
+                </param>
+                <param name="param_two" label="普通变量 param_two">
+                    <option value="Z">测试一下 Z</option>
+                    <option value="X">测试一下 X</option>
+                </param>
+                <param name="param_int" desc="只能输入数字，数值在10~100以内，不能为空" label="数字" max="100" min="10"
+                    required="required" type="int" />
+                <param name="param_seekbar" max="100" min="10" title="数字（滑块）" type="seekbar"
+                    value="50" />
+                <param name="param_bool" label="选框" type="bool" />
+                <param name="param_file" label="文件选择" type="file"
+                    value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
+                <param name="color" type="color" label="颜色输入">
+                </param>
+            </params>
+            <script>file:///android_asset/kr-script/test/var.sh</script>
+        </action>
+    </group>
 
     <group support="echo 1">
         <picker>
