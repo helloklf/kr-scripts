@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <group>
-        <action>
-            <title>测试 时间获取</title>
-            <script>file:///android_asset/kr-script/test/View_Time.sh</script>
-        </action>
-    </group>
-
     <group title="工具测试">
         <action id="test_busybox">
             <title>busybox 测试</title>
