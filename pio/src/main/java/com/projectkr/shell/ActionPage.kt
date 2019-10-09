@@ -166,7 +166,7 @@ class ActionPage : AppCompatActivity() {
                                     Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        })
+                        }, ThemeModeState.getThemeMode())
                         supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
                     }
                     progressBarDialog.hideDialog()

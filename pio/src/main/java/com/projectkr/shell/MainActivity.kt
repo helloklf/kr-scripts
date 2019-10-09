@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity() {
     private var useHomePage = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeModeState.switchTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -56,23 +57,6 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
-
-        val window = window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.WHITE
-        window.navigationBarColor = Color.WHITE
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
-        //getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        //getWindow().setNavigationBarColor(Color.WHITE);
 
         val krScriptConfig = KrScriptConfigLoader().initFramework(this.applicationContext)
 
@@ -102,7 +86,7 @@ class MainActivity : AppCompatActivity() {
 
 
                 if (favorites != null && favorites.size > 0) {
-                    val favoritesFragment = ActionListFragment.create(favorites, getKrScriptActionHandler(favoritesConfig))
+                    val favoritesFragment = ActionListFragment.create(favorites, getKrScriptActionHandler(favoritesConfig), null, ThemeModeState.getThemeMode())
                     supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
@@ -110,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 if (pages != null && pages.size > 0) {
-                    val allItemFragment = ActionListFragment.create(pages, getKrScriptActionHandler(page2Config))
+                    val allItemFragment = ActionListFragment.create(pages, getKrScriptActionHandler(page2Config), null, ThemeModeState.getThemeMode())
                     supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
