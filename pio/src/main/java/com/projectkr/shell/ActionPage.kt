@@ -34,6 +34,8 @@ class ActionPage : AppCompatActivity() {
     private var running = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeModeState.switchTheme(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -45,20 +47,6 @@ class ActionPage : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
             finish()
-        }
-
-        val window = window
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        window.statusBarColor = Color.WHITE
-        window.navigationBarColor = Color.WHITE
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 
         // 读取intent里的参数
