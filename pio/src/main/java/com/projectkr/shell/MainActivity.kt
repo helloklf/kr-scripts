@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (favorites != null && favorites.size > 0) {
                     val favoritesFragment = ActionListFragment.create(favorites, getKrScriptActionHandler(favoritesConfig), null, ThemeModeState.getThemeMode())
-                    supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commit()
+                    supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commitAllowingStateLoss()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE
@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (pages != null && pages.size > 0) {
                     val allItemFragment = ActionListFragment.create(pages, getKrScriptActionHandler(page2Config), null, ThemeModeState.getThemeMode())
-                    supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commit()
+                    supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commitAllowingStateLoss()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
                     main_tabhost_3.visibility = View.GONE
@@ -107,7 +107,7 @@ class MainActivity : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_tabhost_cpu, home)
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
     }
 
     private fun getKrScriptActionHandler(pageConfig: String): KrScriptActionHandler {

@@ -155,7 +155,7 @@ class ActionPage : AppCompatActivity() {
                                 }
                             }
                         }, ThemeModeState.getThemeMode())
-                        supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
+                        supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commitAllowingStateLoss()
                     }
                     progressBarDialog.hideDialog()
                 }
