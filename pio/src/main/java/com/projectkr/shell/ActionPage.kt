@@ -32,7 +32,6 @@ class ActionPage : AppCompatActivity() {
     private var pageConfig: String = ""
     private var autoRun: String = ""
     private var pageTitle = ""
-    private var running = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeModeState.switchTheme(this)

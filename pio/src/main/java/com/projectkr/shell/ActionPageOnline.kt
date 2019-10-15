@@ -31,7 +31,6 @@ import com.omarea.krscript.ui.FileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
 import java.util.*
 
-
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
 
@@ -45,9 +44,9 @@ class ActionPageOnline : AppCompatActivity() {
         // 显示返回按钮
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        toolbar.setNavigationOnClickListener({ _ ->
+        toolbar.setNavigationOnClickListener {
             finish()
-        })
+        }
 
         loadIntentData()
     }
@@ -68,14 +67,19 @@ class ActionPageOnline : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+
         window.statusBarColor = Color.WHITE
         window.navigationBarColor = Color.WHITE
 
+        var flags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         } else {
-            getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            }
         }
+        getWindow().decorView.systemUiVisibility = flags
 
         kr_online_root.fitsSystemWindows = true
     }
@@ -90,14 +94,16 @@ class ActionPageOnline : AppCompatActivity() {
                     title = extras.getString("title")!!
                 }
 
-                if (extras.containsKey("config")) {
-                    initWebview(extras.getString("config"))
-                    hideWindowTitle()
-                } else if (extras.containsKey("url")) {
-                    initWebview(extras.getString("url"))
-                    hideWindowTitle()
-                } else {
-                    setWhiteWindowTitle()
+                when {
+                    extras.containsKey("config") -> {
+                        initWebview(extras.getString("config"))
+                        hideWindowTitle()
+                    }
+                    extras.containsKey("url") -> {
+                        initWebview(extras.getString("url"))
+                        hideWindowTitle()
+                    }
+                    else -> setWhiteWindowTitle()
                 }
 
                 if (extras.containsKey("downloadUrl")) {
@@ -105,9 +111,7 @@ class ActionPageOnline : AppCompatActivity() {
                     val url = extras.getString("downloadUrl")!!
                     val taskAliasId = if (extras.containsKey("taskId")) extras.getString("taskId") else UUID.randomUUID().toString()
 
-                    if (
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         downloader.saveTaskStatus(taskAliasId, 0)
 
                         requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);

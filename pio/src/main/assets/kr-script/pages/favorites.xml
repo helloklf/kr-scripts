@@ -92,7 +92,22 @@
             <title>测试单选界面</title>
             <desc>测试单选界面</desc>
             <getstate>getprop xxx.xxx.xxx3</getstate>
-            <setstate>setprop xxx.xxx.xxx3 $state</setstate>
+            <setstate>setprop xxx.xxx.xxx3 "$state"</setstate>
+        </picker>
+        <picker multiple="multiple" options-sh="echo 'a|选项A'; echo 'b|选项B'">
+            <title>测试多选界面</title>
+            <desc>测试多选界面</desc>
+            <getstate>getprop xxx.xxx.xxx3</getstate>
+            <setstate>
+                echo '选中项：'
+                for item in $state
+                do
+                    echo $item
+                done
+                echo ''
+
+                setprop xxx.xxx.xxx3 "$state"
+            </setstate>
         </picker>
     </group>
 

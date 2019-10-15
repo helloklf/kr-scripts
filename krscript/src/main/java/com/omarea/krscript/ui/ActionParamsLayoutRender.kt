@@ -12,12 +12,13 @@ import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ActionParamsLayoutRender {
     companion object {
         /**
-         * 获取当前选中项索引
+         * 获取当前选中项索引（单选）
          * @param ActionParamInfo actionParamInfo 参数信息
          * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
          */
@@ -45,6 +46,24 @@ class ActionParamsLayoutRender {
                 }
             }
             return selectedIndex
+        }
+
+        /**
+         * 获取当前选中项索引（多选）
+         * @param ActionParamInfo actionParamInfo 参数信息
+         * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
+         */
+        fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
+            val status = BooleanArray(options.size)
+            val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
+            val values = value?.split("\n")
+
+            for (index in 0 until options.size) {
+                val item = options[index]["item"]
+                val option = item as ActionParamInfo.ActionParamOption
+                status[index] = (values != null && values.contains(option.value))
+            }
+            return status
         }
     }
 
