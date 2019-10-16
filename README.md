@@ -266,6 +266,21 @@
 </action>
 ```
 
+#### param 多选列表
+- 设置了`option`或`option-sh`的情况下，在`param`节点添加`multiple="true"`属性
+- 即可将原来的单选模式切换为多选模式，例如：
+
+```xml
+<action>
+    <title>多选下拉</title>
+    <param name="test" label="多选下拉" multiple="multiple">
+        <option value="Z">测试一下 Z</option>
+        <option value="X">测试一下 X</option>
+    </param>
+    <set>echo '数值为：' $test</set>
+</action>
+```
+
 
 ## Switch
 ### 用途
@@ -351,7 +366,8 @@
 </picker>
 ```
 
-- 或者，如果你还希望通过脚本动态生成选项，picker也提供了`options-sh`属性
+- **动态选项**
+- picker也允许使用`options-sh`属性来设置输出下拉选项的脚本
 - 用法和action的param一样，如：
 
 ```xml
@@ -359,7 +375,19 @@
     <title>测试单选界面</title>
     <desc>测试单选界面</desc>
     <get>getprop xxx.xxx.xxx3</get>
-    <set>setprop xxx.xxx.xxx3 $state</set>
+    <set>setprop xxx.xxx.xxx3 "$state"</set>
+</picker>
+```
+
+- **多选模式**
+- 在picker节点上增加`multiple="true"`属性来标识允许多选
+- 例如：
+
+```xml
+<picker options-sh="echo 'a|选项A'; echo 'b|选项B'" value-sh="echo 'a'; echo 'b';">
+    <title>测试单选界面</title>
+    <get>getprop xxx.xxx.xxx4</get>
+    <set>setprop xxx.xxx.xxx4 "$state"</set>
 </picker>
 ```
 
