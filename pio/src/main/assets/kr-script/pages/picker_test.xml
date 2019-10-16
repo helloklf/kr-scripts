@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <picker>
+        <title>测试单选界面</title>
+        <options>
+            <option value="123">测试123</option>
+            <option value="234">测试234</option>
+        </options>
+        <get>getprop xxx.xxx.xxx</get>
+        <set>setprop xxx.xxx.xxx $state</set>
+    </picker>
+    <picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
+        <title>单选测试（由脚本输出选项）</title>
+        <get>getprop xxx.xxx.xxx3</get>
+        <set>setprop xxx.xxx.xxx3 "$state"</set>
+    </picker>
+
+    <picker multiple="multiple" options-sh="echo 'a|选项A'; echo 'b|选项B'">
+        <title>测试多选界面</title>
+        <get>getprop xxx.xxx.xxx3</get>
+        <set>
+            echo '选中项：'
+
+            for item in $state; do
+            echo $item
+            done
+
+            echo ''
+            setprop xxx.xxx.xxx3 "$state"
+        </set>
+    </picker>
+</group>

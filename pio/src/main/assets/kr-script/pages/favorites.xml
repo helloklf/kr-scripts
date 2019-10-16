@@ -1,138 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
-    <group title="工具测试">
-        <action id="test_busybox">
-            <title>busybox 测试</title>
-            <desc>测试toolkit目录中放置的busybox是否生效</desc>
-            <script>
-                echo '当前busybox版本：'
-                busybox | grep BusyBox
-                echo ''
-                echo '当前目录：'
-                pwd
-            </script>
-        </action>
-        <action>
-            <title>zip 测试</title>
-            <desc>测试toolkit目录中放置的zip是否生效</desc>
-            <script>
-                zip --help
-            </script>
-        </action>
+    <group title="运行环境测试">
+        <page config="kr-script/pages/env_test.xml" title="环境测试" />
     </group>
 
-    <group>
-        <action>
-            <title>卸载系统自带的busybox</title>
-            <desc>卸载安装到system分区的busybox</desc>
-            <script>file:///android_asset/kr-script/test/delete_busybox.sh</script>
-        </action>
-
-        <action>
-            <title>用户身份测试</title>
-            <desc>检查当前用户名</desc>
-            <script>file:///android_asset/kr-script/test/check_root.sh</script>
-        </action>
-
-        <switch auto-off="true">
-            <title>开关测试</title>
-            <desc>测试开关功能</desc>
-            <getstate>
-                getprop xxx.xxx.xxx2
-            </getstate>
-            <setstate>
-                echo "设置前："
-                getprop xxx.xxx.xxx2
-
-                echo "设置为：" "$state"
-                setprop xxx.xxx.xxx2 "$state"
-
-                echo "设置后："
-                getprop xxx.xxx.xxx2
-            </setstate>
-        </switch>
-
-        <action>
-            <title>参数类型列举</title>
-            <params>
-                <param name="param_one" label="普通变量 param_one">
-                    <option value="A">测试一下 A</option>
-                    <option value="B">测试一下 B</option>
-                </param>
-                <param name="param_two" label="普通变量 param_two">
-                    <option value="Z">测试一下 Z</option>
-                    <option value="X">测试一下 X</option>
-                </param>
-                <param name="param_int" desc="只能输入数字，数值在10~100以内，不能为空" label="数字" max="100" min="10"
-                    required="required" type="int" />
-                <param name="param_seekbar" max="100" min="10" title="数字（滑块）" type="seekbar"
-                    value="50" />
-                <param name="param_bool" label="选框" type="bool" />
-                <param name="param_file" label="文件选择" type="file"
-                    value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
-                <param name="color" type="color" label="颜色输入">
-                </param>
-            </params>
-            <script>file:///android_asset/kr-script/test/var.sh</script>
-        </action>
+    <group title="Action 功能测试">
+        <page config="kr-script/pages/action_test.xml" title="Action用法" />
     </group>
 
-    <group support="echo 1">
-        <picker>
-            <title>测试单选界面</title>
-            <desc>测试单选界面</desc>
-            <options>
-                <option value="123">测试123</option>
-                <option value="234">测试234</option>
-            </options>
-            <getstate>getprop xxx.xxx.xxx</getstate>
-            <setstate>setprop xxx.xxx.xxx $state</setstate>
-        </picker>
-        <picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
-            <title>测试单选界面</title>
-            <desc>测试单选界面</desc>
-            <getstate>getprop xxx.xxx.xxx3</getstate>
-            <setstate>setprop xxx.xxx.xxx3 "$state"</setstate>
-        </picker>
-        <picker multiple="multiple" options-sh="echo 'a|选项A'; echo 'b|选项B'">
-            <title>测试多选界面</title>
-            <desc>测试多选界面</desc>
-            <getstate>getprop xxx.xxx.xxx3</getstate>
-            <setstate>
-                echo '选中项：'
-                for item in $state
-                do
-                    echo $item
-                done
-                echo ''
+    <group title="Picker 功能测试">
+        <page config="kr-script/pages/picker_test.xml" title="Picker用法" />
+    </group>
 
-                setprop xxx.xxx.xxx3 "$state"
-            </setstate>
-        </picker>
+    <group title="Text 功能测试">
+        <page config="kr-script/pages/text_test.xml" title="Text用法" />
+    </group>
+
+    <group title="Web引擎">
+        <page config="kr-script/pages/web_test.xml" title="网页引擎测试" />
     </group>
 
     <group title="更多">
-        <page title="测试页面" desc="脚本框架测试页面" config="kr-script/pages/custom_testpage.xml" />
-        <page title="内核调谐器" desc="框架测试界面，演示实时模式的使用" config="kr-script/pages/custom_kernel_tuner.xml" />
-        <page title="文本测试" desc="测试新增的text节点使用效果" config="kr-script/pages/text_test.xml" />
-        <page title="在线页面测试" desc="在线脚本测试" html="https://www.lanzous.com/b838135" />
-        <!--html属性不支持省略file:///android_asset/前缀-->
-        <page title="本地页面测试" desc="加载APK中集成的HTML文件" html="file:///android_asset/html-test/index.html" />
+        <page config="kr-script/pages/custom_kernel_tuner.xml" desc="框架测试界面，演示实时模式的使用"
+            title="内核调谐器" />
     </group>
-
-    <action>
-        <title>测试少量选项的界面样式</title>
-        <param name="a">
-            <option>123</option>
-            <option>123</option>
-        </param>
-        <param name="b">
-            <option>cc</option>
-            <option>dd</option>
-        </param>
-        <script>
-            echo $a
-            echo $b
-        </script>
-    </action>
 </items>

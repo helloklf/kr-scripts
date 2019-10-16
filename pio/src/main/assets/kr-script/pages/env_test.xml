@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <group>
+        <action>
+            <title>busybox 测试</title>
+            <desc>测试toolkit目录中放置的busybox是否生效</desc>
+            <set>
+                echo '当前busybox版本：'
+                busybox | grep BusyBox
+                echo ''
+                echo '当前目录：'
+                pwd
+            </set>
+        </action>
+        <action>
+            <title>zip 测试</title>
+            <desc>测试toolkit目录中放置的zip是否生效</desc>
+            <set>zip --help</set>
+        </action>
+
+        <action>
+            <title>卸载系统自带的busybox</title>
+            <desc>卸载安装到system分区的busybox</desc>
+            <set>file:///android_asset/kr-script/test/delete_busybox.sh</set>
+        </action>
+    </group>
+
+    <group>
+        <action>
+            <title>环境变量</title>
+            <set>file:///android_asset/kr-script/test/var.sh</set>
+        </action>
+        <action>
+            <title>用户ID检测</title>
+            <set>file:///android_asset/kr-script/test/check_root.sh</set>
+        </action>
+    </group>
+</group>
