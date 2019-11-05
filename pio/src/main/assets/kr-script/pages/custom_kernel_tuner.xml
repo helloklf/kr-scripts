@@ -6,8 +6,8 @@
         <title>CPU参数调节</title>
         <desc>控制你的CPU性能参数（用作测试的示例代码）</desc>
         <params>
-            <param name="cluster0_scheduler" label="调度器" options-sh="./kernel_tuner/governor.sh governors"
-                title="【小核】"
+            <param name="cluster0_scheduler" label="调度器"
+                options-sh="./kernel_tuner/governor.sh governors" title="【小核】"
                 value-sh="./kernel_tuner/governor.sh get_governor" />
             <param name="cluster0_min_freq" label="最低频率"
                 options-sh="./kernel_tuner/frequency.sh available_frequencies"
@@ -16,8 +16,8 @@
                 options-sh="./kernel_tuner/frequency.sh available_frequencies"
                 value-sh="./kernel_tuner/frequency.sh get_scaling_max_freq" />
 
-            <param name="cluster1_scheduler" label="调度器" options-sh="./kernel_tuner/governor.sh governors 4"
-                title="【大核】"
+            <param name="cluster1_scheduler" label="调度器"
+                options-sh="./kernel_tuner/governor.sh governors 4" title="【大核】"
                 value-sh="./kernel_tuner/governor.sh get_governor 4" />
             <param name="cluster1_min_freq" label="最低频率"
                 options-sh="./kernel_tuner/frequency.sh available_frequencies 4 "

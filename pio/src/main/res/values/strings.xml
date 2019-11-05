@@ -52,4 +52,11 @@
     <string name="copy_fail">复制失败</string>
 
     <string name="kr_write_external_storage">需要读写外置存储权限</string>
+    <string name="kr_page_before_load">准备解析配置</string>
+    <string name="kr_page_loading">解析配置中</string>
+    <string name="kr_page_after_load">配置解析完成</string>
+    <string name="kr_page_sh_invalid">无效的页面配置输出</string>
+    <string name="kr_page_sh_file_permission">指定的配置文件不存在或无读取权限</string>
+    <string name="kr_page_load_fail">页面加载失败</string>
+    <string name="kr_page_load_success">页面加载成功</string>
 </resources>

@@ -14,7 +14,6 @@ import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
@@ -90,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (favorites != null && favorites.size > 0) {
                     val favoritesFragment = ActionListFragment.create(favorites, getKrScriptActionHandler(favoritesConfig), null, ThemeModeState.getThemeMode())
-                    supportFragmentManager.beginTransaction() .add(R.id.list_favorites, favoritesFragment).commitAllowingStateLoss()
+                    supportFragmentManager.beginTransaction().add(R.id.list_favorites, favoritesFragment).commitAllowingStateLoss()
                     tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE
@@ -98,7 +97,7 @@ class MainActivity : AppCompatActivity() {
 
                 if (pages != null && pages.size > 0) {
                     val allItemFragment = ActionListFragment.create(pages, getKrScriptActionHandler(page2Config), null, ThemeModeState.getThemeMode())
-                    supportFragmentManager.beginTransaction() .add(R.id.list_pages, allItemFragment).commitAllowingStateLoss()
+                    supportFragmentManager.beginTransaction().add(R.id.list_pages, allItemFragment).commitAllowingStateLoss()
                     tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
                     main_tabhost_3.visibility = View.GONE
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity() {
                 _openPage(pageInfo)
             }
 
-            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                 return chooseFilePath(fileSelectedInterface)
             }
         }
@@ -139,7 +138,7 @@ class MainActivity : AppCompatActivity() {
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
     private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
             return false
@@ -182,21 +181,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun _openPage(pageInfo: PageInfo) {
-        try {
-            if (!pageInfo.pageConfigPath.isEmpty()) {
-                val intent = Intent(this, ActionPage::class.java)
-                intent.putExtra("config", pageInfo.pageConfigPath)
-                intent.putExtra("title", pageInfo.title)
-                startActivity(intent)
-            } else if (!pageInfo.onlineHtmlPage.isEmpty()) {
-                val intent = Intent(this, ActionPageOnline::class.java)
-                intent.putExtra("config", pageInfo.onlineHtmlPage)
-                intent.putExtra("title", pageInfo.title)
-                startActivity(intent)
-            }
-        } catch (ex: Exception) {
-            Log.e("_openPage", "" + ex.message)
-        }
+        OpenPageHelper(this).openPage(pageInfo)
     }
 
     private fun getDensity(): Int {
@@ -248,7 +233,7 @@ class MainActivity : AppCompatActivity() {
 
                         try {
                             startActivity(intent)
-                        } catch (ex: Exception){
+                        } catch (ex: Exception) {
                         }
                     }
                 } else {

@@ -12,18 +12,20 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.AutoRunTask
 import com.omarea.krscript.model.ConfigItemBase
 import com.omarea.krscript.model.KrScriptActionHandler
 import com.omarea.krscript.model.PageInfo
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
+import java.io.ByteArrayInputStream
+
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -32,6 +34,17 @@ class ActionPage : AppCompatActivity() {
     private var pageConfig: String = ""
     private var autoRun: String = ""
     private var pageTitle = ""
+
+    // 读取页面配置前
+    private var beforeRead = ""
+    // 读取页面配置后
+    private var afterRead = ""
+
+    private var loadSuccess = ""
+    private var loadFail = ""
+
+    // 页面配置脚本
+    private var pageConfigSh = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeModeState.switchTheme(this)
@@ -61,10 +74,28 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
                 }
+                if (extras.containsKey("pageConfigSh")) {
+                    pageConfigSh = extras.getString("pageConfigSh")!!
+                }
+
+                if (extras.containsKey("beforeRead")) {
+                    beforeRead = extras.getString("beforeRead")!!
+                }
+                if (extras.containsKey("afterRead")) {
+                    afterRead = extras.getString("afterRead")!!
+                }
+                if (extras.containsKey("loadSuccess")) {
+                    loadSuccess = extras.getString("loadSuccess")!!
+                }
+                if (extras.containsKey("loadFail")) {
+                    loadFail = extras.getString("loadFail")!!
+                }
+
                 if (extras.containsKey("autoRunItemId")) {
                     autoRun = extras.getString("autoRunItemId")!!
                 }
-                if (pageConfig.isEmpty()) {
+
+                if (pageConfig.isEmpty() && pageConfigSh.isEmpty()) {
                     setResult(2)
                     finish()
                 }
@@ -88,7 +119,7 @@ class ActionPage : AppCompatActivity() {
             _openPage(pageInfo)
         }
 
-        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
             return chooseFilePath(fileSelectedInterface)
         }
     }
@@ -138,15 +169,80 @@ class ActionPage : AppCompatActivity() {
         }
     }
 
+    private fun showDialog(msg: String) {
+        handler.post {
+            progressBarDialog.showDialog(msg)
+        }
+    }
+
+    private fun hideDialog() {
+        handler.post {
+            progressBarDialog.hideDialog()
+        }
+    }
+
+    private fun pageConfigShError(content: String) {
+        handler.post {
+            Toast.makeText(this, getString(R.string.kr_page_sh_invalid) + "\n" + content, Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun noReadPermission() {
+        handler.post {
+            Toast.makeText(this, getString(R.string.kr_page_sh_file_permission), Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        val activity = this
 
         if (!actionsLoaded) {
-            progressBarDialog.showDialog(getString(R.string.please_wait))
             Thread(Runnable {
-                val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
-                handler.post {
-                    if (items != null && items.size != 0) {
+                if (beforeRead.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_before_load))
+                    ScriptEnvironmen.executeResultRoot(activity, beforeRead)
+                }
+
+                showDialog(getString(R.string.kr_page_loading))
+                var items: ArrayList<ConfigItemBase>? = null
+
+                if (pageConfigSh.isNotEmpty()) {
+                    val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
+                    if (result != null) {
+                        if (result.endsWith(".xml")) {
+                            val pageConfigReader = PageConfigReader(activity)
+                            val inputStream = pageConfigReader.getConfig(activity, result)
+                            if (inputStream == null) {
+                                noReadPermission()
+                            } else {
+                                items = PageConfigReader(activity).readConfigXml(inputStream)
+                            }
+                        } else if (result.startsWith("<?xml") && result.endsWith(">")) {
+                            val inputStream = ByteArrayInputStream(result.toByteArray())
+                            items = PageConfigReader(activity).readConfigXml(inputStream)
+                        } else if (result.isNotEmpty()) {
+                            pageConfigShError(result)
+                        }
+                    }
+                }
+
+                if (items == null && pageConfig.isNotEmpty()) {
+                    items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
+                }
+
+                if (afterRead.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_after_load))
+                    ScriptEnvironmen.executeResultRoot(activity, afterRead)
+                }
+
+                if (items != null && items.size != 0) {
+                    if (loadSuccess.isNotEmpty()) {
+                        showDialog(getString(R.string.kr_page_load_success))
+                        ScriptEnvironmen.executeResultRoot(activity, loadSuccess)
+                    }
+
+                    handler.post {
                         val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
                             override val key = autoRun
                             override fun onCompleted(result: Boolean?) {
@@ -156,29 +252,24 @@ class ActionPage : AppCompatActivity() {
                             }
                         }, ThemeModeState.getThemeMode())
                         supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commitAllowingStateLoss()
+                        hideDialog()
                     }
-                    progressBarDialog.hideDialog()
+                    actionsLoaded = true
+                } else {
+                    if (loadFail.isNotEmpty()) {
+                        showDialog(getString(R.string.kr_page_load_fail))
+                        ScriptEnvironmen.executeResultRoot(activity, loadFail)
+                        hideDialog()
+                    }
+
+                    hideDialog()
+                    finish()
                 }
-                actionsLoaded = true
             }).start()
         }
     }
 
     fun _openPage(pageInfo: PageInfo) {
-        try {
-            if (!pageInfo.pageConfigPath.isEmpty()) {
-                val intent = Intent(this, ActionPage::class.java)
-                intent.putExtra("config", pageInfo.pageConfigPath)
-                intent.putExtra("title", pageInfo.title)
-                startActivity(intent)
-            } else if (!pageInfo.onlineHtmlPage.isEmpty()) {
-                val intent = Intent(this, ActionPageOnline::class.java)
-                intent.putExtra("config", pageInfo.onlineHtmlPage)
-                intent.putExtra("title", pageInfo.title)
-                startActivity(intent)
-            }
-        } catch (ex: java.lang.Exception) {
-            Log.e("_openPage", "" + ex.message)
-        }
+        OpenPageHelper(this).openPage(pageInfo)
     }
 }

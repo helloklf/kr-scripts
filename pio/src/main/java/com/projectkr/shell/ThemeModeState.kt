@@ -11,7 +11,7 @@ import com.omarea.common.ui.ThemeMode
 
 object ThemeModeState {
     private var themeMode: ThemeMode = ThemeMode()
-    fun switchTheme (activity: Activity? = null): ThemeMode {
+    fun switchTheme(activity: Activity? = null): ThemeMode {
         if (activity != null) {
             val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
             val nightMode = (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES)
@@ -44,7 +44,8 @@ object ThemeModeState {
         }
         return themeMode
     }
-    fun getThemeMode (): ThemeMode {
+
+    fun getThemeMode(): ThemeMode {
         return themeMode
     }
 }

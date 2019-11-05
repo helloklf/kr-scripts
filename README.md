@@ -43,13 +43,39 @@
 | support | 是否支持 | `support` 属性用法会在后面单独介绍 |
 | config | 配置 | 指定另一个配置文件作为子页面的内容 |
 | html | 网页 | 指定一个网页作为子页面的内容 |
+| config-sh | 动态配置 | 写一段脚本，输出配置文件所在路径或完整内容 |
+| before-load | 读取配置前 | 指定在加载配置文件前要执行的代码 |
+| after-load | 读取配置后 | 指定配置文件读取完成后要执行的代码 |
 
-- **注意：** config只支持读取应用assets下的文件，其中`file:///android_asset/`是固定前缀，也可以省略不写，就像这样：
+- **注意：** config只能指定应用assets下的文件，其中`file:///android_asset/`是固定前缀，可以省略不写，就像这样：
 
 ```xml
 <page title="标题文本"
     desc="描述文本"
     config="config_xml/for_aosp.xml" />
+```
+
+- **config-sh** 属性可以设置为一段脚本，通过`echo`输出配置文件所在位置，或直接输出配置文件完整内容
+
+```xml
+<!--输出配置文件绝对路径。支持 “file:///android_asset” 开头指定assets中的文件-->
+<page after-read="sleep 1" before-read="sleep 1"
+    config-sh="echo 'file:///android_asset/kr-script/pages/custom_kernel_tuner.xml'">
+    <title>测试config-sh【assets路径输出】</title>
+    <desc>通过config-sh输出配置页所在位置，它可以是在assets中的文件</desc>
+</page>
+
+<!--输出配置文件绝对路径-->
+<page config-sh="echo '/sdcard/text_test.xml'">
+    <title>测试config-sh【路径输出】</title>
+    <desc>通过config-sh输出配置页所在位置</desc>
+</page>
+
+<!--输出配置文件内容（框架别到输出内容以“<?xml”开头 且以“>”结尾，按照此模式解析）-->
+<page config-sh="cat /sdcard/text_test.xml">
+    <title>测试config-sh【全文输出】</title>
+    <desc>通过config-sh输出配置页内容</desc>
+</page>
 ```
 
 ### 补充说明

@@ -10,11 +10,11 @@
         android:layout_height="wrap_content" />
 
     <TabHost
-        android:background="@android:color/transparent"
         android:id="@+id/main_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?android:actionBarSize">
+        android:layout_marginTop="?android:actionBarSize"
+        android:background="@android:color/transparent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,8 +30,7 @@
                 <FrameLayout
                     android:id="@+id/main_tabhost_cpu"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                </FrameLayout>
+                    android:layout_height="match_parent"></FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/main_tabhost_2"
@@ -53,15 +52,15 @@
                     <FrameLayout
                         android:id="@+id/list_pages"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
             </FrameLayout>
 
             <TabWidget
                 android:id="@android:id/tabs"
-                android:background="?android:statusBarColor"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?android:statusBarColor" />
         </LinearLayout>
     </TabHost>
 </RelativeLayout>

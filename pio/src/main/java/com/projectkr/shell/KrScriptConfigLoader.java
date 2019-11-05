@@ -10,16 +10,16 @@ import java.util.HashMap;
 
 public class KrScriptConfigLoader {
     public final static String EXECUTOR_CORE = "executor_core";
-    private final String EXECUTOR_CORE_DEFAULT = "file:///android_asset/kr-script/executor.sh";
     public final static String PAGE_LIST_CONFIG = "page_list_config";
-    private final String PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/more.xml";
     public final static String FAVORITE_CONFIG = "favorite_config";
-    private final String FAVORITE_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/favorites.xml";
     public final static String ALLOW_HOME_PAGE = "allow_home_page";
-    private final String ALLOW_HOME_PAGE_DEFAULT = "1";
     public final static String TOOLKIT_DIR = "toolkit_dir";
     public final static String TOOLKIT_DIR_DEFAULT = "file:///android_asset/kr-script/toolkit";
     private static final String ASSETS_FILE = "file:///android_asset/";
+    private final String EXECUTOR_CORE_DEFAULT = "file:///android_asset/kr-script/executor.sh";
+    private final String PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/more.xml";
+    private final String FAVORITE_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/favorites.xml";
+    private final String ALLOW_HOME_PAGE_DEFAULT = "1";
 
     public HashMap<String, String> initFramework(Context context) {
         HashMap<String, String> configInfo = new HashMap<>();

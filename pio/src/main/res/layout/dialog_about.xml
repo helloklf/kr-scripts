@@ -13,20 +13,20 @@
         android:textSize="11dp" />
 
     <TextView
-        android:textSize="11dp"
-        android:textColor="@color/colorAccent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="@string/appliction_desc" />
+        android:text="@string/appliction_desc"
+        android:textColor="@color/colorAccent"
+        android:textSize="11dp" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:text="@string/appliction_name"
         android:textAlignment="center"
         android:textColor="#332200"
-        android:text="@string/appliction_name"
         android:textSize="36dp" />
 
     <TextView
@@ -34,15 +34,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="11dp"
-        android:text="@string/appliction_author"/>
+        android:text="@string/appliction_author" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        android:text="@string/author_name"
         android:textAlignment="textEnd"
         android:textColor="#aaaaaa"
-        android:text="@string/author_name"
         android:textSize="11dp" />
 
     <TextView

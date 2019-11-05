@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh">
-  <head>
+<head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width,initial-scale=1.0" name="viewport">
     <title>KrScript</title>
     <script>
       window.fileChooserCallback = function (result) {
@@ -16,12 +16,13 @@
       function chooseFile() {
         KrScriptCore.fileChooser('window.fileChooserCallback')
       }
+
     </script>
-  </head>
-  <body>
-    <button type="button" onclick="chooseFile()">测试文件选择</button>
-  </body>
-  <style>
+</head>
+<body>
+<button onclick="chooseFile()" type="button">测试文件选择</button>
+</body>
+<style>
     body {
       padding-top: 100px;
       text-align: center;
@@ -34,5 +35,6 @@
       border-radius: 0.3em;
       outline: none;
     }
-  </style>
+
+</style>
 </html>
