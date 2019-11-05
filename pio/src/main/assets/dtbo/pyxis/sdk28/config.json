@@ -5,11 +5,11 @@
     "value": 66,
     "color": "#4ba5ff"
   }, {
-    "title": "稳定",
+    "title": "一般",
     "value": 69,
     "color": "#00d5d9"
   }, {
-    "title": "激进",
+    "title": "稳定",
     "value": 72,
     "color": "#02d98d"
   }, {
@@ -18,11 +18,11 @@
     "color": "#87cb00"
   }, {
     "title": "疯狂",
-    "value": 84,
+    "value": 78,
     "color": "#fc8a1b"
   }, {
     "title": "极限",
-    "value": 87,
+    "value": 84,
     "color": "#f9592f"
   }]
 }

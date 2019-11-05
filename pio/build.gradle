@@ -9,8 +9,8 @@ android {
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 28
-        versionCode 49
-        versionName "3.2.4"
+        versionCode 50
+        versionName "3.2.5"
         applicationId "com.projectkr.dt"
     }
     buildTypes {
