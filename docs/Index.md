@@ -36,7 +36,4 @@
 - 在你已经ROOT的手机或模拟器上查看效果
 - [已发布的 Release版本](https://github.com/helloklf/kr-scripts/releases)
 
-<img src="./exhibition/home.jpg" height="auto" width="49%" />
-<img src="./exhibition/favorite.jpg" height="auto" width="49%" />
-<img src="./exhibition/more.jpg" height="auto" width="49%" />
-<img src="./exhibition/action-params.jpg" height="auto" width="49%" />
+<img src="./exhibition/home.jpg" height="auto" width="49%" /> <img src="./exhibition/favorite.jpg" height="auto" width="49%" /> <img src="./exhibition/more.jpg" height="auto" width="49%" /> <img src="./exhibition/action-params.jpg" height="auto" width="49%" />
