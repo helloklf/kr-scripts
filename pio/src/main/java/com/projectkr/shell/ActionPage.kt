@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
@@ -104,6 +105,13 @@ class ActionPage : AppCompatActivity() {
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
+        override fun onActionCompleted(configItemBase: ConfigItemBase) {
+            Log.d("onActionCompleted", "" + configItemBase.reloadPage)
+            if (configItemBase.reloadPage) {
+                loadPageConfig()
+            }
+        }
+
         override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
             val intent = Intent()
 
@@ -195,78 +203,83 @@ class ActionPage : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val activity = this
 
         if (!actionsLoaded) {
-            Thread(Runnable {
-                if (beforeRead.isNotEmpty()) {
-                    showDialog(getString(R.string.kr_page_before_load))
-                    ScriptEnvironmen.executeResultRoot(activity, beforeRead)
-                }
-
-                showDialog(getString(R.string.kr_page_loading))
-                var items: ArrayList<ConfigItemBase>? = null
-
-                if (pageConfigSh.isNotEmpty()) {
-                    val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
-                    if (result != null) {
-                        if (result.endsWith(".xml")) {
-                            val pageConfigReader = PageConfigReader(activity)
-                            val inputStream = pageConfigReader.getConfig(activity, result)
-                            if (inputStream == null) {
-                                noReadPermission()
-                            } else {
-                                items = PageConfigReader(activity).readConfigXml(inputStream)
-                            }
-                        } else if (result.startsWith("<?xml") && result.endsWith(">")) {
-                            val inputStream = ByteArrayInputStream(result.toByteArray())
-                            items = PageConfigReader(activity).readConfigXml(inputStream)
-                        } else if (result.isNotEmpty()) {
-                            pageConfigShError(result)
-                        }
-                    }
-                }
-
-                if (items == null && pageConfig.isNotEmpty()) {
-                    items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
-                }
-
-                if (afterRead.isNotEmpty()) {
-                    showDialog(getString(R.string.kr_page_after_load))
-                    ScriptEnvironmen.executeResultRoot(activity, afterRead)
-                }
-
-                if (items != null && items.size != 0) {
-                    if (loadSuccess.isNotEmpty()) {
-                        showDialog(getString(R.string.kr_page_load_success))
-                        ScriptEnvironmen.executeResultRoot(activity, loadSuccess)
-                    }
-
-                    handler.post {
-                        val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
-                            override val key = autoRun
-                            override fun onCompleted(result: Boolean?) {
-                                if (result != true) {
-                                    Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }, ThemeModeState.getThemeMode())
-                        supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commitAllowingStateLoss()
-                        hideDialog()
-                    }
-                    actionsLoaded = true
-                } else {
-                    if (loadFail.isNotEmpty()) {
-                        showDialog(getString(R.string.kr_page_load_fail))
-                        ScriptEnvironmen.executeResultRoot(activity, loadFail)
-                        hideDialog()
-                    }
-
-                    hideDialog()
-                    finish()
-                }
-            }).start()
+            loadPageConfig()
         }
+    }
+
+    private fun loadPageConfig() {
+        val activity = this
+
+        Thread(Runnable {
+            if (beforeRead.isNotEmpty()) {
+                showDialog(getString(R.string.kr_page_before_load))
+                ScriptEnvironmen.executeResultRoot(activity, beforeRead)
+            }
+
+            showDialog(getString(R.string.kr_page_loading))
+            var items: ArrayList<ConfigItemBase>? = null
+
+            if (pageConfigSh.isNotEmpty()) {
+                val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
+                if (result != null) {
+                    if (result.endsWith(".xml")) {
+                        val pageConfigReader = PageConfigReader(activity)
+                        val inputStream = pageConfigReader.getConfig(activity, result)
+                        if (inputStream == null) {
+                            noReadPermission()
+                        } else {
+                            items = PageConfigReader(activity).readConfigXml(inputStream)
+                        }
+                    } else if (result.startsWith("<?xml") && result.endsWith(">")) {
+                        val inputStream = ByteArrayInputStream(result.toByteArray())
+                        items = PageConfigReader(activity).readConfigXml(inputStream)
+                    } else if (result.isNotEmpty()) {
+                        pageConfigShError(result)
+                    }
+                }
+            }
+
+            if (items == null && pageConfig.isNotEmpty()) {
+                items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
+            }
+
+            if (afterRead.isNotEmpty()) {
+                showDialog(getString(R.string.kr_page_after_load))
+                ScriptEnvironmen.executeResultRoot(activity, afterRead)
+            }
+
+            if (items != null && items.size != 0) {
+                if (loadSuccess.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_load_success))
+                    ScriptEnvironmen.executeResultRoot(activity, loadSuccess)
+                }
+
+                handler.post {
+                    val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
+                        override val key = autoRun
+                        override fun onCompleted(result: Boolean?) {
+                            if (result != true) {
+                                Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }, ThemeModeState.getThemeMode())
+                    supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commitAllowingStateLoss()
+                    hideDialog()
+                }
+                actionsLoaded = true
+            } else {
+                if (loadFail.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_load_fail))
+                    ScriptEnvironmen.executeResultRoot(activity, loadFail)
+                    hideDialog()
+                }
+
+                hideDialog()
+                finish()
+            }
+        }).start()
     }
 
     fun _openPage(pageInfo: PageInfo) {

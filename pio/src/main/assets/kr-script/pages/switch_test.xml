@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<page>
+    <switch>
+        <title>测试开关</title>
+        <desc>测试开关功能</desc>
+        <get>getprop test.switch.aaa</get>
+        <set>setprop test.switch.aaa $state</set>
+    </switch>
+</page>

@@ -22,7 +22,10 @@ open class ConfigItemBase {
     // 执行完成后是否自动关闭界面
     var autoOff: Boolean = false
     // 是否可中断执行
-    var interruptible: Boolean = true
+    var interruptable: Boolean = true
     // 是否在执行完以后重载整个界面
     var reloadPage: Boolean = false
+
+    // 是否是后台运行的任务
+    var backgroundTask: Boolean = false
 }

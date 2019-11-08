@@ -8,6 +8,10 @@
         <page config="kr-script/pages/action_test.xml" title="Action用法" />
     </group>
 
+    <group title="Switch 功能测试">
+        <page config="kr-script/pages/switch_test.xml" title="Switch用法" />
+    </group>
+
     <group title="Picker 功能测试">
         <page config="kr-script/pages/picker_test.xml" title="Picker用法" />
     </group>

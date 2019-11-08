@@ -37,6 +37,49 @@
         </page>
     </group>
 
+    <group>
+        <action bg-task="true">
+            <title>后台任务测试</title>
+            <desc>后台任务点击后不显示日志界面，而是在通知栏中显示</desc>
+            <set>
+                echo '进度1/5'; echo "progress:[1/5]"; sleep 2;
+                echo '进度2/5'; echo "progress:[2/5]"; sleep 2;
+                echo '进度3/5'; echo "progress:[3/5]"; sleep 2;
+                echo '进度4/5'; echo "progress:[4/5]"; sleep 2;
+                echo '进度5/5'; echo "progress:[5/5]"; sleep 2;
+                echo '操作完成！'
+            </set>
+        </action>
+
+        <action>
+            <title>场景模式 Little</title>
+            <desc>模拟Scene的场景模式-动态响应功能</desc>
+            <resource dir="file:///android_asset/scene-little" />
+            <set>file:///android_asset/scene-little/run.sh</set>
+        </action>
+
+        <action bg-task="true">
+            <title>场景模式 Little</title>
+            <desc>模拟Scene的场景模式-动态响应功能，并在后台运行</desc>
+            <resource dir="file:///android_asset/scene-little" />
+            <set>file:///android_asset/scene-little/run.sh</set>
+        </action>
+    </group>
+
+    <group title="页面刷新测试">
+        <action reload-page="true">
+            <title>reload-page属性测试</title>
+            <desc>我执行完了后就会刷新当前界面，不信你试试~</desc>
+            <script>
+                setprop xx.cc.vv "现在是$(date)\n叽里呱啦，稀里哗啦~"
+            </script>
+        </action>
+        <text>
+            <title>xx.cc.vv 当前值：</title>
+            <desc sh="getprop xx.cc.vv" />
+        </text>
+    </group>
+
     <text>
         <title>改动说明</title>
         <desc>

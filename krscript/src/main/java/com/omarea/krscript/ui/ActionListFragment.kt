@@ -1,6 +1,7 @@
 package com.omarea.krscript.ui
 
 import android.app.AlertDialog
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +18,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
+import com.omarea.krscript.ScriptTaskThread
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
@@ -392,11 +394,36 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
     }
 
-    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
-        val darkMode = themeMode != null && themeMode!!.isDarkMode
+    private val taskResultReceiver = ArrayList<BroadcastReceiver>()
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 
-        val dialog = DialogLogFragment.create(configItem, onExit, script, params, darkMode)
-        dialog.show(fragmentManager, "")
-        dialog.isCancelable = false
+    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+        val context = context!!
+        val applicationContext = context.applicationContext
+
+        if (configItem.backgroundTask) {
+            var receiver: BroadcastReceiver? = null
+            val onDismiss = Runnable {
+                krScriptActionHandler?.onActionCompleted(configItem)
+                try {
+                    taskResultReceiver.remove(receiver)
+                    applicationContext.unregisterReceiver(receiver)
+                } catch (ex: java.lang.Exception) {
+                }
+            }
+            receiver = ScriptTaskThread.startTask(context, script, params, configItem, onExit, onDismiss)
+            taskResultReceiver.add(receiver)
+        } else {
+            val onDismiss = Runnable {
+                krScriptActionHandler?.onActionCompleted(configItem)
+            }
+            val darkMode = themeMode != null && themeMode!!.isDarkMode
+
+            val dialog = DialogLogFragment.create(configItem, onExit, onDismiss, script, params, darkMode)
+            dialog.show(fragmentManager, "")
+            dialog.isCancelable = false
+        }
     }
 }

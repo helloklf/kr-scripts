@@ -254,7 +254,7 @@ class PageConfigReader(private var context: Context) {
                         val script = attrValue
                         actionParamInfo.optionsSh = script
                     }
-                    attrName == "support" -> {
+                    attrName == "support" || attrName == "visible" -> {
                         if (executeResultRoot(context, attrValue) != "1") {
                             actionParamInfo.supported = false
                         }
@@ -329,7 +329,7 @@ class PageConfigReader(private var context: Context) {
             val attrValue = parser.getAttributeValue(i)
             if (attrName == "title") {
                 groupInfo.separator = attrValue
-            } else if (attrName == "support") {
+            } else if (attrName == "support" || attrName == "visible") {
                 groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
         }
@@ -341,17 +341,28 @@ class PageConfigReader(private var context: Context) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
                 "key", "index", "id" -> configItemBase.key = attrValue
+                "title" -> configItemBase.title = attrValue
+                "desc" -> configItemBase.desc = attrValue
                 "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
                 "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
-                "interruptible" -> configItemBase.interruptible = (attrValue.isEmpty() || attrValue == "true" || attrValue == "1")
-                "support" -> {
+                "interruptible", "interruptable" -> configItemBase.interruptable = (attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
+                "support", "visible" -> {
                     if (executeResultRoot(context, attrValue) != "1") {
                         return null
                     }
                 }
-                "reload" -> {
-                    if (attrValue == "page") {
+                "desc-sh" -> {
+                    configItemBase.descPollingShell = parser.getAttributeValue(i)
+                    configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+                }
+                "reload", "reload-page" -> {
+                    if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
                         configItemBase.reloadPage = true
+                    }
+                }
+                "bg-task", "background-task", "async-task" -> {
+                    if (attrValue == "async-task" || attrValue == "async" || attrValue == "bg-task" || attrValue == "background" || attrValue == "background-task" || attrValue == "true" || attrValue == "1") {
+                        configItemBase.backgroundTask = true
                     }
                 }
             }
@@ -359,6 +370,8 @@ class PageConfigReader(private var context: Context) {
         return configItemBase
     }
 
+    // TODO: 整理Title和Desc
+    // TODO: 整理ReloadPage
     private fun pageNode(page: PageInfo, parser: XmlPullParser): PageInfo {
         for (attrIndex in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(attrIndex)
@@ -398,7 +411,7 @@ class PageConfigReader(private var context: Context) {
     private fun descNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
-            if (attrName == "su" || attrName == "sh") {
+            if (attrName == "su" || attrName == "sh" || attrName == "desc-sh") {
                 configItemBase.descPollingShell = parser.getAttributeValue(i)
                 configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
             }
