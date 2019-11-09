@@ -395,8 +395,6 @@ class PageConfigReader(private var context: Context) {
             when (attrName) {
                 "config" -> page.pageConfigPath = attrValue
                 "html" -> page.onlineHtmlPage = attrValue
-                "title" -> page.title = attrValue
-                "desc" -> page.desc = attrValue
                 "before-load", "before-read" -> page.beforeRead = attrValue
                 "after-load", "after-read" -> page.afterRead = attrValue
                 "load-ok", "load-success" -> page.loadSuccess = attrValue
