@@ -2,6 +2,7 @@
 <group>
     <picker>
         <title>测试单选界面</title>
+        <summary sh="echo -n '当前选中：'; getprop xxx.xxx.xxx" />
         <options>
             <option value="123">测试123</option>
             <option value="234">测试234</option>
@@ -11,6 +12,7 @@
     </picker>
     <picker options-sh="echo 'a|选项A'; echo 'b|选项B'">
         <title>单选测试（由脚本输出选项）</title>
+        <summary sh="echo -n '当前选中：'; getprop xxx.xxx.xxx3" />
         <get>getprop xxx.xxx.xxx3</get>
         <set>setprop xxx.xxx.xxx3 "$state"</set>
     </picker>
@@ -18,6 +20,7 @@
     <picker multiple="multiple" options-sh="echo 'a|选项A'; echo 'b|选项B'">
         <title>测试多选界面</title>
         <get>getprop xxx.xxx.xxx3</get>
+        <summary sh="echo -n '当前选中：'; getprop xxx.xxx.xxx3" />
         <set>
             echo '选中项：'
 

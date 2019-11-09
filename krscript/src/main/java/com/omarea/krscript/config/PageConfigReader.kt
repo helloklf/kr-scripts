@@ -223,6 +223,8 @@ class PageConfigReader(private var context: Context) {
             action.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(action, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(action, parser)
         } else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
             action.setState = parser.nextText().trim()
         } else if ("param" == parser.name) {
@@ -310,6 +312,7 @@ class PageConfigReader(private var context: Context) {
         when {
             "title" == parser.name -> info.title = parser.nextText()
             "desc" == parser.name -> descNode(info, parser)
+            "summary" == parser.name -> summaryNode(info, parser)
             "resource" == parser.name -> resourceNode(parser)
             "html" == parser.name -> info.onlineHtmlPage = parser.nextText()
             "config" == parser.name -> info.pageConfigPath = parser.nextText()
@@ -321,6 +324,7 @@ class PageConfigReader(private var context: Context) {
         when {
             "title" == parser.name -> switchInfo.title = parser.nextText()
             "desc" == parser.name -> descNode(switchInfo, parser)
+            "summary" == parser.name -> summaryNode(switchInfo, parser)
             "get" == parser.name || "getstate" == parser.name -> switchInfo.getState = parser.nextText()
             "set" == parser.name || "setstate" == parser.name -> switchInfo.setState = parser.nextText()
             "resource" == parser.name -> resourceNode(parser)
@@ -357,8 +361,8 @@ class PageConfigReader(private var context: Context) {
                     }
                 }
                 "desc-sh" -> {
-                    configItemBase.descPollingShell = parser.getAttributeValue(i)
-                    configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+                    configItemBase.descSh = parser.getAttributeValue(i)
+                    configItemBase.desc = executeResultRoot(context, configItemBase.descSh)
                 }
                 "summary" -> {
                     configItemBase.summary = parser.getAttributeValue(i)
@@ -424,12 +428,24 @@ class PageConfigReader(private var context: Context) {
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
             if (attrName == "su" || attrName == "sh" || attrName == "desc-sh") {
-                configItemBase.descPollingShell = parser.getAttributeValue(i)
-                configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+                configItemBase.descSh = parser.getAttributeValue(i)
+                configItemBase.desc = executeResultRoot(context, configItemBase.descSh)
             }
         }
         if (configItemBase.desc.isEmpty())
             configItemBase.desc = parser.nextText()
+    }
+
+    private fun summaryNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
+        for (i in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(i)
+            if (attrName == "su" || attrName == "sh" || attrName == "summary-sh") {
+                configItemBase.summarySh = parser.getAttributeValue(i)
+                configItemBase.summary = executeResultRoot(context, configItemBase.summarySh)
+            }
+        }
+        if (configItemBase.summary.isEmpty())
+            configItemBase.summary = parser.nextText()
     }
 
     private fun resourceNode(parser: XmlPullParser) {
@@ -467,6 +483,8 @@ class PageConfigReader(private var context: Context) {
             textInfo.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(textInfo, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(textInfo, parser)
         } else if ("slice" == parser.name) {
             rowNode(textInfo, parser)
         } else if ("resource" == parser.name) {
@@ -515,6 +533,8 @@ class PageConfigReader(private var context: Context) {
             pickerInfo.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(pickerInfo, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(pickerInfo, parser)
         } else if ("option" == parser.name) {
             if (pickerInfo.options == null) {
                 pickerInfo.options = ArrayList()
