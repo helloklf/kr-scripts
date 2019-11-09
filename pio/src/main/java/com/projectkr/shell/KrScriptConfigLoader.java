@@ -42,8 +42,8 @@ public class KrScriptConfigLoader {
                 String rowText = row.trim();
                 if (!rowText.startsWith("#") && rowText.contains("=")) {
                     int separator = rowText.indexOf("=");
-                    String key = rowText.substring(0, separator);
-                    String value = rowText.substring(separator + 2, rowText.length() - 1);
+                    String key = rowText.substring(0, separator).trim();
+                    String value = rowText.substring(separator + 2, rowText.length() - 1).trim();
                     configInfo.remove(key);
                     configInfo.put(key, value);
                 }

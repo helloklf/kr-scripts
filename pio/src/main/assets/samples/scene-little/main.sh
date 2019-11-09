@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-source ./scene-little/config.sh
+source ./samples/scene-little/config.sh
 
 cd /cache
 rm -rf ./.scene_watcher

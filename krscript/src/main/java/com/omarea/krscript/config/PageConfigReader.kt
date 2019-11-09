@@ -87,18 +87,21 @@ class PageConfigReader(private var context: Context) {
             var group: GroupInfo? = null
             var page: PageInfo? = null
             var text: TextInfo? = null
+            var isRootNode = true
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
-                    XmlPullParser.START_TAG ->
+                    XmlPullParser.START_TAG -> {
                         if ("group" == parser.name) {
                             group = groupNode(parser)
                         } else if (group != null && !group.supported) {
                             // 如果 group.supported !- true 跳过group内所有项
                         } else {
                             if ("page" == parser.name) {
-                                page = mainNode(PageInfo(), parser) as PageInfo?
-                                if (page != null) {
-                                    page = pageNode(page, parser)
+                                if (!isRootNode) {
+                                    page = mainNode(PageInfo(), parser) as PageInfo?
+                                    if (page != null) {
+                                        page = pageNode(page, parser)
+                                    }
                                 }
                             } else if ("action" == parser.name) {
                                 action = mainNode(ActionInfo(), parser) as ActionInfo?
@@ -125,6 +128,8 @@ class PageConfigReader(private var context: Context) {
                                 resourceNode(parser)
                             }
                         }
+                        isRootNode = false
+                    }
                     XmlPullParser.END_TAG ->
                         if ("group" == parser.name) {
                             if (group != null && group.supported) {
@@ -343,8 +348,8 @@ class PageConfigReader(private var context: Context) {
                 "key", "index", "id" -> configItemBase.key = attrValue
                 "title" -> configItemBase.title = attrValue
                 "desc" -> configItemBase.desc = attrValue
-                "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
-                "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
+                "confirm" -> configItemBase.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
+                "auto-off" -> configItemBase.autoOff = (attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
                 "interruptible", "interruptable" -> configItemBase.interruptable = (attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
                 "support", "visible" -> {
                     if (executeResultRoot(context, attrValue) != "1") {
@@ -354,6 +359,13 @@ class PageConfigReader(private var context: Context) {
                 "desc-sh" -> {
                     configItemBase.descPollingShell = parser.getAttributeValue(i)
                     configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+                }
+                "summary" -> {
+                    configItemBase.summary = parser.getAttributeValue(i)
+                }
+                "summary-sh" -> {
+                    configItemBase.summarySh = parser.getAttributeValue(i)
+                    configItemBase.summary = executeResultRoot(context, configItemBase.summarySh)
                 }
                 "reload", "reload-page" -> {
                     if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {

@@ -3,24 +3,19 @@
 
 ### Switch 属性
 
-- 公共属性（功能节点共有）
+- 公共属性（Action、Switch、Picker共有）
 
-| 属性 | 作用 | 有效值 | 必需 | 示例 |
-| - | - | - | :-: | :- |
-| desc | 描述 | 文本内容 | 否 | 显示在标题下的小字，可以不设置 |
-| desc-sh | 动态设置desc内容的脚本 | `脚本代码` | 否 | `echo '自定义的说明信息'` |
-| confirm | 点击时是否弹出确认框，默认`false` | `true`、`false` | 否 | `false` |
-| visible | 自定义脚本，输出1或0，决定该功能项是否显示 | 脚本代码 | 否 | `echo '1'` |
-
-
-- 特有属性
-
-| 属性 | 作用 | 有效值 | 必需 | 示例 |
-| - | - | - | :-: | :- |
-| interruptible | 是否允许中断执行，默认`true` | `true`、`false` | 否 | `false` |
-| auto-off | 执行完脚本后是否自动关闭日志界面，默认`false` | `true`、`false` | 否 | `false` |
-| reload-page | 执行完脚本后是否刷新页面，默认`false` | `true` `false` | 否 | `true` |
-| bg-task | 是否作为后台任务执行，默认`false` | `true` `false` | 否 | `true` |
+| 属性 | 作用 | 有效值 | 示例 |
+| - | - | - | :- |
+| id | 如果允许长按添加到桌面快捷，必需设置ID | 当前配置文件中必需唯一 | `a0001` |
+| desc | 描述 | 文本内容 | 显示在标题下的小字，可以不设置 |
+| desc-sh | 动态设置desc内容的脚本 | `脚本代码` | `echo '自定义的说明信息'` |
+| confirm | 点击时是否弹出确认框，默认`false` | `true`、`false` | `false` |
+| visible | 自定义脚本，输出1或0，决定该功能项是否显示 | 脚本代码 | `echo '1'` |
+| interruptible | 是否允许中断执行，默认`true` | `true`、`false` | `false` |
+| auto-off | 执行完脚本后是否自动关闭日志界面，默认`false` | `true`、`false` | `false` |
+| reload-page | 执行完脚本后是否刷新页面，默认`false` | `true` `false` | `true` |
+| bg-task | 后台运行而不是显示日志输出界面，默认`false` | `true` `false` | `true` |
 
 ### 添加Switch到页面
 ```xml

@@ -8,25 +8,25 @@
 
 ### 文档目录
 
-1. 功能节点
+1. 功能节点：功能组成
     - [page](./docs/Page.md) 设置功能页面
     - [action](./docs/Action.md) 设置动作节点
     - [switch](./docs/Switch.md) 设置开关节点
     - [picker](./docs/Picker.md) 设置单选列表节点
 
-2. 外观节点
+2. 外观节点：让界面更美观
     - [text](./docs/Text.md) 显示格式化的文本
     - [group](./docs/Group.md) 对功能进行分组
 
-3. 必要信息
+3. 重要建议：帮助梳理代码
     - [脚本使用](./docs/Script.md) 将脚本作为独立文件
     - [resource](./docs/Resource.md) 使用添加到`assets`中的文件
     - [visible属性](./docs/Property_Visible.md) 功能的显示和隐藏
 
-4. 额外拓展
+4. 额外拓展（附加内容）
     - [其它](./docs/Extra.md) 了解框架对Shell所做的额外补充
 
-5. 网页模式
+5. HTML网页（附加内容）
     - [KrScriptCore](./docs/js-engine/WebBrowser.md "网页上运行脚本 说明章节")
 
 

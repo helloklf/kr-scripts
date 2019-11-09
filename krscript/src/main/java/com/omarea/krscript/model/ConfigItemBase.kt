@@ -15,6 +15,11 @@ open class ConfigItemBase {
     var title: String = ""
     // 描述
     var desc: String = ""
+    // 摘要信息
+    var summary: String =""
+    // 摘要信息(脚本)
+    var summarySh: String =""
+
     // 描述轮询脚本
     var descPollingShell: String = ""
     // 是否在开始前显示操作确认提示

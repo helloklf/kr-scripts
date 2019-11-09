@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<page>
+    <resource dir="file:///android_asset/samples/kernel_tuner" />
+
+    <action>
+        <title>CPU参数调节</title>
+        <desc>控制你的CPU性能参数（用作测试的示例代码）</desc>
+        <params>
+            <param name="cluster0_scheduler" label="调度器"
+                options-sh="./samples/kernel_tuner/governor.sh governors" title="【小核】"
+                value-sh="./samples/kernel_tuner/governor.sh get_governor" />
+            <param name="cluster0_min_freq" label="最低频率"
+                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies"
+                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_min_freq" />
+            <param name="cluster0_max_freq" label="最高频率"
+                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies"
+                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_max_freq" />
+
+            <param name="cluster1_scheduler" label="调度器"
+                options-sh="./samples/kernel_tuner/governor.sh governors 4" title="【大核】"
+                value-sh="./samples/kernel_tuner/governor.sh get_governor 4" />
+            <param name="cluster1_min_freq" label="最低频率"
+                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies 4 "
+                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_min_freq 4" />
+            <param name="cluster1_max_freq" label="最高频率"
+                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies 4"
+                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_max_freq 4" />
+        </params>
+        <script>
+            echo '这只是个示例啦，并没有实现完整功能~'
+        </script>
+    </action>
+</page>

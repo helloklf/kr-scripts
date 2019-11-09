@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <text>
+        <title>改动说明</title>
+        <desc>
+            在新的版本中，page和action、switch等节点可以混合定义了。也就是说，page_list.xml(more.xml)将不只用于定义子页，而子页也变得可以随处定义！
+        </desc>
+    </text>
+</group>

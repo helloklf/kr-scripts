@@ -45,4 +45,23 @@
 | PACKAGE_VERSION_CODE | PIO框架应用的版本号 |
 | TOOLKIT | 自带的命令行工具集安装目录 |
 
+
+### 4. 其它思路
+- 觉得通过`file:///android_asset/前缀`逐一指定脚本路径还不够简练？
+- 不妨参考一下 [resource](./Resource.md) 章节
+- 将可以得出以下例子的用法：
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<page>
+    <!--假设有个名为scripts目录，专门用于存放脚本，
+        通过resource[dir]可以令框架一次性将其全部提取-->
+    <resource dr="file:///android_asset/scripts" />
+    <action>
+        <title>试试通过resource提取的脚本</title>
+        <set>
+          $START_DIR/scripts/test_script.sh
+        </set>
+    </action>
+</page>
 ```

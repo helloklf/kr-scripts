@@ -21,18 +21,18 @@
         <action>
             <title>卸载系统自带的busybox</title>
             <desc>卸载安装到system分区的busybox</desc>
-            <set>file:///android_asset/kr-script/test/delete_busybox.sh</set>
+            <set>file:///android_asset/samples/test/delete_busybox.sh</set>
         </action>
     </group>
 
     <group>
         <action>
             <title>环境变量</title>
-            <set>file:///android_asset/kr-script/test/var.sh</set>
+            <set>file:///android_asset/samples/test/var.sh</set>
         </action>
         <action>
             <title>用户ID检测</title>
-            <set>file:///android_asset/kr-script/test/check_root.sh</set>
+            <set>file:///android_asset/samples/test/check_root.sh</set>
         </action>
     </group>
 </group>

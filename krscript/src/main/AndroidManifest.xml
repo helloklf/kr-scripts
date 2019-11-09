@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.omarea.krscript">
 
-    <application>
-        <service
-            android:name=".ScriptTaskThread"
-            android:exported="false"></service>
-    </application>
+    <application />
 
 </manifest>

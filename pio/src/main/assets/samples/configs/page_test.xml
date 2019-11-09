@@ -12,14 +12,14 @@
             4. 页面加载【失败】：[load-fail] / [after-error]
         -->
         <page after-read="sleep 2" before-read="sleep 5"
-            config="kr-script/pages/custom_kernel_tuner.xml">
+            config="samples/configs/kernel_tuner.xml">
             <title>page功能测试</title>
             <desc>来试试page的新功能</desc>
         </page>
 
         <!--直接输出配置文件所在的绝对路径。可以通过 “file:///android_asset” 开头来指定assets中的文件-->
         <page after-read="sleep 1" before-read="sleep 1"
-            config-sh="echo 'file:///android_asset/kr-script/pages/custom_kernel_tuner.xml'">
+            config-sh="echo 'file:///android_asset/samples/configs/kernel_tuner.xml'">
             <title>测试config-sh【assets路径输出】</title>
             <desc>通过config-sh输出配置页所在位置，它可以是在assets中的文件</desc>
         </page>
@@ -37,35 +37,6 @@
         </page>
     </group>
 
-    <group>
-        <action bg-task="true">
-            <title>后台任务测试</title>
-            <desc>后台任务点击后不显示日志界面，而是在通知栏中显示</desc>
-            <set>
-                echo '进度1/5'; echo "progress:[1/5]"; sleep 2;
-                echo '进度2/5'; echo "progress:[2/5]"; sleep 2;
-                echo '进度3/5'; echo "progress:[3/5]"; sleep 2;
-                echo '进度4/5'; echo "progress:[4/5]"; sleep 2;
-                echo '进度5/5'; echo "progress:[5/5]"; sleep 2;
-                echo '操作完成！'
-            </set>
-        </action>
-
-        <action>
-            <title>场景模式 Little</title>
-            <desc>模拟Scene的场景模式-动态响应功能</desc>
-            <resource dir="file:///android_asset/scene-little" />
-            <set>file:///android_asset/scene-little/run.sh</set>
-        </action>
-
-        <action bg-task="true">
-            <title>场景模式 Little</title>
-            <desc>模拟Scene的场景模式-动态响应功能，并在后台运行</desc>
-            <resource dir="file:///android_asset/scene-little" />
-            <set>file:///android_asset/scene-little/run.sh</set>
-        </action>
-    </group>
-
     <group title="页面刷新测试">
         <action reload-page="true">
             <title>reload-page属性测试</title>
@@ -79,11 +50,4 @@
             <desc sh="getprop xx.cc.vv" />
         </text>
     </group>
-
-    <text>
-        <title>改动说明</title>
-        <desc>
-            在新的版本中，page和action、switch等节点可以混合定义了。也就是说，page_list.xml(more.xml)将不只用于定义子页，而子页也变得可以随处定义！
-        </desc>
-    </text>
 </group>

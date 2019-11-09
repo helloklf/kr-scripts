@@ -3,7 +3,7 @@
     <group>
         <page html="https://www.lanzous.com/b838135" title="远程网页加载测试" />
         <!--html属性不支持省略file:///android_asset/前缀-->
-        <page html="file:///android_asset/html-test/index.html" title="本地网页加载测试" />
+        <page html="file:///android_asset/samples/html-test/index.html" title="本地网页加载测试" />
     </group>
 
     <group>
@@ -46,9 +46,9 @@
         <action>
             <title>试验* 下载测试2</title>
             <desc>使用封装的downloader.sh等待下载结果</desc>
-            <resource file="file:///android_asset/kr-script/downloader.sh" />
+            <resource file="file:///android_asset/samples/downloader.sh" />
             <script>
-                source $START_DIR/kr-script/downloader.sh
+                source $START_DIR/samples/downloader.sh
 
                 md5="cfa9921c332d7d07335ddba75399c74d" # 预期的文件md5(小写,可选)
                 downloadUrl="https://hugeota.d.miui.com/9.8.28/miui-blockota-sagit-9.8.27-9.8.28-cfa9921c33-9.0.zip"
