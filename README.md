@@ -29,6 +29,8 @@
 5. HTML网页（附加内容）
     - [KrScriptCore](./docs/js-engine/WebBrowser.md "网页上运行脚本 说明章节")
 
+6. 其它说明
+    - [其它提示](./docs/Other.md)
 
 ### 界面展示
 - 在开始之前，不妨先看看界面。
