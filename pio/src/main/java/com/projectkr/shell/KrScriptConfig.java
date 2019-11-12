@@ -12,7 +12,7 @@ public class KrScriptConfig {
     private final static String FAVORITE_CONFIG = "favorite_config";
     private final static String ALLOW_HOME_PAGE = "allow_home_page";
     private final static String TOOLKIT_DIR = "toolkit_dir";
-    private final static String BEFORE_START_SH = "before_start";
+    private final static String BEFORE_START_SH = "before_start_sh";
     private final static String TOOLKIT_DIR_DEFAULT = "file:///android_asset/kr-script/toolkit";
     private static final String ASSETS_FILE = "file:///android_asset/";
     private final String EXECUTOR_CORE_DEFAULT = "file:///android_asset/kr-script/executor.sh";

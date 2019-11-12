@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 varsion_code="1"
-package_dir="/cache/kr-script"
+package_dir="$START_DIR/kr-script-online"
 extract_dir="$package_dir/extract"
 package_file="$package_dir/version_$varsion_code.zip"
 remote_url="https://vtools.oss-cn-beijing.aliyuncs.com/pio/version_1.gz"
@@ -23,7 +23,7 @@ function download_last_version() {
     tar -xf "$package_file" -C "$extract_dir"
 
     echo '完成！'
-    sleep 2
+    sleep 1
 }
 
 if [[ ! -f "$package_file" ]]; then

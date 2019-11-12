@@ -156,7 +156,6 @@ class SplashActivity : Activity() {
         private var someIgnored = false
 
         fun onLogOutput(log: String) {
-
             handler.post {
                 synchronized(notificationMessageRows) {
                     if (notificationMessageRows.size > 6) {
@@ -174,9 +173,8 @@ class SplashActivity : Activity() {
         }
     }
 
-    private class BeforeStartThread(private var context: Context, config: KrScriptConfig, private var updateLogViewHandler: UpdateLogViewHandler) : Thread() {
+    private class BeforeStartThread(private var context: Context, private val config: KrScriptConfig, private var updateLogViewHandler: UpdateLogViewHandler) : Thread() {
         val params = config.getVariables();
-        val script = ScriptEnvironmen.getExecuteScript(context, config.beforeStartSh)
 
         override fun run() {
             try {
@@ -184,7 +182,7 @@ class SplashActivity : Activity() {
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
 
-                    ScriptEnvironmen.executeShell(context, outputStream, script, params)
+                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params)
 
                     StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
                     StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()
