@@ -32,43 +32,29 @@ import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import java.util.HashMap
 import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var handler = Handler()
-    private var useHomePage = false
-    private var krScriptConfig: HashMap<String, String>? = null
+    private var krScriptConfig = KrScriptConfig()
 
-            override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         ThemeModeState.switchTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        if (!KeepShellPublic.checkRoot()) {
-            DialogHelper.animDialog(AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.need_root_permissions))
-                    .setMessage(getString(R.string.need_root_permissions_desc))
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        exitProcess(0)
-                    })
-            return
-        }
 
         //supportActionBar!!.elevation = 0f
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setTitle(R.string.app_name)
 
-        krScriptConfig = KrScriptConfigLoader().initFramework(this.applicationContext)
+        krScriptConfig = KrScriptConfig()
 
 
         main_tabhost.setup()
         val tabIconHelper = TabIconHelper(main_tabhost, this)
-        useHomePage = krScriptConfig!!.get(KrScriptConfigLoader.ALLOW_HOME_PAGE) == "1"
-        if (useHomePage) {
+        if (krScriptConfig.allowHomePage) {
             tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_home)!!, R.id.main_tabhost_cpu)
         } else {
             main_tabhost_cpu.visibility = View.GONE
@@ -79,8 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val page2Config = krScriptConfig!![KrScriptConfigLoader.PAGE_LIST_CONFIG]!!
-            val favoritesConfig = krScriptConfig!![KrScriptConfigLoader.FAVORITE_CONFIG]!!
+            val page2Config = krScriptConfig.pageListConfig
+            val favoritesConfig = krScriptConfig.favoriteConfig
 
             val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
             val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
@@ -121,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reloadFavoritesTab() {
-        val favoritesConfig = krScriptConfig!![KrScriptConfigLoader.FAVORITE_CONFIG]!!
+        val favoritesConfig = krScriptConfig.favoriteConfig
         val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
         favorites?.run {
             updateFavoritesTab(favorites, favoritesConfig)
@@ -129,7 +115,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reloadMoreTab() {
-        val page2Config = krScriptConfig!![KrScriptConfigLoader.PAGE_LIST_CONFIG]!!
+        val page2Config = krScriptConfig.pageListConfig
 
         val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
         pages?.run {
@@ -145,7 +131,6 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     reloadMoreTab()
                 }
-                // DialogHelper.helpInfo(this@MainActivity, "", "主页面暂不支持即时刷新")
             }
 
             override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {

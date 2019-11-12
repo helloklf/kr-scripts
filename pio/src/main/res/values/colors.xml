@@ -12,14 +12,7 @@
     <color name="color_load_veryhight">#f9592f</color>
 
     <color name="colorAccent">#4ba5ff</color>
-    <color name="colorPrimary">#138ed6</color>
-    <color name="colorPrimaryDark">#2067d0</color>
-
-    <!--<color name="colorAccent">#00b9c2</color>
-    <color name="colorPrimary">#00b9c2</color>
-    <color name="colorPrimaryDark">#00b9c2</color>
-    -->
-
-    <color name="black_overlay">#66000000</color>
-    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorPrimary">#25D5CD</color>
+    <color name="colorPrimaryDark">#3D9AE6</color>
+    <color name="splash_bg_color">#8199B1</color>
 </resources>

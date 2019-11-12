@@ -16,8 +16,6 @@
     <string name="btn_hide">隐藏</string>
     <string name="float_monitor_tips">双击悬浮窗即可关闭，或按住拖动调整位置</string>
     <string name="permission_float">请授权显示悬浮窗权限！</string>
-    <string name="need_root_permissions">需要ROOT权限</string>
-    <string name="need_root_permissions_desc">请在Magisk或SuperSU等ROOT权限管理器中，设置本应用允许使用ROOT权限！</string>
     <string name="please_wait">请稍等</string>
     <string name="load_ratio">负载：</string>
     <string name="mhz">Mhz</string>
@@ -50,6 +48,7 @@
     <string name="btn_copy">复制输出</string>
     <string name="copy_success">复制成功</string>
     <string name="copy_fail">复制失败</string>
+    <string name="btn_retry">重试</string>
 
     <string name="kr_write_external_storage">需要读写外置存储权限</string>
     <string name="kr_page_before_load">准备解析配置</string>
@@ -59,4 +58,11 @@
     <string name="kr_page_sh_file_permission">指定的配置文件不存在或无读取权限</string>
     <string name="kr_page_load_fail">页面加载失败</string>
     <string name="kr_page_load_success">页面加载成功</string>
+
+    <string name="pio_starting">PIO·STARTING</string>
+    <string name="pop_before_start">正准备启动应用…</string>
+    <string name="pop_started">启动完成！</string>
+    <string name="pio_permission_checking">检查并获取必需权限……</string>
+    <string name="error_root">未能获得ROOT授权，如果你的手机已经ROOT，清在授权管理器弹出对话框时选择允许！</string>
+    <string name="error_su_timeout">等待ROOT授权超时，请检查授权管理器是否在后台运行！</string>
 </resources>
