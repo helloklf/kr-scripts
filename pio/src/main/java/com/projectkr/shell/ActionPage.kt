@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
@@ -33,6 +34,7 @@ class ActionPage : AppCompatActivity() {
     private var actionsLoaded = false
     private var handler = Handler()
     private var pageConfig: String = ""
+    private var parentDir: String = ""
     private var autoRun: String = ""
     private var pageTitle = ""
 
@@ -74,6 +76,9 @@ class ActionPage : AppCompatActivity() {
                 }
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
+                }
+                if (extras.containsKey("parentDir")) {
+                    parentDir = extras.getString("parentDir")!!
                 }
                 if (extras.containsKey("pageConfigSh")) {
                     pageConfigSh = extras.getString("pageConfigSh")!!
@@ -118,6 +123,7 @@ class ActionPage : AppCompatActivity() {
             intent.putExtra("title", "" + title)
             intent.putExtra("beforeRead", beforeRead)
             intent.putExtra("config", pageConfig)
+            intent.putExtra("parentDir", parentDir)
             intent.putExtra("pageConfigSh", pageConfigSh)
             intent.putExtra("afterRead", afterRead)
             intent.putExtra("loadSuccess", loadSuccess)
@@ -230,7 +236,7 @@ class ActionPage : AppCompatActivity() {
             }
 
             if (items == null && pageConfig.isNotEmpty()) {
-                items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
+                items = PageConfigReader(this.applicationContext, pageConfig, parentDir).readConfigXml()
             }
 
             if (afterRead.isNotEmpty()) {
@@ -264,6 +270,9 @@ class ActionPage : AppCompatActivity() {
                     hideDialog()
                 }
 
+                handler.post {
+                    Toast.makeText(this@ActionPage, getString(R.string.kr_page_load_fail), Toast.LENGTH_SHORT).show()
+                }
                 hideDialog()
                 finish()
             }

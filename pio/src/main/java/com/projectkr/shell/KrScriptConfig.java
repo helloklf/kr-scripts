@@ -65,7 +65,6 @@ public class KrScriptConfig {
                 }
             } catch (Exception ex) {
             }
-
             ScriptEnvironmen.init(context, getExecutorCore(), getToolkitDir());
         }
 
@@ -92,7 +91,7 @@ public class KrScriptConfig {
 
     public PageInfo getPageListConfig() {
         if (configInfo != null) {
-            PageInfo pageInfo = new PageInfo();
+            PageInfo pageInfo = new PageInfo("");
             if (configInfo.containsKey(PAGE_LIST_CONFIG_SH)) {
                 pageInfo.setPageConfigSh(configInfo.get(PAGE_LIST_CONFIG_SH));
             }
@@ -106,7 +105,7 @@ public class KrScriptConfig {
 
     public PageInfo getFavoriteConfig() {
         if (configInfo != null) {
-            PageInfo pageInfo = new PageInfo();
+            PageInfo pageInfo = new PageInfo("");
             if (configInfo.containsKey(FAVORITE_CONFIG_SH)) {
                 pageInfo.setPageConfigSh(configInfo.get(FAVORITE_CONFIG_SH));
             }

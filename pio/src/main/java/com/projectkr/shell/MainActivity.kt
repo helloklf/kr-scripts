@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             items = PageConfigSh(this, pageInfo.pageConfigSh).execute()
         }
         if (items == null && pageInfo.pageConfigPath.isNotEmpty()) {
-            items = PageConfigReader(this.applicationContext).readConfigXml(pageInfo.pageConfigPath)
+            items = PageConfigReader(this.applicationContext, pageInfo.pageConfigPath).readConfigXml()
         }
 
         return items

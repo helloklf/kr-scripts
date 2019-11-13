@@ -32,6 +32,9 @@ class OpenPageHelper(private var activity: Activity) {
         }
     }
 
+    // TODO:处理相对路径
+    // pageConfigSh 输出的路径,config 路径
+    // 为了在线下载的资源
     fun openPage(pageInfo: PageInfo) {
         try {
             var intent: Intent? = null
@@ -68,6 +71,9 @@ class OpenPageHelper(private var activity: Activity) {
                 }
                 if (pageInfo.loadFail.isNotBlank()) {
                     intent.putExtra("loadFail", pageInfo.loadFail)
+                }
+                if (pageInfo.parentPageConfigDir.isNotEmpty()) {
+                    intent.putExtra("parentDir", pageInfo.parentPageConfigDir)
                 }
 
                 activity.startActivity(intent)

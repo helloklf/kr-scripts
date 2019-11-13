@@ -30,16 +30,13 @@ class PageConfigSh(private var activity: Activity, private var pageConfigSh: Str
         val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
         if (result != null) {
             if (result.endsWith(".xml")) {
-                val pageConfigReader = PageConfigReader(activity)
-                val inputStream = pageConfigReader.getConfig(activity, result)
-                if (inputStream == null) {
+                items = PageConfigReader(activity, result).readConfigXml()
+                if (items == null) {
                     noReadPermission()
-                } else {
-                    items = PageConfigReader(activity).readConfigXml(inputStream)
                 }
             } else if (result.startsWith("<?xml") && result.endsWith(">")) {
                 val inputStream = ByteArrayInputStream(result.toByteArray())
-                items = PageConfigReader(activity).readConfigXml(inputStream)
+                items = PageConfigReader(activity, inputStream).readConfigXml()
             } else if (result.isNotEmpty()) {
                 pageConfigShError(result)
             }

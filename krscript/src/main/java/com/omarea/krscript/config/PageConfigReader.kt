@@ -23,20 +23,67 @@ import java.io.InputStream
 /**
  * Created by Hello on 2018/04/01.
  */
-class PageConfigReader(private var context: Context) {
+class PageConfigReader {
+    private var context: Context
+    private var pageConfig: String = ""
+    // 读取pageConfig时自动获得
+    private var pageConfigAbsPath: String = ""
+    private var pageConfigStream: InputStream? = null
+    private var parentDir: String = ""
+
+    constructor(context: Context, pageConfig: String) {
+        this.context = context;
+        this.pageConfig = pageConfig;
+    }
+
+    constructor(context: Context, pageConfig: String, parentDir: String) {
+        this.context = context;
+        this.pageConfig = pageConfig;
+        this.parentDir = parentDir;
+    }
+
+    constructor(context: Context, pageConfigStream: InputStream) {
+        this.context = context;
+        this.pageConfigStream = pageConfigStream;
+    }
     private val ASSETS_FILE = "file:///android_asset/"
 
-    private fun tryOpenDiskFile(context: Context, filePath: String): FileInputStream? {
+    private fun tryOpenDiskFile(filePath: String): FileInputStream? {
         try {
-            val file = File(filePath)
-            if (file.exists() && file.canRead()) {
-                return file.inputStream()
-            } else if (RootFile.fileExists(filePath)) {
+            File(filePath).run {
+                if (exists() && canRead()) {
+                    pageConfigAbsPath = absolutePath
+                    return inputStream()
+                }
+            }
+
+            val parent = when {
+                parentDir.isEmpty() -> FileWrite.getPrivateFileDir(context)
+                !parentDir.endsWith("/") -> parentDir + "/"
+                else -> parentDir
+            }
+            val relativePath = parent + filePath
+
+            if (!filePath.startsWith("/")) {
+                File(relativePath).run {
+                    if (exists() && canRead()) {
+                        pageConfigAbsPath = absolutePath
+                        return inputStream()
+                    }
+                }
+            }
+
+            when {
+                RootFile.fileExists(filePath) -> filePath
+                !filePath.startsWith("/") && RootFile.fileExists(relativePath) -> relativePath
+                else -> null
+            }.run {
                 val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
-                KeepShellPublic.doCmdSync("cp -f \"$filePath\" \"$cachePath\"")
-                val cacheFile = File(cachePath)
-                if (cacheFile.exists() && cacheFile.canRead()) {
-                    return cacheFile.inputStream()
+                KeepShellPublic.doCmdSync("cp -f \"$this\" \"$cachePath\"")
+                File(cachePath).run {
+                    if (exists() && canRead()) {
+                        return inputStream()
+                    }
                 }
             }
         } catch (ex: java.lang.Exception) {
@@ -44,8 +91,8 @@ class PageConfigReader(private var context: Context) {
         return null
     }
 
-    fun getConfig(context: Context, filePath: String): InputStream? {
-        val fileInputStream = tryOpenDiskFile(context, filePath)
+    fun getConfig(filePath: String): InputStream? {
+        val fileInputStream = tryOpenDiskFile(filePath)
         if (fileInputStream != null) {
             return fileInputStream
         }
@@ -61,21 +108,25 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    fun readConfigXml(filePath: String): ArrayList<ConfigItemBase>? {
-        try {
-            val fileInputStream = getConfig(context, filePath) ?: return ArrayList()
-            return readConfigXml(fileInputStream)
-        } catch (ex: Exception) {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
+    fun readConfigXml(): ArrayList<ConfigItemBase>? {
+        if (pageConfigStream != null) {
+            return readConfigXml(pageConfigStream!!)
+        } else {
+            try {
+                val fileInputStream = getConfig(pageConfig) ?: return ArrayList()
+                return readConfigXml(fileInputStream)
+            } catch (ex: Exception) {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
+                }
+                Log.e("KrConfig Fail！", "" + ex.message)
             }
-            Log.e("KrConfig Fail！", "" + ex.message)
-        }
 
+        }
         return null
     }
 
-    fun readConfigXml(fileInputStream: InputStream): ArrayList<ConfigItemBase>? {
+    private fun readConfigXml(fileInputStream: InputStream): ArrayList<ConfigItemBase>? {
         try {
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
@@ -88,7 +139,7 @@ class PageConfigReader(private var context: Context) {
             var page: PageInfo? = null
             var text: TextInfo? = null
             var isRootNode = true
-            while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
+            while (type != XmlPullParser.END_DOCUMENT) { // 如果事件不等于文档结束事件就继续循环
                 when (type) {
                     XmlPullParser.START_TAG -> {
                         if ("group" == parser.name) {
@@ -98,7 +149,7 @@ class PageConfigReader(private var context: Context) {
                         } else {
                             if ("page" == parser.name) {
                                 if (!isRootNode) {
-                                    page = mainNode(PageInfo(), parser) as PageInfo?
+                                    page = mainNode(PageInfo(pageConfigAbsPath), parser) as PageInfo?
                                     if (page != null) {
                                         page = pageNode(page, parser)
                                     }
