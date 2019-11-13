@@ -24,6 +24,10 @@
         <page config="samples/configs/page_test.xml" title="Page用法" />
     </group>
 
+    <group title="后台任务">
+        <page config="samples/configs/bg_task_test.xml" title="后台任务" />
+    </group>
+
     <group title="Web引擎">
         <page config="samples/configs/web_test.xml" title="网页引擎测试" />
     </group>

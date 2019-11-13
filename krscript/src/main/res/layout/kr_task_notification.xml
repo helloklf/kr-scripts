@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minHeight="40dp"
     android:orientation="vertical"
     android:padding="10dp">
 
@@ -33,9 +34,7 @@
         android:layout_toEndOf="@+id/kr_task_icon"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:textColor="?android:textColorPrimary"
-        android:textSize="15sp"
-        android:textStyle="bold" />
+        style="@style/TextAppearance.Compat.Notification.Title" />
 
     <TextView
         android:id="@+id/kr_task_log"
@@ -43,9 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/kr_task_title"
         android:overScrollMode="always"
-        android:textColor="?android:textColorSecondary"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+        style="@style/TextAppearance.Compat.Notification.Info" />
 
     <FrameLayout
         android:layout_width="match_parent"

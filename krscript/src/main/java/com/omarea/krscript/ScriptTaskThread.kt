@@ -18,26 +18,12 @@ import com.omarea.krscript.executor.ShellExecutor
 import com.omarea.krscript.model.ConfigItemBase
 import com.omarea.krscript.model.ShellHandlerBase
 
-class ScriptTaskThread(private var script: String, private var params: HashMap<String, String>?, private val configItemBase: ConfigItemBase, private var handler: ServiceShellHandlerBase, private var context: Context, private val finishedIntent: Intent) : Thread() {
-    private var process: Process? = null
-
-    fun getProcess(): Process? {
-        return process
-    }
-
+class ScriptTaskThread(private var process: Process) : Thread() {
     override fun run() {
-        process = ShellExecutor().execute(
-                context,
-                configItemBase.interruptable,
-                script,
-                {
-                    context.sendBroadcast(finishedIntent)
-                },
-                params,
-                handler)
-
-        process?.waitFor()
-        process = null
+        try {
+            process.waitFor()
+        } catch (ex: java.lang.Exception) {
+        }
     }
 
     class ServiceShellHandlerBase(private val context: Context, private val configItemBase: ConfigItemBase, private val notificationID: Int, private val finishedIntent: Intent) : ShellHandlerBase() {
@@ -50,7 +36,7 @@ class ScriptTaskThread(private var script: String, private var params: HashMap<S
         private var someIgnored = false
         private var forceStop: Runnable? = null
         private var isFinished = false
-        private val stopIntent = PendingIntent.getBroadcast(context, 0, finishedIntent, 0)
+        private val stopIntent = PendingIntent.getBroadcast(context, 0, finishedIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         private fun updateNotification() {
             if (notificationMessageRows.size > 8) {
@@ -166,7 +152,7 @@ class ScriptTaskThread(private var script: String, private var params: HashMap<S
 
         fun startTask(context: Context, script: String, params: HashMap<String, String>?, configItemBase: ConfigItemBase, onExit: Runnable, onDismiss: Runnable): BroadcastReceiver {
             val applicationContext = context.applicationContext
-            notificationCounter++
+            notificationCounter += 1
             val notificationID = notificationCounter
 
             val finishedIntent = Intent(context.packageName + ACTION_NAME).apply {
@@ -174,23 +160,33 @@ class ScriptTaskThread(private var script: String, private var params: HashMap<S
             }
 
             val handler = ServiceShellHandlerBase(applicationContext, configItemBase, notificationCounter, finishedIntent)
-            val thread = ScriptTaskThread(script, params, configItemBase, handler, applicationContext, finishedIntent)
+            val process = ShellExecutor().execute(
+                    context,
+                    configItemBase.interruptable,
+                    script,
+                    {
+                        context.sendBroadcast(finishedIntent)
+                    },
+                    params,
+                    handler)
             val receiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
-                    applicationContext.unregisterReceiver(this)
-
                     if (intent != null && intent.hasExtra("id")) {
-                        try {
-                            if (intent.getIntExtra("id", 0) == notificationID) {
-                                thread.getProcess()?.destroy()
+                        if (intent.getIntExtra("id", 0) == notificationID) {
+                            try {
+                                process.destroy()
+                            } catch (ex: java.lang.Exception) {
                             }
-                        } catch (ex: Exception) {
-                        }
 
-                        try {
-                            onExit.run()
-                            onDismiss.run()
-                        } catch (ex: Exception) {
+                            try {
+                                onExit.run()
+                                onDismiss.run()
+                            } catch (ex: Exception) {
+                            }
+                            try {
+                                applicationContext.unregisterReceiver(this)
+                            } catch (ex: java.lang.Exception) {
+                            }
                         }
                     }
                 }
@@ -201,8 +197,6 @@ class ScriptTaskThread(private var script: String, private var params: HashMap<S
             params?.run {
                 bundle.putSerializable("params", params)
             }
-
-            thread.start()
             DialogHelper.helpInfo(context, context.getString(R.string.kr_bg_task_start), context.getString(R.string.kr_bg_task_start_desc))
             // Toast.makeText(applicationContext, applicationContext.getString(R.string.kr_bg_task_start), Toast.LENGTH_SHORT).show()
 

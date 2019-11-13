@@ -27,8 +27,7 @@ public class SimpleShellWatcher {
                     while ((line = bufferedReader.readLine()) != null) {
                         shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_REDE, line + "\n"));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
             }
         });
@@ -41,8 +40,7 @@ public class SimpleShellWatcher {
                     while ((line = bufferedReader.readLine()) != null) {
                         shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_READ_ERROR, line + "\n"));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
             }
         });

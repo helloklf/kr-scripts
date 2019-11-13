@@ -5,11 +5,11 @@
             <title>后台任务测试</title>
             <desc>后台任务点击后不显示日志界面，而是在通知栏中显示</desc>
             <set>
-                echo '进度1/5'; echo "progress:[1/5]"; sleep 2;
-                echo '进度2/5'; echo "progress:[2/5]"; sleep 2;
-                echo '进度3/5'; echo "progress:[3/5]"; sleep 2;
-                echo '进度4/5'; echo "progress:[4/5]"; sleep 2;
-                echo '进度5/5'; echo "progress:[5/5]"; sleep 2;
+                echo '进度1/5'; echo "progress:[1/5]"; sleep 5;
+                echo '进度2/5'; echo "progress:[2/5]"; sleep 5;
+                echo '进度3/5'; echo "progress:[3/5]"; sleep 5;
+                echo '进度4/5'; echo "progress:[4/5]"; sleep 5;
+                echo '进度5/5'; echo "progress:[5/5]"; sleep 5;
                 echo '操作完成！'
             </set>
         </action>
