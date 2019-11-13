@@ -26,6 +26,7 @@
 
     <TextView
         android:id="@+id/kr_task_title"
+        style="@style/TextAppearance.Compat.Notification.Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -33,16 +34,15 @@
         android:layout_toStartOf="@id/kr_task_stop"
         android:layout_toEndOf="@+id/kr_task_icon"
         android:paddingStart="5dp"
-        android:paddingEnd="5dp"
-        style="@style/TextAppearance.Compat.Notification.Title" />
+        android:paddingEnd="5dp" />
 
     <TextView
         android:id="@+id/kr_task_log"
+        style="@style/TextAppearance.Compat.Notification.Info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/kr_task_title"
-        android:overScrollMode="always"
-        style="@style/TextAppearance.Compat.Notification.Info" />
+        android:overScrollMode="always" />
 
     <FrameLayout
         android:layout_width="match_parent"

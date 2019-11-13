@@ -32,7 +32,6 @@ import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlin.system.exitProcess
 
 class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -96,7 +95,7 @@ class MainActivity : AppCompatActivity() {
         transaction.commitAllowingStateLoss()
     }
 
-    private fun getItems(pageInfo: PageInfo) : ArrayList<ConfigItemBase>? {
+    private fun getItems(pageInfo: PageInfo): ArrayList<ConfigItemBase>? {
         var items: ArrayList<ConfigItemBase>? = null
 
         if (pageInfo.pageConfigSh.isNotEmpty()) {

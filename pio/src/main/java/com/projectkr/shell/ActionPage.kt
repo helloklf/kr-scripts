@@ -12,11 +12,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
-import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
@@ -26,7 +24,6 @@ import com.omarea.krscript.model.KrScriptActionHandler
 import com.omarea.krscript.model.PageInfo
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
-import java.io.ByteArrayInputStream
 
 
 class ActionPage : AppCompatActivity() {
