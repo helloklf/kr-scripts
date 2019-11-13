@@ -68,8 +68,8 @@ class MainActivity : AppCompatActivity() {
             val page2Config = krScriptConfig.pageListConfig
             val favoritesConfig = krScriptConfig.favoriteConfig
 
-            val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
-            val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
+            val pages = getItems(page2Config)
+            val favorites = getItems(favoritesConfig)
             handler.post {
                 progressBarDialog.hideDialog()
 
@@ -96,34 +96,47 @@ class MainActivity : AppCompatActivity() {
         transaction.commitAllowingStateLoss()
     }
 
-    private fun updateFavoritesTab(items: ArrayList<ConfigItemBase>, pageConfigPath: String) {
-        val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageConfigPath, true), null, ThemeModeState.getThemeMode())
+    private fun getItems(pageInfo: PageInfo) : ArrayList<ConfigItemBase>? {
+        var items: ArrayList<ConfigItemBase>? = null
+
+        if (pageInfo.pageConfigSh.isNotEmpty()) {
+            items = PageConfigSh(this, pageInfo.pageConfigSh).execute()
+        }
+        if (items == null && pageInfo.pageConfigPath.isNotEmpty()) {
+            items = PageConfigReader(this.applicationContext).readConfigXml(pageInfo.pageConfigPath)
+        }
+
+        return items
+    }
+
+    private fun updateFavoritesTab(items: ArrayList<ConfigItemBase>, pageInfo: PageInfo) {
+        val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageInfo, true), null, ThemeModeState.getThemeMode())
         supportFragmentManager.beginTransaction().replace(R.id.list_favorites, favoritesFragment).commitAllowingStateLoss()
     }
 
-    private fun updateMoreTab(items: ArrayList<ConfigItemBase>, pageConfigPath: String) {
-        val allItemFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageConfigPath, false), null, ThemeModeState.getThemeMode())
+    private fun updateMoreTab(items: ArrayList<ConfigItemBase>, pageInfo: PageInfo) {
+        val allItemFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageInfo, false), null, ThemeModeState.getThemeMode())
         supportFragmentManager.beginTransaction().replace(R.id.list_pages, allItemFragment).commitAllowingStateLoss()
     }
 
     private fun reloadFavoritesTab() {
         val favoritesConfig = krScriptConfig.favoriteConfig
-        val favorites = PageConfigReader(this.applicationContext).readConfigXml(favoritesConfig)
+        val favorites = getItems(favoritesConfig)
         favorites?.run {
-            updateFavoritesTab(favorites, favoritesConfig)
+            updateFavoritesTab(this, favoritesConfig)
         }
     }
 
     private fun reloadMoreTab() {
         val page2Config = krScriptConfig.pageListConfig
 
-        val pages = PageConfigReader(this.applicationContext).readConfigXml(page2Config)
+        val pages = getItems(page2Config)
         pages?.run {
-            updateMoreTab(pages, page2Config)
+            updateMoreTab(this, page2Config)
         }
     }
 
-    private fun getKrScriptActionHandler(pageConfig: String, isFavoritesTab: Boolean): KrScriptActionHandler {
+    private fun getKrScriptActionHandler(pageInfo: PageInfo, isFavoritesTab: Boolean): KrScriptActionHandler {
         return object : KrScriptActionHandler {
             override fun onActionCompleted(configItemBase: ConfigItemBase) {
                 if (isFavoritesTab) {
@@ -137,8 +150,13 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent()
 
                 intent.component = ComponentName(this@MainActivity.applicationContext, ActionPage::class.java)
-                intent.putExtra("config", pageConfig)
                 intent.putExtra("title", "" + title)
+                intent.putExtra("beforeRead", "")
+                intent.putExtra("config", pageInfo.pageConfigPath)
+                intent.putExtra("pageConfigSh", pageInfo.pageConfigSh)
+                intent.putExtra("afterRead", "")
+                intent.putExtra("loadSuccess", "")
+                intent.putExtra("loadFail", "")
                 intent.putExtra("autoRunItemId", configItemBase.key)
 
                 addToFavoritesHandler.onAddToFavorites(configItemBase, intent)

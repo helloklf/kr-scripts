@@ -1,25 +1,37 @@
 package com.projectkr.shell;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import com.omarea.krscript.executor.ScriptEnvironmen;
+import com.omarea.krscript.model.PageInfo;
+
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 
 public class KrScriptConfig {
-    private final static String EXECUTOR_CORE = "executor_core";
-    private final static String PAGE_LIST_CONFIG = "page_list_config";
-    private final static String FAVORITE_CONFIG = "favorite_config";
-    private final static String ALLOW_HOME_PAGE = "allow_home_page";
-    private final static String TOOLKIT_DIR = "toolkit_dir";
-    private final static String BEFORE_START_SH = "before_start_sh";
-    private final static String TOOLKIT_DIR_DEFAULT = "file:///android_asset/kr-script/toolkit";
     private static final String ASSETS_FILE = "file:///android_asset/";
+
+    private final static String TOOLKIT_DIR = "toolkit_dir";
+    private final static String TOOLKIT_DIR_DEFAULT = "file:///android_asset/kr-script/toolkit";
+
+    private final static String EXECUTOR_CORE = "executor_core";
     private final String EXECUTOR_CORE_DEFAULT = "file:///android_asset/kr-script/executor.sh";
+
+    private final static String PAGE_LIST_CONFIG = "page_list_config";
     private final String PAGE_LIST_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/more.xml";
+    private final static String PAGE_LIST_CONFIG_SH = "page_list_config_sh";
+
+    private final static String FAVORITE_CONFIG = "favorite_config";
     private final String FAVORITE_CONFIG_DEFAULT = "file:///android_asset/kr-script/pages/favorites.xml";
+    private final static String FAVORITE_CONFIG_SH = "favorite_config_sh";
+
+    private final static String ALLOW_HOME_PAGE = "allow_home_page";
     private final String ALLOW_HOME_PAGE_DEFAULT = "1";
+
+    private final static String BEFORE_START_SH = "before_start_sh";
     private final String BEFORE_START_SH_DEFAULT = ""; //"file:///android_asset/kr-script/before_start.sh";
+
     private static HashMap<String, String> configInfo;
 
     public KrScriptConfig init(Context context) {
@@ -54,7 +66,7 @@ public class KrScriptConfig {
             } catch (Exception ex) {
             }
 
-            ScriptEnvironmen.init(context, configInfo.get(EXECUTOR_CORE), configInfo.get(TOOLKIT_DIR));
+            ScriptEnvironmen.init(context, getExecutorCore(), getToolkitDir());
         }
 
         return this;
@@ -64,25 +76,46 @@ public class KrScriptConfig {
         return configInfo;
     }
 
-    public String getExecutorCore() {
+    private String getExecutorCore() {
         if (configInfo != null && configInfo.containsKey(EXECUTOR_CORE)) {
             return configInfo.get(EXECUTOR_CORE);
         }
         return EXECUTOR_CORE_DEFAULT;
     }
 
-    public String getPageListConfig() {
-        if (configInfo != null && configInfo.containsKey(PAGE_LIST_CONFIG)) {
-            return configInfo.get(PAGE_LIST_CONFIG);
+    private String getToolkitDir() {
+        if (configInfo != null && configInfo.containsKey(TOOLKIT_DIR)) {
+            return configInfo.get(TOOLKIT_DIR);
         }
-        return PAGE_LIST_CONFIG_DEFAULT;
+        return TOOLKIT_DIR_DEFAULT;
     }
 
-    public String getFavoriteConfig() {
-        if (configInfo != null && configInfo.containsKey(FAVORITE_CONFIG)) {
-            return configInfo.get(FAVORITE_CONFIG);
+    public PageInfo getPageListConfig() {
+        if (configInfo != null) {
+            PageInfo pageInfo = new PageInfo();
+            if (configInfo.containsKey(PAGE_LIST_CONFIG_SH)) {
+                pageInfo.setPageConfigSh(configInfo.get(PAGE_LIST_CONFIG_SH));
+            }
+            if (configInfo.containsKey(PAGE_LIST_CONFIG)) {
+                pageInfo.setPageConfigPath(configInfo.get(PAGE_LIST_CONFIG));
+            }
+            return pageInfo;
         }
-        return FAVORITE_CONFIG_DEFAULT;
+        return null;
+    }
+
+    public PageInfo getFavoriteConfig() {
+        if (configInfo != null) {
+            PageInfo pageInfo = new PageInfo();
+            if (configInfo.containsKey(FAVORITE_CONFIG_SH)) {
+                pageInfo.setPageConfigSh(configInfo.get(FAVORITE_CONFIG_SH));
+            }
+            if (configInfo.containsKey(FAVORITE_CONFIG)) {
+                pageInfo.setPageConfigPath(configInfo.get(FAVORITE_CONFIG));
+            }
+            return pageInfo;
+        }
+        return null;
     }
 
     public boolean getAllowHomePage() {

@@ -20,7 +20,7 @@ function download_last_version() {
 
     echo '解压资源文件'
     mkdir -p "$extract_dir"
-    tar -xf "$package_file" -C "$extract_dir"
+    tar -zxf "$package_file" -C "$extract_dir"
 
     echo '完成！'
     sleep 1

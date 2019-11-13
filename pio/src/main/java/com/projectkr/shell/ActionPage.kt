@@ -106,7 +106,6 @@ class ActionPage : AppCompatActivity() {
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
         override fun onActionCompleted(configItemBase: ConfigItemBase) {
-            Log.d("onActionCompleted", "" + configItemBase.reloadPage)
             if (configItemBase.reloadPage) {
                 loadPageConfig()
             }
@@ -116,8 +115,13 @@ class ActionPage : AppCompatActivity() {
             val intent = Intent()
 
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-            intent.putExtra("config", pageConfig)
             intent.putExtra("title", "" + title)
+            intent.putExtra("beforeRead", beforeRead)
+            intent.putExtra("config", pageConfig)
+            intent.putExtra("pageConfigSh", pageConfigSh)
+            intent.putExtra("afterRead", afterRead)
+            intent.putExtra("loadSuccess", loadSuccess)
+            intent.putExtra("loadFail", loadFail)
             intent.putExtra("autoRunItemId", configItemBase.key)
 
             addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
@@ -222,23 +226,7 @@ class ActionPage : AppCompatActivity() {
             var items: ArrayList<ConfigItemBase>? = null
 
             if (pageConfigSh.isNotEmpty()) {
-                val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
-                if (result != null) {
-                    if (result.endsWith(".xml")) {
-                        val pageConfigReader = PageConfigReader(activity)
-                        val inputStream = pageConfigReader.getConfig(activity, result)
-                        if (inputStream == null) {
-                            noReadPermission()
-                        } else {
-                            items = PageConfigReader(activity).readConfigXml(inputStream)
-                        }
-                    } else if (result.startsWith("<?xml") && result.endsWith(">")) {
-                        val inputStream = ByteArrayInputStream(result.toByteArray())
-                        items = PageConfigReader(activity).readConfigXml(inputStream)
-                    } else if (result.isNotEmpty()) {
-                        pageConfigShError(result)
-                    }
-                }
+                items = PageConfigSh(this, pageConfigSh).execute()
             }
 
             if (items == null && pageConfig.isNotEmpty()) {
