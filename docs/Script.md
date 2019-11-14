@@ -56,7 +56,7 @@
 <page>
     <!--假设有个名为scripts目录，专门用于存放脚本，
         通过resource[dir]可以令框架一次性将其全部提取-->
-    <resource dr="file:///android_asset/scripts" />
+    <resource dir="file:///android_asset/scripts" />
     <action>
         <title>试试通过resource提取的脚本</title>
         <set>
