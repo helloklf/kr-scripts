@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
-varsion_code="1"
+varsion_code="2"
 package_dir="$START_DIR/kr-script-online"
 extract_dir="$package_dir"
-package_file="$package_dir/version_$varsion_code.gz"
-remote_url="https://vtools.oss-cn-beijing.aliyuncs.com/pio/version_1.gz"
+package_file="$package_dir/version_$varsion_code.zip"
+remote_url="https://vtools.oss-cn-beijing.aliyuncs.com/pio/version_$varsion_code.gz"
 
 function download_last_version() {
     echo '清理垃圾文件'

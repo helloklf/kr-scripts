@@ -1,22 +1,42 @@
 #!/system/bin/sh
 
+# $1 method
+# $2 clusterIndex
+# $3 value
+
+method=$1
+cluster_index=$2
+value=$3
+
+if [[ "$method" = "" ]] || [[ "$cluster_index" = "" ]]; then
+    return
+fi
+
+function load_cluster() {
+    cluster_path=$(cat cluster$cluster_index)
+}
+
 # 获取可用的调度器
 function governors() {
-    local items=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_governors`
-    for item in $items
-    do
-        echo $item
-    done
-}
-
-# 获取cpu核心当前使用的调度器（如果不指定核心，则默认获取核心0的调度器）
-function get_governor() {
-    local core_index="$1"
-    if [[ "$core_index" = "" ]]; then
-        local core_index=0
+    if [[ ! -f governors.cache ]]; then
+        load_cluster
+        for item in `cat $cluster_path/scaling_available_governors`; do
+            echo $item >> governors.cache
+        done
     fi
-
-    cat /sys/devices/system/cpu/cpu$core_index/cpufreq/scaling_governor
+    cat governors.cache
 }
 
-$1 $2 $3
+# 获取cpu使用的调度器
+function get_governor() {
+    load_cluster
+    cat $cluster_path/scaling_governor
+}
+
+# 设置cpu使用的调度器
+function set_governor() {
+    load_cluster
+    echo $value > $cluster_path/scaling_governor
+}
+
+$method

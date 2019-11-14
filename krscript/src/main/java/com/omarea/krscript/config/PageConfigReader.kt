@@ -64,7 +64,7 @@ class PageConfigReader {
             }
             val relativePath = parent + filePath
 
-            if (!filePath.startsWith("/")) {
+            if (!(filePath.startsWith("/") || filePath.startsWith(ASSETS_FILE))) {
                 File(relativePath).run {
                     if (exists() && canRead()) {
                         pageConfigAbsPath = absolutePath

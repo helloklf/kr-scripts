@@ -163,9 +163,11 @@ open class ListItemView(private val context: Context,
         this.layout.setOnClickListener {
             this.mOnClickListener?.onClick(this)
         }
-        this.layout.setOnLongClickListener {
-            this.mOnLongClickListener?.onLongClick(this)
-            true
+        if (!this.key.isEmpty()) {
+            this.layout.setOnLongClickListener {
+                this.mOnLongClickListener?.onLongClick(this)
+                true
+            }
         }
     }
 

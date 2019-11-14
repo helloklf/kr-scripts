@@ -2,32 +2,74 @@
 <page>
     <resource dir="file:///android_asset/samples/kernel_tuner" />
 
-    <action>
-        <title>CPU参数调节</title>
-        <desc>控制你的CPU性能参数（用作测试的示例代码）</desc>
-        <params>
-            <param name="cluster0_scheduler" label="调度器"
-                options-sh="./samples/kernel_tuner/governor.sh governors" title="【小核】"
-                value-sh="./samples/kernel_tuner/governor.sh get_governor" />
-            <param name="cluster0_min_freq" label="最低频率"
-                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies"
-                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_min_freq" />
-            <param name="cluster0_max_freq" label="最高频率"
-                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies"
-                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_max_freq" />
+    <text>
+        <slices>
+            <slice bold="true">注意：</slice>
+            <slice>这只是一份用于测试框架能力的</slice>
+            <slice bold="true">演示代码</slice>
+            <slice>，并不保证功能的完整性和兼容性</slice>
+        </slices>
+    </text>
+    <group title="Cluster ①" visible="source ./samples/kernel_tuner/visible.sh 1">
+        <picker options-sh="source ./samples/kernel_tuner/governor.sh governors 1" auto-off="true">
+            <title>调度器</title>
+            <summary sh="source ./samples/kernel_tuner/governor.sh get_governor 1" />
+            <get>source ./samples/kernel_tuner/governor.sh get_governor 1</get>
+            <set>source ./samples/kernel_tuner/governor.sh set_governor 1 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 1" auto-off="true">
+            <title>最低频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_min 1" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_min 1</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_min 1 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 1" auto-off="true">
+            <title>最高频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_max 1" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_max 1</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_max 1 $state</set>
+        </picker>
+    </group>
 
-            <param name="cluster1_scheduler" label="调度器"
-                options-sh="./samples/kernel_tuner/governor.sh governors 4" title="【大核】"
-                value-sh="./samples/kernel_tuner/governor.sh get_governor 4" />
-            <param name="cluster1_min_freq" label="最低频率"
-                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies 4 "
-                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_min_freq 4" />
-            <param name="cluster1_max_freq" label="最高频率"
-                options-sh="./samples/kernel_tuner/frequency.sh available_frequencies 4"
-                value-sh="./samples/kernel_tuner/frequency.sh get_scaling_max_freq 4" />
-        </params>
-        <script>
-            echo '这只是个示例啦，并没有实现完整功能~'
-        </script>
-    </action>
+    <group title="Cluster ②" visible="source ./samples/kernel_tuner/visible.sh 2">
+        <picker options-sh="source ./samples/kernel_tuner/governor.sh governors 2" auto-off="true">
+            <title>调度器</title>
+            <summary sh="source ./samples/kernel_tuner/governor.sh get_governor 2" />
+            <get>source ./samples/kernel_tuner/governor.sh get_governor 2</get>
+            <set>source ./samples/kernel_tuner/governor.sh set_governor 2 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 2" auto-off="true">
+            <title>最低频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_min 2" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_min 2</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_min 2 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 2" auto-off="true">
+            <title>最高频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_max 2" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_max 2</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_max 2 $state</set>
+        </picker>
+    </group>
+
+    <group title="Cluster ③" visible="source ./samples/kernel_tuner/visible.sh 3">
+        <picker options-sh="source ./samples/kernel_tuner/governor.sh governors 3" auto-off="true">
+            <title>调度器</title>
+            <summary sh="source ./samples/kernel_tuner/governor.sh get_governor 3" />
+            <get>source ./samples/kernel_tuner/governor.sh get_governor 3</get>
+            <set>source ./samples/kernel_tuner/governor.sh set_governor 3 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 3" auto-off="true">
+            <title>最低频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_min 3" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_min 3</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_min 3 $state</set>
+        </picker>
+        <picker options-sh="source ./samples/kernel_tuner/frequency.sh options 3" auto-off="true">
+            <title>最高频率</title>
+            <summary sh="source ./samples/kernel_tuner/frequency.sh get_max 3" />
+            <get>source ./samples/kernel_tuner/frequency.sh get_max 3</get>
+            <set>source ./samples/kernel_tuner/frequency.sh set_max 3 $state</set>
+        </picker>
+    </group>
 </page>

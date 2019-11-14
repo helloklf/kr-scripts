@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -161,17 +162,22 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
      * 单选列表点击
      */
     override fun onPickerClick(item: PickerInfo, onCompleted: Runnable) {
+        val startTime = System.currentTimeMillis()
+
         val paramInfo = ActionParamInfo()
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
 
+        // TODO: 优化性能，Picker改为异步读取数据
         // 获取当前值
         if (item.getState != null) {
             paramInfo.valueFromShell = executeScriptGetResult(this.context!!, item.getState!!)
         }
+        Log.d("PioPerformance", "获得当前值" + (System.currentTimeMillis() - startTime))
 
         // 获取可选项（合并options-sh和静态options的结果）
         val coalescentOptions = getParamOptions(paramInfo)
+        Log.d("PioPerformance", "获得选项" + (System.currentTimeMillis() - startTime))
 
         val options = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
         val values = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
@@ -206,6 +212,8 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                 pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
             }
         }
+
+        Log.d("PioPerformance", "全部完成" + (System.currentTimeMillis() - startTime))
         DialogHelper.animDialog(builder)
     }
 
