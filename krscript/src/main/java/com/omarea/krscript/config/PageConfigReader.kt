@@ -46,6 +46,7 @@ class PageConfigReader {
         this.context = context;
         this.pageConfigStream = pageConfigStream;
     }
+
     private val ASSETS_FILE = "file:///android_asset/"
 
     private fun tryOpenDiskFile(filePath: String): FileInputStream? {
@@ -57,15 +58,23 @@ class PageConfigReader {
                 }
             }
 
-            val parent = when {
-                parentDir.isEmpty() -> FileWrite.getPrivateFileDir(context)
-                !parentDir.endsWith("/") -> parentDir + "/"
-                else -> parentDir
-            }
-            val relativePath = parent + filePath
+            if (!filePath.startsWith("/")) {
+                if (parentDir.isNotEmpty()) {
+                    val relativePath = when {
+                        !parentDir.endsWith("/") -> parentDir + "/"
+                        else -> parentDir
+                    } + filePath
 
-            if (!(filePath.startsWith("/") || filePath.startsWith(ASSETS_FILE))) {
-                File(relativePath).run {
+                    File(relativePath).run {
+                        if (exists() && canRead()) {
+                            pageConfigAbsPath = absolutePath
+                            return inputStream()
+                        }
+                    }
+                }
+
+                val privatePath = FileWrite.getPrivateFileDir(context) + filePath
+                File(privatePath).run {
                     if (exists() && canRead()) {
                         pageConfigAbsPath = absolutePath
                         return inputStream()
@@ -73,9 +82,22 @@ class PageConfigReader {
                 }
             }
 
+            val parent = when {
+                !parentDir.endsWith("/") -> parentDir + "/"
+                else -> parentDir
+            }
+
+            var relativePath: String? = null
+            if (parentDir.isNotEmpty() && !filePath.startsWith("/")) {
+                relativePath = when {
+                    !parentDir.endsWith("/") -> parentDir + "/"
+                    else -> parentDir
+                } + filePath
+            }
+
             when {
                 RootFile.fileExists(filePath) -> filePath
-                !filePath.startsWith("/") && RootFile.fileExists(relativePath) -> relativePath
+                relativePath != null && RootFile.fileExists(relativePath) -> relativePath
                 else -> null
             }.run {
                 val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
@@ -92,16 +114,16 @@ class PageConfigReader {
     }
 
     fun getConfig(filePath: String): InputStream? {
-        val fileInputStream = tryOpenDiskFile(filePath)
-        if (fileInputStream != null) {
-            return fileInputStream
-        }
-
         try {
             if (filePath.startsWith(ASSETS_FILE)) {
                 return context.assets.open(filePath.substring(ASSETS_FILE.length))
             } else {
-                return context.assets.open(filePath)
+                val fileInputStream = tryOpenDiskFile(filePath)
+                if (fileInputStream != null) {
+                    return fileInputStream
+                } else {
+                    return context.assets.open(filePath)
+                }
             }
         } catch (ex: Exception) {
             return null
