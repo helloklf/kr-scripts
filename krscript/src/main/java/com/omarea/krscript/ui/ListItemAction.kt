@@ -3,7 +3,6 @@ package com.omarea.krscript.ui
 import android.content.Context
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionInfo
 

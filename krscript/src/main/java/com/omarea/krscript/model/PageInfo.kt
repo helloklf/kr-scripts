@@ -3,13 +3,13 @@ package com.omarea.krscript.model
 import java.io.File
 
 public class PageInfo : ConfigItemBase {
-    constructor(parentPageConfigPath: String): super() {
+    constructor(parentPageConfigPath: String) : super() {
         this.parentPageConfigPath = parentPageConfigPath
     }
 
     public var parentPageConfigPath: String = ""
     public val parentPageConfigDir: String
-        get () {
+        get() {
             if (parentPageConfigPath.isNotEmpty()) {
                 return File(parentPageConfigPath).parent
             }

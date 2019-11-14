@@ -2,12 +2,10 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -162,59 +160,60 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
      * 单选列表点击
      */
     override fun onPickerClick(item: PickerInfo, onCompleted: Runnable) {
-        val startTime = System.currentTimeMillis()
-
         val paramInfo = ActionParamInfo()
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
 
-        // TODO: 优化性能，Picker改为异步读取数据
-        // 获取当前值
-        if (item.getState != null) {
-            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, item.getState!!)
-        }
-        Log.d("PioPerformance", "获得当前值" + (System.currentTimeMillis() - startTime))
+        val handler = Handler()
 
-        // 获取可选项（合并options-sh和静态options的结果）
-        val coalescentOptions = getParamOptions(paramInfo)
-        Log.d("PioPerformance", "获得选项" + (System.currentTimeMillis() - startTime))
-
-        val options = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
-        val values = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
-
-        val builder = AlertDialog.Builder(this.context!!)
-                .setTitle(item.title)
-                .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
-
-        // 多选
-        if (item.multiple) {
-            val status = if (coalescentOptions == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, coalescentOptions)
-            builder.setMultiChoiceItems(options, status) { _, index, isChecked ->
-                status[index] = isChecked
+        progressBarDialog.showDialog(getString(R.string.kr_param_options_load))
+        Thread(Runnable {
+            // 获取当前值
+            if (item.getState != null) {
+                paramInfo.valueFromShell = executeScriptGetResult(item.getState!!)
             }
-            builder.setPositiveButton(R.string.btn_confirm) { _, _ ->
-                val result = ArrayList<String?>()
-                for (index in status.indices) {
-                    if (status[index]) {
-                        values[index]?.run {
-                            result.add(this)
+
+            // 获取可选项（合并options-sh和静态options的结果）
+            val options = getParamOptions(paramInfo)
+
+            val labels = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
+            val values = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+
+            handler.post {
+                progressBarDialog.hideDialog()
+                val builder = AlertDialog.Builder(this.context!!)
+                        .setTitle(item.title)
+                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
+
+                // 多选
+                if (item.multiple) {
+                    val status = if (options == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, options)
+                    builder.setMultiChoiceItems(labels, status) { _, index, isChecked ->
+                        status[index] = isChecked
+                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        val result = ArrayList<String?>()
+                        for (index in status.indices) {
+                            if (status[index]) {
+                                values[index]?.run {
+                                    result.add(this)
+                                }
+                            }
                         }
+                        pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
+                    }
+                } else {
+                    // 单选
+                    var index = if (options == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, options)
+                    builder.setSingleChoiceItems(labels, index) { _, which ->
+                        index = which
+                    }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
+                        pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
                     }
                 }
-                pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
-            }
-        } else {
-            // 单选
-            var index = if (coalescentOptions == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
-            builder.setSingleChoiceItems(options, index) { _, which ->
-                index = which
-            }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
-            }
-        }
 
-        Log.d("PioPerformance", "全部完成" + (System.currentTimeMillis() - startTime))
-        DialogHelper.animDialog(builder)
+                DialogHelper.animDialog(builder)
+            }
+        }).start()
     }
 
     /**
@@ -268,7 +267,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(this.context!!, actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(actionParamInfo.valueShell!!)
                         }
                         handler.post {
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
@@ -352,7 +351,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(this.context!!, actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(actionParamInfo.optionsSh)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -398,14 +397,11 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         return options
     }
 
-    private fun executeScriptGetResult(context: Context, shellScript: String): String {
+    private fun executeScriptGetResult(shellScript: String): String {
         return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
     }
 
     private val taskResultReceiver = ArrayList<BroadcastReceiver>()
-    override fun onDestroy() {
-        super.onDestroy()
-    }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val context = context!!

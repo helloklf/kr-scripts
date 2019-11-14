@@ -18,9 +18,9 @@ open class ConfigItemBase {
     // 描述（脚本）
     var descSh: String = ""
     // 摘要信息
-    var summary: String =""
+    var summary: String = ""
     // 摘要信息(脚本)
-    var summarySh: String =""
+    var summarySh: String = ""
 
     // 是否在开始前显示操作确认提示
     var confirm: Boolean = false
