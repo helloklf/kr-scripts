@@ -31,6 +31,7 @@
 
 6. 其它说明
     - [其它提示](./docs/Other.md)
+    - [kr-script.conf](./docs/kr-script.conf.md) 深入了解启动过程
 
 ### 界面展示
 - 在开始之前，不妨先看看界面。
