@@ -165,6 +165,9 @@ class PageConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> {
                         if ("group" == parser.name) {
+                            if (group != null && group.supported) {
+                                mainList.add(group)
+                            }
                             group = groupNode(parser)
                         } else if (group != null && !group.supported) {
                             // 如果 group.supported !- true 跳过group内所有项
