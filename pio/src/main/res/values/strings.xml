@@ -58,6 +58,7 @@
     <string name="kr_page_sh_file_permission">指定的配置文件不存在或无读取权限</string>
     <string name="kr_page_load_fail">页面加载失败</string>
     <string name="kr_page_load_success">页面加载成功</string>
+    <string name="kr_auto_run_item_losted">指定项已丢失</string>
 
     <string name="pio_starting">PIO·STARTING</string>
     <string name="pop_before_start">正准备启动应用…</string>

@@ -196,18 +196,6 @@ class ActionPage : AppCompatActivity() {
         }
     }
 
-    private fun pageConfigShError(content: String) {
-        handler.post {
-            Toast.makeText(this, getString(R.string.kr_page_sh_invalid) + "\n" + content, Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun noReadPermission() {
-        handler.post {
-            Toast.makeText(this, getString(R.string.kr_page_sh_file_permission), Toast.LENGTH_LONG).show()
-        }
-    }
-
     override fun onResume() {
         super.onResume()
 
@@ -252,7 +240,7 @@ class ActionPage : AppCompatActivity() {
                         override val key = autoRun
                         override fun onCompleted(result: Boolean?) {
                             if (result != true) {
-                                Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@ActionPage, getString(R.string.kr_auto_run_item_losted), Toast.LENGTH_SHORT).show()
                             }
                         }
                     }, ThemeModeState.getThemeMode())

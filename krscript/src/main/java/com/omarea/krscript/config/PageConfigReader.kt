@@ -578,7 +578,13 @@ class PageConfigReader {
                     "size" -> textRow.size = attrValue.toInt()
                     "break" -> textRow.breakRow = (attrValue == "1" || attrValue == "true" || attrValue == "break")
                     "link", "href" -> textRow.link = attrValue
-                    "activity", "a" -> textRow.activity = attrValue
+                    "activity", "a", "intent" -> textRow.activity = attrValue
+                    "script", "run" -> {
+                        textRow.onClickScript = attrValue
+                    }
+                    "sh" -> {
+                        textRow.dynamicTextSh = attrValue
+                    }
                     "align" -> {
                         when (attrValue) {
                             "left" -> if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
