@@ -123,9 +123,7 @@ class SplashActivity : Activity() {
     private var myHandler = Handler()
 
     private fun checkRoot(next: Runnable) {
-        CheckRootStatus(this, next, Runnable {
-            startToFinish()
-        }).forceGetRoot()
+        CheckRootStatus(this, next).forceGetRoot()
     }
 
     /**

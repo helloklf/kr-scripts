@@ -17,7 +17,7 @@ import kotlin.system.exitProcess
  * Created by helloklf on 2017/6/3.
  */
 
-public class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable? = null) {
+public class CheckRootStatus(var context: Context, private var next: Runnable? = null) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
 
     var therad: Thread? = null
@@ -58,11 +58,6 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                     exitProcess(0)
                                     //android.os.Process.killProcess(android.os.Process.myPid())
                                 }
-                        if (skip != null) {
-                            builder.setNegativeButton(R.string.btn_exit) { _, _ ->
-                                myHandler.post(skip)
-                            }
-                        }
                         DialogHelper.animDialog(builder)
                     }
                 }
