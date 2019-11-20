@@ -119,29 +119,40 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun reloadFavoritesTab() {
-        val favoritesConfig = krScriptConfig.favoriteConfig
-        val favorites = getItems(favoritesConfig)
-        favorites?.run {
-            updateFavoritesTab(this, favoritesConfig)
-        }
+        Thread(Runnable {
+            val favoritesConfig = krScriptConfig.favoriteConfig
+            val favorites = getItems(favoritesConfig)
+            favorites?.run {
+                handler.post {
+                    updateFavoritesTab(this, favoritesConfig)
+                }
+            }
+        }).start()
     }
 
     private fun reloadMoreTab() {
-        val page2Config = krScriptConfig.pageListConfig
+        Thread(Runnable {
+            val page2Config = krScriptConfig.pageListConfig
+            val pages = getItems(page2Config)
 
-        val pages = getItems(page2Config)
-        pages?.run {
-            updateMoreTab(this, page2Config)
-        }
+            pages?.run {
+                handler.post {
+                    updateMoreTab(this, page2Config)
+                }
+            }
+        }).start()
     }
 
     private fun getKrScriptActionHandler(pageInfo: PageInfo, isFavoritesTab: Boolean): KrScriptActionHandler {
         return object : KrScriptActionHandler {
             override fun onActionCompleted(configItemBase: ConfigItemBase) {
-                if (isFavoritesTab) {
-                    reloadFavoritesTab()
-                } else {
-                    reloadMoreTab()
+                if (configItemBase.reloadPage) {
+                    // TODO:多线程优化
+                    if (isFavoritesTab) {
+                        reloadFavoritesTab()
+                    } else {
+                        reloadMoreTab()
+                    }
                 }
             }
 

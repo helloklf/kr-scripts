@@ -38,8 +38,7 @@
 
                 downloadUrl="https://hugeota.d.miui.com/9.8.28/miui-blockota-sagit-9.8.27-9.8.28-cfa9921c33-9.0.zip"
                 activity="$PACKAGE_NAME/com.projectkr.shell.ActionPageOnline"
-                am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl
-                "$downloadUrl"
+                am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl "$downloadUrl"
             </script>
         </action>
 

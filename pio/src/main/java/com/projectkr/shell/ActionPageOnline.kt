@@ -25,6 +25,7 @@ import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.WebViewInjector
 import com.omarea.krscript.downloader.Downloader
 import com.omarea.krscript.ui.FileChooserRender
@@ -34,7 +35,11 @@ import java.util.*
 class ActionPageOnline : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
 
+    private lateinit var themeMode: ThemeMode
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        themeMode = ThemeModeState.switchTheme(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page_online)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
@@ -62,21 +67,24 @@ class ActionPageOnline : AppCompatActivity() {
         actionBar!!.hide()
     }
 
-    private fun setWhiteWindowTitle() {
+    private fun setWindowTitleBar() {
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
-        window.statusBarColor = Color.WHITE
-        window.navigationBarColor = Color.WHITE
-
         var flags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+
+        if (themeMode.isDarkMode) {
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
+            window.navigationBarColor = Color.WHITE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
             }
         }
         getWindow().decorView.systemUiVisibility = flags
@@ -94,16 +102,27 @@ class ActionPageOnline : AppCompatActivity() {
                     title = extras.getString("title")!!
                 }
 
+                // config、url 都用于设定要打卡的网页
+                /*
+
                 when {
                     extras.containsKey("config") -> {
                         initWebview(extras.getString("config"))
-                        hideWindowTitle()
+                        hideWindowTitle() // 作为网页浏览器时，隐藏标题栏
                     }
                     extras.containsKey("url") -> {
                         initWebview(extras.getString("url"))
-                        hideWindowTitle()
+                        hideWindowTitle() // 作为网页浏览器时，隐藏标题栏
                     }
-                    else -> setWhiteWindowTitle()
+                    else -> {
+                        setWindowTitleBar()
+                    }
+                }
+                */
+                setWindowTitleBar()
+                when {
+                    extras.containsKey("config") -> initWebview(extras.getString("config"))
+                    extras.containsKey("url") -> initWebview(extras.getString("url"))
                 }
 
                 if (extras.containsKey("downloadUrl")) {
@@ -171,6 +190,9 @@ class ActionPageOnline : AppCompatActivity() {
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
                 progressBarDialog.hideDialog()
+                view?.run {
+                    setTitle(this.title)
+                }
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
@@ -207,7 +229,7 @@ class ActionPageOnline : AppCompatActivity() {
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
     private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             return false

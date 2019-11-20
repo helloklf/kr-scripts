@@ -46,6 +46,11 @@ class SplashActivity : Activity() {
      */
     private fun updateThemeStyle() {
         getWindow().setNavigationBarColor(getColorAccent())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.setNavigationBarColor(getColor(R.color.splash_bg_color))
+        } else {
+            window.setNavigationBarColor(resources.getColor(R.color.splash_bg_color))
+        }
 
         //  得到当前界面的装饰视图
         if (Build.VERSION.SDK_INT >= 21) {
