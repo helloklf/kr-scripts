@@ -44,6 +44,12 @@
 | PACKAGE_VERSION_NAME | PIO框架应用的版本名称 |
 | PACKAGE_VERSION_CODE | PIO框架应用的版本号 |
 | TOOLKIT | 自带的命令行工具集安装目录 |
+| APP_USER_ID | 安卓中每个应用都有一个单独的UserID |
+
+> 其它说明：<br/>
+
+> 如果你在脚本里创建了目录，建议将所有者设置为 `$APP_USER_ID` <br/>
+> 原因和用法见 [resource](./Resource.md) 的 **警告** 部分
 
 
 ### 4. 其它思路

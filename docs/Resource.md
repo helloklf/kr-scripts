@@ -52,17 +52,32 @@
 
 
 #### 警告
+> 不要讲静态资源和(`toolkit`)放在一起
+
 - 注意，千万不要将你的资源文件，和PIO自带的命令行工具集(`toolkit`)放在一起！！！
 - 因为 `toolkit` 目录会在应用启动时提取，并做好相应的权限设置和伪装
 - 而如果将静态资源放在 `toolkit` 所在目录，提取文件时可能会破坏运行环境！
 
+> 注意通过脚本创建的目录所有者和权限
 
+- 注意：例如，你在脚本里创建了 `$START_DIR/files`，而同时又需要提取`file:///android_asset/files` 下的文件，必然会失败！
+- 因为，你通过脚本创建了`files`目录，所有者和所属组都是是`root`
+- 而框架提取静态资源时，并不会使用`root权限`进行。因此会导致框架无法写入`files`目录，提取资源失败
+- 如果你真的需要创建与`resource`提取路径相同的文件夹，建议创建完后将所有者和所属组设置为`$APP_USER_ID`
+- 示例如：
+    ```sh
+    if [[ ! -d "$START_DIR/files" ]]; then
+        mkdir "$START_DIR/files"
+        chown -R $APP_USER_ID "$START_DIR/files"
+        chgrp -R $APP_USER_ID "$START_DIR/files"
+    fi
+    ```
 #
 
 ---
 
 > 相关说明
 
-- `$START_DIR` 是PIO自行添加的全局变量，
-- 可以参考 [`脚本使用`](./Script.md) 中的说明，
+- `$START_DIR` 和 `$APP_USER_ID` 是PIO自行添加的全局变量，
+- 可以参考 [脚本使用](./Script.md) 中 **参数变量** 部分
 
