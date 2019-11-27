@@ -18,10 +18,7 @@ import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.AutoRunTask
-import com.omarea.krscript.model.ConfigItemBase
-import com.omarea.krscript.model.KrScriptActionHandler
-import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 
@@ -107,15 +104,15 @@ class ActionPage : AppCompatActivity() {
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
-        override fun onActionCompleted(configItemBase: ConfigItemBase) {
-            if (configItemBase.autoFinish ) {
+        override fun onActionCompleted(clickableNode: ClickableNode) {
+            if (clickableNode.autoFinish ) {
                 finishAndRemoveTask()
-            } else if (configItemBase.reloadPage) {
+            } else if (clickableNode.reloadPage) {
                 loadPageConfig()
             }
         }
 
-        override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+        override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
             val intent = Intent()
 
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
@@ -127,13 +124,13 @@ class ActionPage : AppCompatActivity() {
             intent.putExtra("afterRead", afterRead)
             intent.putExtra("loadSuccess", loadSuccess)
             intent.putExtra("loadFail", loadFail)
-            intent.putExtra("autoRunItemId", configItemBase.key)
+            intent.putExtra("autoRunItemId", clickableNode.key)
 
-            addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
+            addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
         }
 
-        override fun onSubPageClick(pageInfo: PageInfo) {
-            _openPage(pageInfo)
+        override fun onSubPageClick(pageNode: PageNode) {
+            _openPage(pageNode)
         }
 
         override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
@@ -216,7 +213,7 @@ class ActionPage : AppCompatActivity() {
             }
 
             showDialog(getString(R.string.kr_page_loading))
-            var items: ArrayList<ConfigItemBase>? = null
+            var items: ArrayList<NodeInfoBase>? = null
 
             if (pageConfigSh.isNotEmpty()) {
                 items = PageConfigSh(this, pageConfigSh).execute()
@@ -266,7 +263,7 @@ class ActionPage : AppCompatActivity() {
         }).start()
     }
 
-    fun _openPage(pageInfo: PageInfo) {
-        OpenPageHelper(this).openPage(pageInfo)
+    fun _openPage(pageNode: PageNode) {
+        OpenPageHelper(this).openPage(pageNode)
     }
 }

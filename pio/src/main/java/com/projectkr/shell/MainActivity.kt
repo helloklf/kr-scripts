@@ -24,9 +24,10 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.ClickableNode
+import com.omarea.krscript.model.NodeInfoBase
 import com.omarea.krscript.model.KrScriptActionHandler
-import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.model.PageNode
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
@@ -95,26 +96,26 @@ class MainActivity : AppCompatActivity() {
         transaction.commitAllowingStateLoss()
     }
 
-    private fun getItems(pageInfo: PageInfo): ArrayList<ConfigItemBase>? {
-        var items: ArrayList<ConfigItemBase>? = null
+    private fun getItems(pageNode: PageNode): ArrayList<NodeInfoBase>? {
+        var items: ArrayList<NodeInfoBase>? = null
 
-        if (pageInfo.pageConfigSh.isNotEmpty()) {
-            items = PageConfigSh(this, pageInfo.pageConfigSh).execute()
+        if (pageNode.pageConfigSh.isNotEmpty()) {
+            items = PageConfigSh(this, pageNode.pageConfigSh).execute()
         }
-        if (items == null && pageInfo.pageConfigPath.isNotEmpty()) {
-            items = PageConfigReader(this.applicationContext, pageInfo.pageConfigPath).readConfigXml()
+        if (items == null && pageNode.pageConfigPath.isNotEmpty()) {
+            items = PageConfigReader(this.applicationContext, pageNode.pageConfigPath).readConfigXml()
         }
 
         return items
     }
 
-    private fun updateFavoritesTab(items: ArrayList<ConfigItemBase>, pageInfo: PageInfo) {
-        val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageInfo, true), null, ThemeModeState.getThemeMode())
+    private fun updateFavoritesTab(items: ArrayList<NodeInfoBase>, pageNode: PageNode) {
+        val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageNode, true), null, ThemeModeState.getThemeMode())
         supportFragmentManager.beginTransaction().replace(R.id.list_favorites, favoritesFragment).commitAllowingStateLoss()
     }
 
-    private fun updateMoreTab(items: ArrayList<ConfigItemBase>, pageInfo: PageInfo) {
-        val allItemFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageInfo, false), null, ThemeModeState.getThemeMode())
+    private fun updateMoreTab(items: ArrayList<NodeInfoBase>, pageNode: PageNode) {
+        val allItemFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageNode, false), null, ThemeModeState.getThemeMode())
         supportFragmentManager.beginTransaction().replace(R.id.list_pages, allItemFragment).commitAllowingStateLoss()
     }
 
@@ -143,12 +144,12 @@ class MainActivity : AppCompatActivity() {
         }).start()
     }
 
-    private fun getKrScriptActionHandler(pageInfo: PageInfo, isFavoritesTab: Boolean): KrScriptActionHandler {
+    private fun getKrScriptActionHandler(pageNode: PageNode, isFavoritesTab: Boolean): KrScriptActionHandler {
         return object : KrScriptActionHandler {
-            override fun onActionCompleted(configItemBase: ConfigItemBase) {
-                if (configItemBase.autoFinish ) {
+            override fun onActionCompleted(clickableNode: ClickableNode) {
+                if (clickableNode.autoFinish ) {
                     finishAndRemoveTask()
-                } else if (configItemBase.reloadPage) {
+                } else if (clickableNode.reloadPage) {
                     // TODO:多线程优化
                     if (isFavoritesTab) {
                         reloadFavoritesTab()
@@ -158,24 +159,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+            override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
                 val intent = Intent()
 
                 intent.component = ComponentName(this@MainActivity.applicationContext, ActionPage::class.java)
                 intent.putExtra("title", "" + title)
                 intent.putExtra("beforeRead", "")
-                intent.putExtra("config", pageInfo.pageConfigPath)
-                intent.putExtra("pageConfigSh", pageInfo.pageConfigSh)
+                intent.putExtra("config", pageNode.pageConfigPath)
+                intent.putExtra("pageConfigSh", pageNode.pageConfigSh)
                 intent.putExtra("afterRead", "")
                 intent.putExtra("loadSuccess", "")
                 intent.putExtra("loadFail", "")
-                intent.putExtra("autoRunItemId", configItemBase.key)
+                intent.putExtra("autoRunItemId", clickableNode.key)
 
-                addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
+                addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }
 
-            override fun onSubPageClick(pageInfo: PageInfo) {
-                _openPage(pageInfo)
+            override fun onSubPageClick(pageNode: PageNode) {
+                _openPage(pageNode)
             }
 
             override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
@@ -229,8 +230,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun _openPage(pageInfo: PageInfo) {
-        OpenPageHelper(this).openPage(pageInfo)
+    fun _openPage(pageNode: PageNode) {
+        OpenPageHelper(this).openPage(pageNode)
     }
 
     private fun getDensity(): Int {

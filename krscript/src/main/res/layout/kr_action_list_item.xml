@@ -2,10 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:paddingBottom="10dp">
+    android:minHeight="?android:attr/listPreferredItemHeight">
 
     <ImageView
         android:id="@id/kr_shortcut_icon"
@@ -13,16 +10,18 @@
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_marginStart="10dp"
+        android:visibility="gone"
         android:src="@drawable/kr_shortcut_icon"
         android:tint="@color/kr_shortcut_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
         android:layout_marginStart="23dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_toStartOf="@id/kr_widget"
         android:orientation="vertical">
 
@@ -40,6 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:visibility="gone"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="@dimen/kr_desc_size" />
 
@@ -48,6 +48,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:visibility="gone"
             android:textColor="?android:colorAccent"
             android:textSize="@dimen/kr_desc_size" />
     </LinearLayout>
@@ -59,6 +60,7 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:layout_marginEnd="20dp"
         android:alpha="0.8"
         android:padding="5dp"

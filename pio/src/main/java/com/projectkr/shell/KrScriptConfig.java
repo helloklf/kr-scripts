@@ -3,7 +3,7 @@ package com.projectkr.shell;
 import android.content.Context;
 
 import com.omarea.krscript.executor.ScriptEnvironmen;
-import com.omarea.krscript.model.PageInfo;
+import com.omarea.krscript.model.PageNode;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -84,9 +84,9 @@ public class KrScriptConfig {
         return TOOLKIT_DIR_DEFAULT;
     }
 
-    public PageInfo getPageListConfig() {
+    public PageNode getPageListConfig() {
         if (configInfo != null) {
-            PageInfo pageInfo = new PageInfo("");
+            PageNode pageInfo = new PageNode("");
             if (configInfo.containsKey(PAGE_LIST_CONFIG_SH)) {
                 pageInfo.setPageConfigSh(configInfo.get(PAGE_LIST_CONFIG_SH));
             }
@@ -98,9 +98,9 @@ public class KrScriptConfig {
         return null;
     }
 
-    public PageInfo getFavoriteConfig() {
+    public PageNode getFavoriteConfig() {
         if (configInfo != null) {
-            PageInfo pageInfo = new PageInfo("");
+            PageNode pageInfo = new PageNode("");
             if (configInfo.containsKey(FAVORITE_CONFIG_SH)) {
                 pageInfo.setPageConfigSh(configInfo.get(FAVORITE_CONFIG_SH));
             }

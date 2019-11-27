@@ -15,12 +15,12 @@ import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.TextInfo
+import com.omarea.krscript.model.TextNode
 
 
 class ListItemText(private val context: Context,
                    layoutId: Int,
-                   config: TextInfo = TextInfo()) : ListItemView(context, layoutId, config) {
+                   config: TextNode = TextNode()) : ListItemView(context, layoutId, config) {
 
     private val rowsView = layout.findViewById<TextView?>(R.id.kr_rows)
 

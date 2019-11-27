@@ -6,7 +6,7 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.NodeInfoBase
 import java.io.ByteArrayInputStream
 
 class PageConfigSh(private var activity: Activity, private var pageConfigSh: String) {
@@ -24,8 +24,8 @@ class PageConfigSh(private var activity: Activity, private var pageConfigSh: Str
         }
     }
 
-    fun execute(): ArrayList<ConfigItemBase>? {
-        var items: ArrayList<ConfigItemBase>? = null
+    fun execute(): ArrayList<NodeInfoBase>? {
+        var items: ArrayList<NodeInfoBase>? = null
 
         val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh)?.trim()
         if (result != null) {

@@ -2,7 +2,7 @@ package com.omarea.krscript.model
 
 import java.util.*
 
-open class ConfigItemBase {
+open class NodeInfoBase {
     // 索引（自动生成）
     val index: String = UUID.randomUUID().toString()
 
@@ -22,19 +22,4 @@ open class ConfigItemBase {
     // 摘要信息(脚本)
     var summarySh: String = ""
 
-    // 是否在开始前显示操作确认提示
-    var confirm: Boolean = false
-    // 执行完成后是否自动关闭界面
-    var autoOff: Boolean = false
-    // 是否可中断执行
-    var interruptable: Boolean = true
-    // 是否在执行完以后重载整个界面
-    var reloadPage: Boolean = false
-    // 是否在执行完之后关闭页面
-    var autoFinish = false
-    // 功能图标路径
-    var iconPath = ""
-
-    // 是否是后台运行的任务
-    var backgroundTask: Boolean = false
 }
