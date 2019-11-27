@@ -25,6 +25,7 @@
 | summary-sh | 动态设置summary内容的脚本 | `脚本代码` | `echo '自定义的摘要信息'` |
 | confirm | 点击时是否弹出确认框，默认`false` | `true`、`false` | 否 | `false` |
 | visible | 自定义脚本，输出1或0，决定该功能项是否显示 | 脚本代码 | 否 | `echo '1'` |
+| icon | 作为快捷方式添加到桌面时使用的图标（目前仅支持assets路径） | `true`、`false` | `false` |
 
 
 - 特有属性

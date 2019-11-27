@@ -167,7 +167,11 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("afterRead", "")
                 intent.putExtra("loadSuccess", "")
                 intent.putExtra("loadFail", "")
-                intent.putExtra("autoRunItemId", clickableNode.key)
+
+                if (clickableNode is RunnableNode) {
+                    intent.putExtra("autoRunItemId", clickableNode.key)
+                } else if (clickableNode is PageNode) {
+                }
 
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }

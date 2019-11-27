@@ -2,7 +2,7 @@ package com.omarea.krscript.model
 
 import java.io.File
 
-public class PageNode : RunnableNode {
+public class PageNode : ClickableNode {
     constructor(parentPageConfigPath: String) : super() {
         this.parentPageConfigPath = parentPageConfigPath
     }
