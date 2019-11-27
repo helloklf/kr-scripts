@@ -19,6 +19,8 @@ open class ListItemView(private val context: Context,
     protected var descView = layout.findViewById<TextView?>(R.id.kr_desc)
     protected var summaryView = layout.findViewById<TextView?>(R.id.kr_summary)
     protected var titleView = layout.findViewById<TextView?>(R.id.kr_title)
+    protected var shortcutIconView = layout.findViewById<View?>(R.id.kr_shortcut_icon)
+
     protected var children = ArrayList<ListItemView>()
 
 
@@ -168,6 +170,12 @@ open class ListItemView(private val context: Context,
                 this.mOnLongClickListener?.onLongClick(this)
                 true
             }
+        }
+
+        if (this.key.isEmpty()) {
+            shortcutIconView?.visibility = View.GONE
+        } else {
+            shortcutIconView?.visibility = View.VISIBLE
         }
     }
 

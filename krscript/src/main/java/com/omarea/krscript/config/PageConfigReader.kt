@@ -9,15 +9,10 @@ import android.text.Layout
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.RootFile
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import org.xmlpull.v1.XmlPullParser
-import java.io.File
-import java.io.FileInputStream
 import java.io.InputStream
 
 /**
@@ -49,94 +44,17 @@ class PageConfigReader {
 
     private val ASSETS_FILE = "file:///android_asset/"
 
-    private fun tryOpenDiskFile(filePath: String): FileInputStream? {
-        try {
-            File(filePath).run {
-                if (exists() && canRead()) {
-                    pageConfigAbsPath = absolutePath
-                    return inputStream()
-                }
-            }
-
-            if (!filePath.startsWith("/")) {
-                if (parentDir.isNotEmpty()) {
-                    val relativePath = when {
-                        !parentDir.endsWith("/") -> parentDir + "/"
-                        else -> parentDir
-                    } + filePath
-
-                    File(relativePath).run {
-                        if (exists() && canRead()) {
-                            pageConfigAbsPath = absolutePath
-                            return inputStream()
-                        }
-                    }
-                }
-
-                val privatePath = FileWrite.getPrivateFileDir(context) + filePath
-                File(privatePath).run {
-                    if (exists() && canRead()) {
-                        pageConfigAbsPath = absolutePath
-                        return inputStream()
-                    }
-                }
-            }
-
-            val parent = when {
-                !parentDir.endsWith("/") -> parentDir + "/"
-                else -> parentDir
-            }
-
-            var relativePath: String? = null
-            if (parentDir.isNotEmpty() && !filePath.startsWith("/")) {
-                relativePath = when {
-                    !parentDir.endsWith("/") -> parentDir + "/"
-                    else -> parentDir
-                } + filePath
-            }
-
-            when {
-                RootFile.fileExists(filePath) -> filePath
-                relativePath != null && RootFile.fileExists(relativePath) -> relativePath
-                else -> null
-            }.run {
-                val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
-                KeepShellPublic.doCmdSync("cp -f \"$this\" \"$cachePath\"")
-                File(cachePath).run {
-                    if (exists() && canRead()) {
-                        return inputStream()
-                    }
-                }
-            }
-        } catch (ex: java.lang.Exception) {
-        }
-        return null
-    }
-
-    fun getConfig(filePath: String): InputStream? {
-        try {
-            if (filePath.startsWith(ASSETS_FILE)) {
-                return context.assets.open(filePath.substring(ASSETS_FILE.length))
-            } else {
-                val fileInputStream = tryOpenDiskFile(filePath)
-                if (fileInputStream != null) {
-                    return fileInputStream
-                } else {
-                    return context.assets.open(filePath)
-                }
-            }
-        } catch (ex: Exception) {
-            return null
-        }
-    }
-
     fun readConfigXml(): ArrayList<ConfigItemBase>? {
         if (pageConfigStream != null) {
             return readConfigXml(pageConfigStream!!)
         } else {
             try {
-                val fileInputStream = getConfig(pageConfig) ?: return ArrayList()
-                return readConfigXml(fileInputStream)
+                val pathAnalysis = PathAnalysis(context, parentDir)
+                pathAnalysis.parsePath(pageConfig).run {
+                    val fileInputStream = this ?: return ArrayList()
+                    pageConfigAbsPath = pathAnalysis.getCurrentAbsPath()
+                    return readConfigXml(fileInputStream)
+                }
             } catch (ex: Exception) {
                 Handler(Looper.getMainLooper()).post {
                     Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
@@ -429,8 +347,15 @@ class PageConfigReader {
                 "title" -> configItemBase.title = attrValue
                 "desc" -> configItemBase.desc = attrValue
                 "confirm" -> configItemBase.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
-                "auto-off" -> configItemBase.autoOff = (attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
-                "interruptible", "interruptable" -> configItemBase.interruptable = (attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
+                "auto-off", "auto-close" -> configItemBase.autoOff = (attrValue == "auto-close" ||attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
+                "auto-finish" -> configItemBase.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
+                "icon", "icon-path" -> configItemBase.iconPath = attrValue.trim()
+                "interruptible", "interruptable" -> configItemBase.interruptable = (
+                        attrValue.isEmpty() ||
+                        attrValue == "interruptable" ||
+                        attrValue == "interruptable" ||
+                        attrValue == "true" ||
+                        attrValue == "1")
                 "support", "visible" -> {
                     if (executeResultRoot(context, attrValue) != "1") {
                         return null

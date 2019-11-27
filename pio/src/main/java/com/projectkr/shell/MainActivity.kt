@@ -146,7 +146,9 @@ class MainActivity : AppCompatActivity() {
     private fun getKrScriptActionHandler(pageInfo: PageInfo, isFavoritesTab: Boolean): KrScriptActionHandler {
         return object : KrScriptActionHandler {
             override fun onActionCompleted(configItemBase: ConfigItemBase) {
-                if (configItemBase.reloadPage) {
+                if (configItemBase.autoFinish ) {
+                    finishAndRemoveTask()
+                } else if (configItemBase.reloadPage) {
                     // TODO:多线程优化
                     if (isFavoritesTab) {
                         reloadFavoritesTab()

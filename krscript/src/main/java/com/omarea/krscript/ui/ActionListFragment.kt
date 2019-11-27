@@ -2,7 +2,10 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -13,15 +16,18 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.ScriptTaskThread
 import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import java.io.File
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -141,7 +147,8 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                                 .setTitle(getString(R.string.kr_shortcut_create))
                                 .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItem.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItem)
+                                    val result = ActionShortcutManager(context!!)
+                                            .addShortcut(intent, IconPathAnalysis().loadIcon(context!!, configItem), configItem)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {
@@ -360,11 +367,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                     val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     options.add(object : HashMap<String, Any>() {
                         init {
-                            put("title", itemSplit[1])
+                            var descText = itemSplit[0]
+                            if (itemSplit.size > 0) {
+                                descText = itemSplit[1]
+                            }
+                            put("title", descText)
                             put("item", object : ActionParamInfo.ActionParamOption() {
                                 init {
                                     value = itemSplit[0]
-                                    desc = itemSplit[1]
+                                    desc = descText
                                 }
                             })
                         }

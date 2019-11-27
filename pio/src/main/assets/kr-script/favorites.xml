@@ -32,6 +32,10 @@
         <page config="samples/configs/web_test.xml" title="网页引擎测试" />
     </group>
 
+    <group title="快捷方式">
+        <page config="samples/configs/shortcut_test.xml" title="快捷方式测试" />
+    </group>
+
     <group title="更多">
         <page config="samples/configs/kernel_tuner.xml" desc="框架测试界面，演示实时模式的使用"
             title="内核调谐器" />
