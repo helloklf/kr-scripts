@@ -37,7 +37,6 @@
     </group>
 
     <group title="更多">
-        <page config="samples/configs/kernel_tuner.xml" desc="框架测试界面，演示实时模式的使用"
-            title="内核调谐器" />
+        <page config="samples/configs/kernel_tuner.xml" title="内核调谐器" />
     </group>
 </items>

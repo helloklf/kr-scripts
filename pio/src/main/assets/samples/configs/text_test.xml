@@ -63,11 +63,11 @@
 
     <text>
         <slices>
-            <slice activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS" size="15">开发者选项</slice>
+            <slice activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS" color="#5500ff" size="15">开发者选项</slice>
             <slice>  </slice>
-            <slice activity="com.android.settings/.RunningServices" size="15">运行中的服务</slice>
+            <slice activity="com.android.settings/.RunningServices" size="15" color="#55ff00">运行中的服务</slice>
             <slice>  </slice>
-            <slice activity="com.android.settings/.Settings$MemorySettingsActivity" size="15">内存使用情况</slice>
+            <slice activity="com.android.settings/.Settings$MemorySettingsActivity" color="#ff5500" size="15">内存使用情况</slice>
         </slices>
     </text>
 </items>

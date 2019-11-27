@@ -21,7 +21,7 @@
     <string name="mhz">Mhz</string>
     <string name="core">核心</string>
     <string name="title_activity_action_page">功能分页</string>
-    <string name="command_reboot">reboot</string>
+    <string name="command_reboot">svc power reboot || reboot</string>
 
     <string name="author_name"></string>
     <string name="about_title">关于 · PIO</string>

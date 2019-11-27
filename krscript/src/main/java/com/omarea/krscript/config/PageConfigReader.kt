@@ -339,6 +339,7 @@ class PageConfigReader {
         return groupInfo
     }
 
+    // 通常指 action、switch、picker这种，点击后需要执行脚本的节点
     private fun clickbleNode(node: ClickableNode, parser: XmlPullParser): ClickableNode? {
         val clickableNode = mainNode(node, parser) as ClickableNode?
         if (clickableNode != null) {
@@ -350,11 +351,7 @@ class PageConfigReader {
                     "auto-finish" -> clickableNode.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
                     "icon", "icon-path" -> clickableNode.iconPath = attrValue.trim()
                     "interruptible", "interruptable" -> clickableNode.interruptable = (
-                            attrValue.isEmpty() ||
-                                    attrValue == "interruptable" ||
-                                    attrValue == "interruptable" ||
-                                    attrValue == "true" ||
-                                    attrValue == "1")
+                            attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
                     "reload", "reload-page" -> {
                         if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
                             clickableNode.reloadPage = true

@@ -5,7 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.support.v4.app.DialogFragment
@@ -20,7 +20,6 @@ import android.widget.Toast
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ShellExecutor
 import com.omarea.krscript.model.ClickableNode
-import com.omarea.krscript.model.NodeInfoBase
 import com.omarea.krscript.model.ShellHandlerBase
 import kotlinx.android.synthetic.main.kr_dialog_log.*
 
@@ -139,11 +138,20 @@ class DialogLogFragment : DialogFragment() {
             private var actionEventHandler: IActionEventHandler,
             private var logView: TextView,
             private var shellProgress: ProgressBar) : ShellHandlerBase() {
+
+        private fun getColor(resId: Int): Int {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context!!.getColor(resId)
+            } else {
+                context!!.resources.getColor(resId)
+            }
+        }
+
         private val context = logView.context
-        private val errorColor = Color.parseColor(context.getString(R.string.kr_shell_log_error))
-        private val basicColor = Color.parseColor(context.getString(R.string.kr_shell_log_basic))
-        private val scriptColor = Color.parseColor(context.getString(R.string.kr_shell_log_script))
-        private val endColor = Color.parseColor(context.getString(R.string.kr_shell_log_end))
+        private val errorColor = getColor(R.color.kr_shell_log_error)
+        private val basicColor = getColor(R.color.kr_shell_log_basic)
+        private val scriptColor = getColor(R.color.kr_shell_log_script)
+        private val endColor = getColor(R.color.kr_shell_log_end)
 
         private var hasError = false // 执行过程是否出现错误
 
