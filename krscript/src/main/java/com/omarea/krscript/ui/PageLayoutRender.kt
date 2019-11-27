@@ -19,7 +19,7 @@ class PageLayoutRender(private val mContext: Context,
         fun onActionClick(item: ActionNode, onCompleted: Runnable)
         fun onSwitchClick(item: SwitchNode, onCompleted: Runnable)
         fun onPickerClick(item: PickerNode, onCompleted: Runnable)
-        fun onItemLongClick(item: ClickableNode)
+        fun onItemLongClick(clickableNode: ClickableNode)
     }
 
 

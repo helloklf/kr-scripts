@@ -7,7 +7,7 @@ import com.omarea.krscript.ui.FileChooserRender
 interface KrScriptActionHandler {
     fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean
     fun onSubPageClick(pageNode: PageNode)
-    fun onActionCompleted(clickableNode: ClickableNode)
+    fun onActionCompleted(runnableNode: RunnableNode)
     fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: AddToFavoritesHandler)
     fun openParamsPage(actionNode: ActionNode, view: View, onCompleted: Runnable): Boolean {
         return false

@@ -18,13 +18,13 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.ScriptTaskThread
-import com.omarea.krscript.model.ActionParamInfo
 import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
+
     companion object {
         fun create(
                 actionInfos: ArrayList<NodeInfoBase>?,
@@ -127,15 +127,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
     // 长按 添加收藏
-    override fun onItemLongClick(item: ClickableNode) {
-        if (item.key.isEmpty()) {
+    override fun onItemLongClick(clickableNode: ClickableNode) {
+        if (clickableNode.key.isEmpty()) {
             DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
                     .setMessage(R.string.kr_ushortcut_nsupported)
                     .setNeutralButton(R.string.btn_cancel) { _, _ ->
                     }
             )
         } else {
-            krScriptActionHandler?.addToFavorites(item, object : KrScriptActionHandler.AddToFavoritesHandler {
+            krScriptActionHandler?.addToFavorites(clickableNode, object : KrScriptActionHandler.AddToFavoritesHandler {
                 override fun onAddToFavorites(clickableNode: ClickableNode, intent: Intent?) {
                     if (intent != null) {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
@@ -409,7 +409,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     private val taskResultReceiver = ArrayList<BroadcastReceiver>()
 
-    private fun actionExecute(nodeInfo: ClickableNode, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+    private fun actionExecute(nodeInfo: RunnableNode, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val context = context!!
         val applicationContext = context.applicationContext
 

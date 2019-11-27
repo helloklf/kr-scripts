@@ -8,7 +8,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 
-class PathAnalysis(private var context: Context, private var parentDir: String = ""){
+class PathAnalysis(private var context: Context, private var parentDir: String = "") {
     private val ASSETS_FILE = "file:///android_asset/"
 
     // 解析路径时自动获得

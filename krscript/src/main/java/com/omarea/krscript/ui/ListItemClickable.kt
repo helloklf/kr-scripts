@@ -1,17 +1,13 @@
 package com.omarea.krscript.ui
 
 import android.content.Context
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import com.omarea.krscript.R
-import com.omarea.krscript.model.ActionNode
-import com.omarea.krscript.model.NodeInfoBase
+import com.omarea.krscript.model.ClickableNode
 
-open class ListItemClickable(private val context: Context,
-                             private val layoutId: Int,
-                             private val config: NodeInfoBase = NodeInfoBase()) : ListItemView(context, layoutId, config) {
+open class ListItemClickable(context: Context,
+                             layoutId: Int,
+                             private val config: ClickableNode) : ListItemView(context, layoutId, config) {
     protected var mOnClickListener: OnClickListener? = null
     protected var mOnLongClickListener: OnLongClickListener? = null
 

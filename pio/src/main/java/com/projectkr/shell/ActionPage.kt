@@ -104,10 +104,10 @@ class ActionPage : AppCompatActivity() {
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
-        override fun onActionCompleted(clickableNode: ClickableNode) {
-            if (clickableNode.autoFinish ) {
+        override fun onActionCompleted(runnableNode: RunnableNode) {
+            if (runnableNode.autoFinish ) {
                 finishAndRemoveTask()
-            } else if (clickableNode.reloadPage) {
+            } else if (runnableNode.reloadPage) {
                 loadPageConfig()
             }
         }

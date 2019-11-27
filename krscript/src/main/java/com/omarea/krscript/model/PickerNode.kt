@@ -1,6 +1,6 @@
 package com.omarea.krscript.model
 
-class PickerNode : ClickableNode() {
+class PickerNode : RunnableNode() {
     var options: ArrayList<ActionParamInfo.ActionParamOption>? = null
     var optionsSh = ""
     var value: String? = null

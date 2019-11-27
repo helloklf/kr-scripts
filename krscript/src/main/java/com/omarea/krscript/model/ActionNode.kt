@@ -2,6 +2,6 @@ package com.omarea.krscript.model
 
 import java.util.*
 
-class ActionNode : ClickableNode() {
+class ActionNode : RunnableNode() {
     var params: ArrayList<ActionParamInfo>? = null
 }

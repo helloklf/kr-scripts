@@ -30,4 +30,9 @@
             echo '因为，而使用磁盘文件绝对路径时，通常会受到访问权限的限制，无法正常读取'
         </script>
     </action>
+
+
+    <page id="shortcut_test.xml" icon="samples/icons/icon-test.png" config="samples/configs/shortcut_test.xml" title="page快捷方式">
+        <desc>理论上，page、action、picker、switch都支持快捷方式功能</desc>
+    </page>
 </group>

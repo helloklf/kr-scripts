@@ -19,7 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ShellExecutor
-import com.omarea.krscript.model.ClickableNode
+import com.omarea.krscript.model.RunnableNode
 import com.omarea.krscript.model.ShellHandlerBase
 import kotlinx.android.synthetic.main.kr_dialog_log.*
 
@@ -34,7 +34,7 @@ class DialogLogFragment : DialogFragment() {
     }
 
     private var running = false
-    private lateinit var nodeInfo: ClickableNode
+    private lateinit var nodeInfo: RunnableNode
     private lateinit var onExit: Runnable
     private lateinit var script: String
     private var params: HashMap<String, String>? = null
@@ -240,7 +240,7 @@ class DialogLogFragment : DialogFragment() {
     }
 
     companion object {
-        fun create(nodeInfo: ClickableNode,
+        fun create(nodeInfo: RunnableNode,
                    onExit: Runnable,
                    onDismiss: Runnable,
                    script: String,

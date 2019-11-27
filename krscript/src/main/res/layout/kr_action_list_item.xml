@@ -6,19 +6,19 @@
 
     <ImageView
         android:id="@id/kr_shortcut_icon"
-        android:layout_marginTop="15dp"
         android:layout_width="10dp"
         android:layout_height="10dp"
         android:layout_marginStart="10dp"
-        android:visibility="gone"
+        android:layout_marginTop="15dp"
         android:src="@drawable/kr_shortcut_icon"
-        android:tint="@color/kr_shortcut_color" />
+        android:tint="@color/kr_shortcut_color"
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
         android:layout_marginStart="23dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
@@ -39,18 +39,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:visibility="gone"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="@dimen/kr_desc_size" />
+            android:textSize="@dimen/kr_desc_size"
+            android:visibility="gone" />
 
         <TextView
             android:id="@id/kr_summary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:visibility="gone"
             android:textColor="?android:colorAccent"
-            android:textSize="@dimen/kr_desc_size" />
+            android:textSize="@dimen/kr_desc_size"
+            android:visibility="gone" />
     </LinearLayout>
 
     <ImageView
@@ -60,8 +60,8 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_marginEnd="20dp"
+        android:layout_marginBottom="10dp"
         android:alpha="0.8"
         android:padding="5dp"
         android:tint="?colorAccent" />

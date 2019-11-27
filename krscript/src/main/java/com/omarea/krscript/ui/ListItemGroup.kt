@@ -28,6 +28,8 @@ class ListItemGroup(context: Context,
             if (child is ListItemClickable && child.key.equals(key)) {
                 child.triggerAction()
                 return true
+            } else if (child is ListItemGroup && child.triggerActionByKey(key)) {
+                return true
             }
         }
         return false

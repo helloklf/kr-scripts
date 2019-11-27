@@ -24,10 +24,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
-import com.omarea.krscript.model.ClickableNode
-import com.omarea.krscript.model.NodeInfoBase
-import com.omarea.krscript.model.KrScriptActionHandler
-import com.omarea.krscript.model.PageNode
+import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
@@ -146,10 +143,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun getKrScriptActionHandler(pageNode: PageNode, isFavoritesTab: Boolean): KrScriptActionHandler {
         return object : KrScriptActionHandler {
-            override fun onActionCompleted(clickableNode: ClickableNode) {
-                if (clickableNode.autoFinish ) {
+            override fun onActionCompleted(runnableNode: RunnableNode) {
+                if (runnableNode.autoFinish ) {
                     finishAndRemoveTask()
-                } else if (clickableNode.reloadPage) {
+                } else if (runnableNode.reloadPage) {
                     // TODO:多线程优化
                     if (isFavoritesTab) {
                         reloadFavoritesTab()

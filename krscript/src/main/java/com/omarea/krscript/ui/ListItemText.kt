@@ -57,8 +57,9 @@ class ListItemText(private val context: Context,
                                 }
                             }
                         }
+
                         override fun updateDrawState(ds: TextPaint) {
-                            ds.color = if(row.color != 1) ds.linkColor else row.color
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
                             ds.isUnderlineText = row.underline
                         }
                     }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -80,8 +81,9 @@ class ListItemText(private val context: Context,
                                 Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
                             }
                         }
+
                         override fun updateDrawState(ds: TextPaint) {
-                            ds.color = if(row.color != 1) ds.linkColor else row.color
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
                             ds.isUnderlineText = row.underline
                         }
                     }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -91,12 +93,13 @@ class ListItemText(private val context: Context,
                     spannableString.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
                             val result = ScriptEnvironmen.executeResultRoot(context, row.onClickScript)
-                            if(result.trim().isNotEmpty()) {
+                            if (result.trim().isNotEmpty()) {
                                 DialogHelper.helpInfo(context, context.getString(R.string.kr_slice_script_result), result)
                             }
                         }
+
                         override fun updateDrawState(ds: TextPaint) {
-                            ds.color = if(row.color != 1) ds.linkColor else row.color
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
                             ds.isUnderlineText = row.underline
                         }
                     }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)

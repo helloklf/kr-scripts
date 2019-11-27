@@ -92,17 +92,17 @@ class PageConfigReader {
                         } else {
                             if ("page" == parser.name) {
                                 if (!isRootNode) {
-                                    page = mainNode(PageNode(pageConfigAbsPath), parser) as PageNode?
+                                    page = clickbleNode(PageNode(pageConfigAbsPath), parser) as PageNode?
                                     if (page != null) {
                                         page = pageNode(page, parser)
                                     }
                                 }
                             } else if ("action" == parser.name) {
-                                action = clickbleNode(ActionNode(), parser) as ActionNode?
+                                action = runnableNode(ActionNode(), parser) as ActionNode?
                             } else if ("switch" == parser.name) {
-                                switch = clickbleNode(SwitchNode(), parser) as SwitchNode?
+                                switch = runnableNode(SwitchNode(), parser) as SwitchNode?
                             } else if ("picker" == parser.name) {
-                                picker = clickbleNode(PickerNode(), parser) as PickerNode?
+                                picker = runnableNode(PickerNode(), parser) as PickerNode?
                                 if (picker != null) {
                                     pickerNode(picker, parser)
                                 }
@@ -339,9 +339,24 @@ class PageConfigReader {
         return groupInfo
     }
 
+    // 通常指 page、action、switch、picker这种，可以点击的节点
+    private fun clickbleNode(clickableNode: ClickableNode, parser: XmlPullParser): ClickableNode? {
+        val runnableNode = mainNode(clickableNode, parser) as ClickableNode?
+        if (runnableNode != null) {
+            for (i in 0 until parser.attributeCount) {
+                val attrValue = parser.getAttributeValue(i)
+                when (parser.getAttributeName(i)) {
+                    "key", "index", "id" -> clickableNode.key = attrValue
+                    "icon", "icon-path" -> runnableNode.iconPath = attrValue.trim()
+                }
+            }
+        }
+        return runnableNode
+    }
+
     // 通常指 action、switch、picker这种，点击后需要执行脚本的节点
-    private fun clickbleNode(node: ClickableNode, parser: XmlPullParser): ClickableNode? {
-        val clickableNode = mainNode(node, parser) as ClickableNode?
+    private fun runnableNode(node: RunnableNode, parser: XmlPullParser): RunnableNode? {
+        val clickableNode = clickbleNode(node, parser) as RunnableNode?
         if (clickableNode != null) {
             for (i in 0 until parser.attributeCount) {
                 val attrValue = parser.getAttributeValue(i)
@@ -349,7 +364,6 @@ class PageConfigReader {
                     "confirm" -> clickableNode.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
                     "auto-off", "auto-close" -> clickableNode.autoOff = (attrValue == "auto-close" || attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
                     "auto-finish" -> clickableNode.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
-                    "icon", "icon-path" -> clickableNode.iconPath = attrValue.trim()
                     "interruptible", "interruptable" -> clickableNode.interruptable = (
                             attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
                     "reload", "reload-page" -> {
@@ -373,7 +387,6 @@ class PageConfigReader {
         for (i in 0 until parser.attributeCount) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
-                "key", "index", "id" -> nodeInfoBase.key = attrValue
                 "title" -> nodeInfoBase.title = attrValue
                 "desc" -> nodeInfoBase.desc = attrValue
                 "support", "visible" -> {

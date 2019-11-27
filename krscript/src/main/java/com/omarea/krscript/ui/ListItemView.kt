@@ -3,10 +3,8 @@ package com.omarea.krscript.ui
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
 import com.omarea.krscript.R
-import com.omarea.krscript.model.ActionNode
 import com.omarea.krscript.model.NodeInfoBase
 
 open class ListItemView(private val context: Context,
