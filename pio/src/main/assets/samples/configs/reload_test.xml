@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <text>
+        <slices>
+            <slice break="true">默认情况下，一个action、picker、switch的脚本执行完后，只会刷新自身的界面显示。</slice>
+            <slice break="true">如果你需要关联刷新其它节点，则需要参考这个例子</slice>
+        </slices>
+    </text>
+
+    <group title="刷新整个页面">
+        <action reload="true">
+            <title>reload 属性测试</title>
+            <desc>我执行完了后就会刷新当前界面，不信你试试~</desc>
+            <script>
+                setprop xx.cc.vv "现在是$(date)\n叽里呱啦，稀里哗啦~"
+            </script>
+        </action>
+        <text>
+            <title>xx.cc.vv 当前值：</title>
+            <desc sh="getprop xx.cc.vv" />
+        </text>
+        <text>
+            <slices>
+                <slice>reload-page="true"、reload="true"、reload="page"均有着同样的效果。</slice>
+                <slice break="true">但为了保持一致和简单明了，建议用reload="page"</slice>
+            </slices>
+        </text>
+    </group>
+
+    <group title="指定节点刷新" id="@group-aaa">
+        <text id="@node-00001">
+            <title>我是个要被刷新的节点</title>
+            <summary sh=" getprop xx.cc.dd" />
+        </text>
+        <action id="@node-00002">
+            <title>我也是要被刷新的节点</title>
+            <summary sh="getprop xx.cc.dd;" />
+        </action>
+
+        <action reload="@node-00001,@node-00002" auto-off="true">
+            <title>reload 属性测试</title>
+            <desc>我执行完了后就会刷新@node-00001, @node-00002，不信你试试~</desc>
+            <script>
+                setprop xx.cc.dd "妈咪妈咪哄，变猪！$(date)~"
+            </script>
+        </action>
+    </group>
+
+    <group title="整组刷新">
+        <action reload="@group-aaa" auto-off="true">
+            <title>reload 属性测试</title>
+            <desc>我执行完了后就会刷新@group-aaa，不信你试试~</desc>
+            <script>
+                setprop xx.cc.dd "妈咪妈咪哄，变猪！ $(date)~"
+            </script>
+        </action>
+    </group>
+
+    <group title="其它">
+        <text>
+            <title>其它说明</title>
+            <slices>
+                <slice>默认情况下，设置了id功能节点，都允许被长按添加为桌面快捷方式。</slice>
+                <slice break="break">但为了使用reload="[id]"功能，又不得不设置id来区别各个节点</slice>
+                <slice break="break">使用</slice>
+                <slice color="#ff0000">@</slice>
+                <slice>为开头的id，则只用作唯一标识，而不允许长按添加快捷方式</slice>
+            </slices>
+        </text>
+    </group>
+</group>

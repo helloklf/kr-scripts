@@ -24,6 +24,10 @@
         <page config="samples/configs/page_test.xml" title="Page用法" />
     </group>
 
+    <group title="关联刷新测试">
+        <page config="samples/configs/reload_test.xml" title="reload 属性" />
+    </group>
+
     <group title="后台任务">
         <page config="samples/configs/bg_task_test.xml" title="后台任务" />
     </group>

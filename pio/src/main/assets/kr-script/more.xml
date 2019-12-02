@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <group>
+    <action title="标题" desc-sh="echo '测试desc输出'" summary-sh="echo '测试summary输出'">
+        <param name="param1" />
+    </action>
     <text>
         <title>改动说明</title>
         <desc>

@@ -38,7 +38,7 @@
 | auto-off | 执行完脚本后是否自动关闭日志界面，默认`false` | `true`、`false` | `false` |
 | auto-finish | 是否在关闭日志界面后关闭当前页面 | `true`、`false` | `false` |
 | icon | 作为快捷方式添加到桌面时使用的图标（目前仅支持assets路径） | `true`、`false` | `false` |
-| reload-page | 执行完脚本后是否刷新页面，默认`false` | `true` `false` | `true` |
+| reload | 执行完脚本后要执行的刷新操作 | `page` 、具体体功能`id` | `page` |
 | bg-task | 后台运行而不是显示日志输出界面，默认`false` | `true` `false` | `true` |
 
 > `id` 属性建议配合 `auto-off`、`auto-finish`、`icon` 使用
