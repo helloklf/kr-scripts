@@ -9,4 +9,11 @@
             在新的版本中，page和action、switch等节点可以混合定义了。也就是说，page_list.xml(more.xml)将不只用于定义子页，而子页也变得可以随处定义！
         </desc>
     </text>
+
+    <group title="其它测试">
+        <page
+            before-load="file:///android_asset/samples/configs/miui-te-before-load.sh"
+            config-sh="file:///android_asset/samples/configs/miui-thermal-engine.sh"
+            title="MIUI温控查看" />
+    </group>
 </group>
