@@ -22,9 +22,9 @@
         </script>
     </action>
 
-    <action icon="samples/icons/icon-test.png" id="shortcut_003">
+    <action logo="samples/icons/icon-test.png" id="shortcut_003">
         <title>图标定义</title>
-        <desc>通过icon-path 或 icon 属性可以自定义快捷方式图标，最后尝试着长按这个功能，添加到桌面</desc>
+        <desc>通过logo-path 或 logo 属性可以自定义快捷方式图标，最后尝试着长按这个功能，添加到桌面</desc>
         <script>
             echo '一般来说，icon属性只支持assets中的文件'
             echo '因为，而使用磁盘文件绝对路径时，通常会受到访问权限的限制，无法正常读取'
