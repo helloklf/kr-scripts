@@ -34,6 +34,8 @@
 | :-: | :-: | :- |
 | config | 配置 | 指定另一个配置文件作为子页面的内容 |
 | html | 网页 | 指定一个网页作为子页面的内容 |
+| activity | 活动名称 | 点击后要打开的activity，格式为`action`或`packageName/activityClass` |
+| link | 链接地址 | 点击后要打卡的网页地址 |
 | config-sh | 动态配置 | 写一段脚本，输出配置文件所在路径或完整内容 |
 | before-load | 读取配置前 | 指定在加载配置文件前要执行的代码 |
 | after-load | 读取配置后 | 指定配置文件读取完成后要执行的代码 |
@@ -67,6 +69,19 @@
     <title>测试config-sh【全文输出】</title>
     <desc>通过config-sh输出配置页内容</desc>
 </page>
+```
+
+- **activity** 示例
+```xml
+<!--格式之一：activity=[action] -->
+<page activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS">
+    <title>开发者选项</title>
+</page>
+
+<!--格式之二：activity=[packageName/activityClass] -->
+<page activity="com.android.settings/.Settings$MemorySettingsActivity">
+    <title>内存使用情况</title>
+</slice>
 ```
 
 ### 补充说明

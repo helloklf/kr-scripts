@@ -54,3 +54,20 @@
 </text>
 ```
 
+
+- **activity** 示例
+```xml
+<text>
+    <slices>
+        <!--格式之一：activity=[action] -->
+        <slice
+            activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS"
+            color="#5500ff" size="15">开发者选项</slice>
+
+        <!--格式之二：activity=[packageName/activityClass] -->
+        <slice
+            activity="com.android.settings/.Settings$MemorySettingsActivity"
+            color="#ff5500" size="15">内存使用情况</slice>
+    </slices>
+</text>
+```
