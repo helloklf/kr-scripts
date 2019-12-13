@@ -239,14 +239,16 @@ class ActionPage : AppCompatActivity() {
                 }
 
                 handler.post {
-                    val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
+                    val autoRunTask = if (actionsLoaded) null else object : AutoRunTask {
                         override val key = autoRun
                         override fun onCompleted(result: Boolean?) {
                             if (result != true) {
                                 Toast.makeText(this@ActionPage, getString(R.string.kr_auto_run_item_losted), Toast.LENGTH_SHORT).show()
                             }
                         }
-                    }, ThemeModeState.getThemeMode())
+                    };
+
+                    val fragment = ActionListFragment.create(items, actionShortClickHandler, autoRunTask, ThemeModeState.getThemeMode())
                     supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commitAllowingStateLoss()
                     hideDialog()
                 }
