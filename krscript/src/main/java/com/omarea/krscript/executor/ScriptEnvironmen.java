@@ -295,11 +295,10 @@ public class ScriptEnvironmen {
             cachePath = createShellCache(context, script);
         }
 
-        // FIXME:主进程退出后，会产生未回收的子进程（孤儿进程）
-        // pstree
 
-        // 对于上面提及的问题，尝试优化，效果未知
-        return "exec " + environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
+        // FIXME:主进程退出后，可能会有未回收的子进程（孤儿进程）
+        // pstree
+        return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
     }
 
     /**

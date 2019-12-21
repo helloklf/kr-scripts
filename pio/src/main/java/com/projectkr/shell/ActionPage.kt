@@ -251,8 +251,8 @@ class ActionPage : AppCompatActivity() {
                     val fragment = ActionListFragment.create(items, actionShortClickHandler, autoRunTask, ThemeModeState.getThemeMode())
                     supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commitAllowingStateLoss()
                     hideDialog()
+                    actionsLoaded = true
                 }
-                actionsLoaded = true
             } else {
                 if (loadFail.isNotEmpty()) {
                     showDialog(getString(R.string.kr_page_load_fail))
