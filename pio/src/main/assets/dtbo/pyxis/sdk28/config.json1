@@ -1,0 +1,28 @@
+{
+  "author": "LenHackintosh",
+  "options": [{
+    "title": "轻微",
+    "value": 66,
+    "color": "#4ba5ff"
+  }, {
+    "title": "一般",
+    "value": 69,
+    "color": "#00d5d9"
+  }, {
+    "title": "稳定",
+    "value": 72,
+    "color": "#02d98d"
+  }, {
+    "title": "发烧",
+    "value": 75,
+    "color": "#87cb00"
+  }, {
+    "title": "疯狂",
+    "value": 78,
+    "color": "#fc8a1b"
+  }, {
+    "title": "极限",
+    "value": 84,
+    "color": "#f9592f"
+  }]
+}
