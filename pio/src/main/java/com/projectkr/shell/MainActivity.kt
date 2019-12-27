@@ -167,6 +167,8 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("afterRead", "")
                 intent.putExtra("loadSuccess", "")
                 intent.putExtra("loadFail", "")
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
                 if (clickableNode is RunnableNode) {
                     intent.putExtra("autoRunItemId", clickableNode.key)
