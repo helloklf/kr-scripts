@@ -82,10 +82,14 @@ class ListItemText(private val context: Context,
                 if (row.onClickScript.isNotEmpty()) {
                     spannableString.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
+                            widget.isEnabled = false
+
                             val result = ScriptEnvironmen.executeResultRoot(context, row.onClickScript)
                             if (result.trim().isNotEmpty()) {
                                 DialogHelper.helpInfo(context, context.getString(R.string.kr_slice_script_result), result)
                             }
+
+                            widget.isEnabled = true
                         }
 
                         override fun updateDrawState(ds: TextPaint) {
