@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent()
 
                 intent.component = ComponentName(this@MainActivity.applicationContext, ActionPage::class.java)
-                intent.putExtra("title", "" + title)
+                intent.putExtra("title", "" + pageNode.title)
                 intent.putExtra("beforeRead", "")
                 intent.putExtra("config", pageNode.pageConfigPath)
                 intent.putExtra("pageConfigSh", pageNode.pageConfigSh)

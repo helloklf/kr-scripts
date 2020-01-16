@@ -47,16 +47,6 @@ class RamChatView : View {
         array.recycle()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
-        val total = array.getInteger(R.styleable.RamInfo_total, 1)
-        val fee = array.getInteger(R.styleable.RamInfo_free, 1)
-        val feeRatio = (fee * 100.0 / total).toInt()
-        ratio = feeRatio
-        //strPercent = new int[]{100 - feeRatio, feeRatio};
-        array.recycle()
-    }
-
     /**
      * dp转换成px
      */
