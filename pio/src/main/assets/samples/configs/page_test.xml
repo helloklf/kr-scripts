@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<group>
+<root>
     <group title="Page测试">
         <!--
             子页面解析、执行顺序：
@@ -35,5 +35,10 @@
             <title>测试config-sh【全文输出】</title>
             <desc>通过config-sh输出配置页内容</desc>
         </page>
+
+        <!--支持指定activity-->
+        <page id="dev" activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS">
+            <title>开发者选项</title>
+        </page>
     </group>
-</group>
+</root>

@@ -71,6 +71,9 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
                 }
+                if (extras.containsKey("config")) {
+                    pageConfig = extras.getString("config")!!
+                }
                 if (extras.containsKey("parentDir")) {
                     parentDir = extras.getString("parentDir")!!
                 }
@@ -116,20 +119,12 @@ class ActionPage : AppCompatActivity() {
             val intent = Intent()
 
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-            intent.putExtra("title", "" + title)
-            intent.putExtra("beforeRead", beforeRead)
-            intent.putExtra("config", pageConfig)
-            intent.putExtra("parentDir", parentDir)
-            intent.putExtra("pageConfigSh", pageConfigSh)
-            intent.putExtra("afterRead", afterRead)
-            intent.putExtra("loadSuccess", loadSuccess)
-            intent.putExtra("loadFail", loadFail)
+            intent.putExtras(getIntent())
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
             if (clickableNode is RunnableNode) {
                 intent.putExtra("autoRunItemId", clickableNode.key)
-            } else if (clickableNode is PageNode) {
             }
 
             addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
