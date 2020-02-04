@@ -21,6 +21,7 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
+import com.projectkr.shell.permissions.CheckRootStatus
 
 
 class ActionPage : AppCompatActivity() {
@@ -44,6 +45,19 @@ class ActionPage : AppCompatActivity() {
     private var pageConfigSh = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // 如果应用还没启动，就直接打开了actionPage(通常是PIO的快捷方式)，先跳转到启动页面
+        if (!ScriptEnvironmen.isInited()) {
+            val initIntent = Intent(this.applicationContext, SplashActivity::class.java)
+            initIntent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            initIntent.putExtras(this.intent)
+            initIntent.putExtra("JumpActionPage", true)
+            startActivity(initIntent)
+            // overridePendingTransition(0, 0)
+
+            finish()
+            return
+        }
+
         ThemeModeState.switchTheme(this)
 
         super.onCreate(savedInstanceState)
@@ -97,12 +111,12 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("autoRunItemId")) {
                     autoRun = extras.getString("autoRunItemId")!!
                 }
-
-                if (pageConfig.isEmpty() && pageConfigSh.isEmpty()) {
-                    setResult(2)
-                    finish()
-                }
             }
+        }
+
+        if (pageConfig.isEmpty() && pageConfigSh.isEmpty()) {
+            setResult(2)
+            finish()
         }
     }
 

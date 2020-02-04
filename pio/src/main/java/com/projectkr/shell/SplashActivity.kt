@@ -25,13 +25,10 @@ class SplashActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (CheckRootStatus.lastCheckResult) {
+        if (ScriptEnvironmen.isInited()) {
             if (isTaskRoot) {
-                val intent = Intent(this.applicationContext, MainActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                startActivity(intent)
+                gotoHome()
             }
-            finish()
             return
         }
 
@@ -148,8 +145,14 @@ class SplashActivity : Activity() {
     }
 
     private fun gotoHome() {
-        val intent = Intent(this.applicationContext, MainActivity::class.java)
-        startActivity(intent)
+        if (this.intent != null && this.intent.hasExtra("JumpActionPage") && this.intent.getBooleanExtra("JumpActionPage", false)) {
+            val actionPage = Intent(this.applicationContext, ActionPage::class.java)
+            actionPage.putExtras(this.intent)
+            startActivity(actionPage)
+        } else {
+            val home = Intent(this.applicationContext, MainActivity::class.java)
+            startActivity(home)
+        }
         finish()
     }
 
