@@ -37,6 +37,7 @@ class OpenPageHelper(private var activity: Activity) {
             var intent: Intent? = null
             if (!pageNode.onlineHtmlPage.isEmpty()) {
                 intent = Intent(activity, ActionPageOnline::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra("config", pageNode.onlineHtmlPage)
             }
 
@@ -51,6 +52,7 @@ class OpenPageHelper(private var activity: Activity) {
                 if (intent == null) {
                     intent = Intent(activity, ActionPage::class.java)
                 }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra("config", pageNode.pageConfigPath)
             }
 

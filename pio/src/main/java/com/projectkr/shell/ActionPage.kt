@@ -16,12 +16,14 @@ import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.projectkr.shell.permissions.CheckRootStatus
+import java.lang.Exception
 
 
 class ActionPage : AppCompatActivity() {
@@ -78,6 +80,21 @@ class ActionPage : AppCompatActivity() {
         if (intent.extras != null) {
             val extras = intent.extras
             if (extras != null) {
+                if (extras.containsKey("activity")) {
+                    if(TryOpenActivity(this, extras.getString("activity")!!).tryOpen()) {
+                        finish()
+                        return
+                    }
+                }
+                if (extras.containsKey("onlineHtmlPage")) {
+                    try {
+                        val page = Intent(this, ActionPageOnline::class.java)
+                        page.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        page.putExtra("config", extras.getString("onlineHtmlPage"))
+                        startActivity(page)
+                    } catch (ex: Exception){}
+                }
+
                 if (extras.containsKey("title")) {
                     pageTitle = extras.getString("title")!!
                     title = pageTitle
@@ -107,7 +124,6 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("loadFail")) {
                     loadFail = extras.getString("loadFail")!!
                 }
-
                 if (extras.containsKey("autoRunItemId")) {
                     autoRun = extras.getString("autoRunItemId")!!
                 }
@@ -130,15 +146,57 @@ class ActionPage : AppCompatActivity() {
         }
 
         override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+            val page = if (clickableNode is PageNode) {
+                clickableNode
+            } else if (clickableNode is RunnableNode) {
+                PageNode(parentDir).apply {
+                    title = "" + this@ActionPage.title
+                    beforeRead = this@ActionPage.beforeRead
+                    pageConfigPath = this@ActionPage.pageConfig
+                    pageConfigSh = this@ActionPage.pageConfigSh
+                    afterRead = this@ActionPage.afterRead
+                    loadSuccess = this@ActionPage.loadSuccess
+                    loadFail = this@ActionPage.loadFail
+                }
+            } else {
+                return
+            }
+
             val intent = Intent()
 
-            intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-            intent.putExtras(getIntent())
+            intent.component = ComponentName(this@ActionPage.applicationContext, ActionPage::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-
             if (clickableNode is RunnableNode) {
                 intent.putExtra("autoRunItemId", clickableNode.key)
+            }
+
+            page.run {
+                intent.putExtra("title", "" + title)
+                if (activity.isNotEmpty()) {
+                    intent.putExtra("activity", activity)
+                }
+                if (onlineHtmlPage.isNotEmpty()) {
+                    intent.putExtra("onlineHtmlPage", onlineHtmlPage)
+                }
+                if (beforeRead.isNotEmpty()) {
+                    intent.putExtra("beforeRead", beforeRead)
+                }
+                if (pageConfigPath.isNotEmpty()) {
+                    intent.putExtra("config", pageConfigPath)
+                }
+                if (pageConfigSh.isNotEmpty()) {
+                    intent.putExtra("pageConfigSh", pageConfigSh)
+                }
+                if (afterRead.isNotEmpty()) {
+                    intent.putExtra("afterRead", afterRead)
+                }
+                if (loadSuccess.isNotEmpty()) {
+                    intent.putExtra("loadSuccess", loadSuccess)
+                }
+                if (loadFail.isNotEmpty()) {
+                    intent.putExtra("loadFail", loadFail)
+                }
             }
 
             addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
