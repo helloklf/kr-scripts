@@ -15,8 +15,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
@@ -174,12 +174,12 @@ class ActionPageOnline : AppCompatActivity() {
                         AlertDialog.Builder(this@ActionPageOnline)
                                 .setMessage(message)
                                 .setCancelable(false)
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     result?.confirm()
-                                })
-                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                                }
+                                .setNeutralButton(R.string.btn_cancel) { _, _ ->
                                     result?.cancel()
-                                })
+                                }
                                 .create()
                 )
                 return true // super.onJsConfirm(view, url, message, result)

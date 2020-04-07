@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -11,19 +12,20 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CompoundButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.core.content.PermissionChecker
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
@@ -36,6 +38,8 @@ class MainActivity : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var handler = Handler()
     private var krScriptConfig = KrScriptConfig()
+
+    private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeModeState.switchTheme(this)
@@ -285,8 +289,22 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.option_menu_info -> {
                 val layoutInflater = LayoutInflater.from(this)
+                val layout = layoutInflater.inflate(R.layout.dialog_about, null)
+                val transparentUi = layout.findViewById<CompoundButton>(R.id.transparent_ui);
+                val themeConfig = ThemeConfig(this)
+                transparentUi.setOnClickListener {
+                    val isChecked = (it as CompoundButton).isChecked
+                    if (isChecked && !checkPermission(this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        it.isChecked = false
+                        Toast.makeText(this@MainActivity, R.string.kr_write_external_storage, Toast.LENGTH_SHORT).show()
+                    } else {
+                        themeConfig.setAllowTransparentUI(isChecked)
+                    }
+                }
+                transparentUi.isChecked = themeConfig.getAllowTransparentUI()
+
                 DialogHelper.animDialog(
-                        AlertDialog.Builder(this).setView(layoutInflater.inflate(R.layout.dialog_about, null))
+                        AlertDialog.Builder(this).setView(layout)
                 )
             }
             R.id.option_menu_reboot -> {
