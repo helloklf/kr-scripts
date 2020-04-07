@@ -31,6 +31,7 @@ import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.FloatMonitor
+import com.projectkr.shell.permissions.CheckRootStatus
 import com.projectkr.shell.ui.TabIconHelper
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         main_tabhost.setup()
         val tabIconHelper = TabIconHelper(main_tabhost, this)
-        if (krScriptConfig.allowHomePage) {
+        if (CheckRootStatus.lastCheckResult && krScriptConfig.allowHomePage) {
             tabIconHelper.newTabSpec(getString(R.string.tab_home), getDrawable(R.drawable.tab_home)!!, R.id.main_tabhost_cpu)
         } else {
             main_tabhost_cpu.visibility = View.GONE
@@ -91,11 +92,13 @@ class MainActivity : AppCompatActivity() {
             }
         }).start()
 
-        val home = FragmentHome()
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.main_tabhost_cpu, home)
-        transaction.commitAllowingStateLoss()
+        if (CheckRootStatus.lastCheckResult && krScriptConfig.allowHomePage) {
+            val home = FragmentHome()
+            val fragmentManager = supportFragmentManager
+            val transaction = fragmentManager.beginTransaction()
+            transaction.replace(R.id.main_tabhost_cpu, home)
+            transaction.commitAllowingStateLoss()
+        }
     }
 
     private fun getItems(pageNode: PageNode): ArrayList<NodeInfoBase>? {
