@@ -169,7 +169,14 @@ public class KeepShell(private var rootMode: Boolean = true) {
             // Log.e("shell-unlock", cmd)
             // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
             return shellOutputCache.toString().trim()
-        } catch (e: IOException) {
+        }
+        /* catch (e: IOException) {
+            tryExit()
+            Log.e("KeepShellAsync", "" + e.message)
+            return "error"
+        }
+        */
+        catch (e: Exception) {
             tryExit()
             Log.e("KeepShellAsync", "" + e.message)
             return "error"
