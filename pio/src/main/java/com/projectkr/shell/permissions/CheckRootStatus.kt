@@ -58,11 +58,13 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                     exitProcess(0)
                                     //android.os.Process.killProcess(android.os.Process.myPid())
                                 }
-                                .setNeutralButton(R.string.btn_skip) { _, _ ->
-                                    if (next != null) {
-                                        myHandler.post(next)
-                                    }
+                        if (context.resources.getBoolean(R.bool.force_root) != true) {
+                            builder.setNeutralButton(R.string.btn_skip) { _, _ ->
+                                if (next != null) {
+                                    myHandler.post(next)
                                 }
+                            }
+                        }
                         DialogHelper.animDialog(builder)
                     }
                 }

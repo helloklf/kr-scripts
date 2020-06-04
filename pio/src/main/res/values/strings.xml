@@ -2,6 +2,8 @@
     <!--重要内容，谨慎修改-->
     <string name="kr_script_config">kr-script.conf</string>
 
+    <!--是否强制获取ROOT-->
+    <bool name="force_root">false</bool>
 
     <string name="app_name">PIO</string>
     <string name="shell_executor">脚本执行</string>
