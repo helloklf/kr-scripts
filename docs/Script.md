@@ -45,6 +45,7 @@
 | PACKAGE_VERSION_CODE | PIO框架应用的版本号 |
 | TOOLKIT | 自带的命令行工具集安装目录 |
 | APP_USER_ID | 安卓中每个应用都有一个单独的UserID |
+| ROOT_PERMISSION | 是否已经获得ROOT权限，值为true/false |
 
 > 其它说明：<br/>
 
