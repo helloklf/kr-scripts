@@ -58,13 +58,40 @@
 - 在picker节点上增加`multiple="true"`属性来标识允许多选
 - 例如：
 
-```xml
-<picker options-sh="echo 'a|选项A'; echo 'b|选项B'" value-sh="echo 'a'; echo 'b';">
-    <title>测试单选界面</title>
-    <get>getprop xxx.xxx.xxx4</get>
-    <set>setprop xxx.xxx.xxx4 "$state"</set>
-</picker>
-```
+    ```xml
+    <picker options-sh="echo 'a|选项A'; echo 'b|选项B'" value-sh="echo 'a'; echo 'b';">
+        <title>测试单选界面</title>
+        <get>getprop xxx.xxx.xxx4</get>
+        <set>setprop xxx.xxx.xxx4 "$state"</set>
+    </picker>
+    ```
+
+- 默认设置下，多选列表的各个值用换行分隔，得到的参数可能是这样的
+    ```sh
+    value="
+    wifi
+    airplane
+    "
+    ```
+- 可有时候，你希望得到的值是 `value="wifi,airplane"` 这样的？
+- 其实你可以通过`separator`属性自定义分隔符，例如：
+    ```xml
+    <picker multiple="multiple" separator=",">
+        <title>隐藏状态栏图标</title>
+        <desc>设置隐藏的状态栏图标</desc>
+        <options>
+            <option value="mobile">手机信号</option>
+            <option value="wifi">WIFI</option>
+            <option value="airplane">飞行模式</option>
+        </options>
+        <get>
+            settings get secure icon_blacklist
+        </get>
+        <set>
+            settings put secure icon_blacklist "$state"
+        </set>
+    </picker>
+    ```
 
 
 #

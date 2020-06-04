@@ -14,4 +14,3 @@ echo $(set | grep 'USER_ID=0')
 
 echo 'ROOT_PERMISSION 变量只在 PIO环境下才有：'
 echo "ROOT_PERMISSION=${ROOT_PERMISSION}"
-echo "ROOT_PERMISSION 取值为：granted 或 denied，granted"

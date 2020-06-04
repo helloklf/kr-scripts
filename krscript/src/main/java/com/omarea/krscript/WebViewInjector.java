@@ -178,6 +178,18 @@ public class WebViewInjector {
         public boolean fileChooser(final String callbackFunction) {
             if (fileChooser != null) {
                 return fileChooser.openFileChooser(new FileChooserRender.FileSelectedInterface() {
+                    @Nullable
+                    @Override
+                    public String suffix() {
+                        return null; // TODO
+                    }
+
+                    @Nullable
+                    @Override
+                    public String mimeType() {
+                        return "*/*"; // TODO
+                    }
+
                     @Override
                     public void onFileSelected(@Nullable String path) {
                         try {

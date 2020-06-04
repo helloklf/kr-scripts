@@ -16,4 +16,11 @@
             config-sh="file:///android_asset/samples/configs/miui-thermal-engine.sh"
             title="MIUI温控查看" />
     </group>
+
+    <group title="ADB 测试">
+        <page
+            config="file:///android_asset/samples/configs/adb_test.xml"
+            title="ADB 测试页面" />
+    </group>
+
 </group>

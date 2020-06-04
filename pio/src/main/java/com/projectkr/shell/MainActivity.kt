@@ -21,6 +21,7 @@ import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shell.KeepShellPublic
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private var handler = Handler()
     private var krScriptConfig = KrScriptConfig()
 
-    private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+    private fun checkPermission(permission: String): Boolean = PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeModeState.switchTheme(this)
@@ -98,6 +99,10 @@ class MainActivity : AppCompatActivity() {
             val transaction = fragmentManager.beginTransaction()
             transaction.replace(R.id.main_tabhost_cpu, home)
             transaction.commitAllowingStateLoss()
+        }
+
+        if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 111);
         }
     }
 
@@ -227,21 +232,43 @@ class MainActivity : AppCompatActivity() {
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
+    private val ACTION_FILE_PATH_CHOOSER_INNER = 65300
+
+    private fun chooseFilePath(extension: String) {
+        try {
+            val intent = Intent(this, ActivityFileSelector::class.java)
+            intent.putExtra("extension", extension)
+            startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
+        } catch (ex: java.lang.Exception) {
+            Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
             return false
         } else {
-            try {
-                val intent = Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*")
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+            return try {
+                val suffix = fileSelectedInterface.suffix()
+                if (suffix != null && suffix.isNotEmpty()) {
+                    chooseFilePath(suffix)
+                } else {
+                    val intent = Intent(Intent.ACTION_GET_CONTENT);
+                    val mimeType = fileSelectedInterface.mimeType()
+                    if (mimeType != null) {
+                        intent.type = mimeType
+                    } else {
+                        intent.type = "*/*"
+                    }
+                    intent.addCategory(Intent.CATEGORY_OPENABLE);
+                    startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                }
                 this.fileSelectedInterface = fileSelectedInterface
-                return true;
-            } catch (ex: Exception) {
-                return false
+                true;
+            } catch (ex: java.lang.Exception) {
+                false
             }
         }
     }
@@ -257,6 +284,10 @@ class MainActivity : AppCompatActivity() {
                     fileSelectedInterface?.onFileSelected(null)
                 }
             }
+            this.fileSelectedInterface = null
+        } else if (requestCode == ACTION_FILE_PATH_CHOOSER_INNER) {
+            val absPath = if (data == null || resultCode != Activity.RESULT_OK) null else data.getStringExtra("file")
+            fileSelectedInterface?.onFileSelected(absPath)
             this.fileSelectedInterface = null
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -297,7 +328,7 @@ class MainActivity : AppCompatActivity() {
                 val themeConfig = ThemeConfig(this)
                 transparentUi.setOnClickListener {
                     val isChecked = (it as CompoundButton).isChecked
-                    if (isChecked && !checkPermission(this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    if (isChecked && !checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                         it.isChecked = false
                         Toast.makeText(this@MainActivity, R.string.kr_write_external_storage, Toast.LENGTH_SHORT).show()
                     } else {

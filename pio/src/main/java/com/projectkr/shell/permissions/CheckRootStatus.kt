@@ -100,6 +100,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
+            /*
             // 必需的权限
             val requiredPermission = arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -114,6 +115,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                     cmds.append("pm grant ${context.packageName} $it\n")
                 }
             }
+            */
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (!checkPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)) {

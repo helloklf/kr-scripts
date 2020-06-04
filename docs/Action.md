@@ -56,6 +56,7 @@
 | options-sh | 使用脚本通过echo输出来生成 option | ` ` |
 | title | 参数的标题，显示在输入框顶部 | `任意提示文字` |
 | label | 参数的标题，显示在输入框左侧 | `任意提示文字` |
+| placeholder | 显示在文本输入框的水印文字，可用作输入为空时的提示 | `请在此处输入文字` |
 | desc | 参数的描述，显示在输入框下方 | `任意提示文字` |
 | type | 输入类型，具体见下文 | `int` |
 | readonly | 设为readonly表示只读，阻止输入 | `readonly` | 
@@ -63,17 +64,19 @@
 | min | 输入的最小值，适用于数字输入和seekbar | `10` |
 | max | 输入的最大值，适用于数字输入和seekbar | `100` |
 | required | 是否为必填参数，可配置为`true`、`false` | `true` |
+| suffix | 限制可选择的文件后缀，仅限`type=file`时使用 | `zip` |
+| mime | 限制可选择的文件MIME类型，仅限`type=file`时使用 | `application/zip` |
 
 > param 的`type`列举如下：
 
 | 类型 | 描述 | 取值 |
 | - | :- | - |
-| int | 整数输入框，可配合`min`、`max`属性适用 | `min`和`max`之间的整数 |
-| number | 带小数的数字输入框，可配合`min`、`max`属性适用 | `min`和`max`之间的数字 |
+| int | 整数输入框，可配合`min`、`max`属性使用 | `min`和`max`之间的整数 |
+| number | 带小数的数字输入框，可配合`min`、`max`属性使用 | `min`和`max`之间的数字 |
 | checkbox | 勾选框 | `1`或`0` |
 | switch | 开关 | `1`或`0` |
-| seekbar | 滑块，**必需**配合`min`、`max`属性适用 | `min`和`max`之间的整数 |
-| file | 文件路径选择器 | 选中文件的绝对路径 |
+| seekbar | 滑块，**必需**配合`min`、`max`属性使用 | `min`和`max`之间的整数 |
+| file | 文件路径选择器，建议配合`suffix`或`mime`属性使用 | 选中文件的绝对路径 |
 | color | 颜色输入和选择界面 | 输入形如`#445566`或`#ff445566`的色值 |
 | text | 任意文本输入（默认） | 任意自定义输入的文本 |
 
@@ -181,17 +184,36 @@
 - 设置了`option`或`option-sh`的情况下，在`param`节点添加`multiple="true"`属性
 - 即可将原来的单选模式切换为多选模式，例如：
 
-```xml
-<action>
-    <title>多选下拉</title>
-    <param name="test" label="多选下拉" multiple="multiple">
-        <option value="Z">测试一下 Z</option>
-        <option value="X">测试一下 X</option>
-    </param>
-    <set>echo '数值为：' $test</set>
-</action>
-```
+    ```xml
+    <action>
+        <title>多选下拉</title>
+        <param name="test" label="多选下拉" multiple="multiple">
+            <option value="Z">测试一下 Z</option>
+            <option value="X">测试一下 X</option>
+        </param>
+        <set>echo '数值为：' $test</set>
+    </action>
+    ```
 
+- 默认设置下，多选列表的各个值用换行分隔，得到的参数可能是这样的
+    ```sh
+    value="
+    aaa
+    bbb
+    "
+    ```
+- 可有时候，你希望得到的值是 `value="aaa,bbb"` 这样的？
+- 其实你可以通过`separator`属性自定义分隔符，例如：
+    ```xml
+    <action>
+        <title>多选下拉</title>
+        <param name="test" label="多选下拉" multiple="multiple" separator=",">
+            <option value="Z">测试一下 Z</option>
+            <option value="X">测试一下 X</option>
+        </param>
+        <set>echo '数值为：' $test</set>
+    </action>
+    ```
 
 #
 
@@ -202,3 +224,7 @@
 - 由于在xml中写大量的shell代码非常不方便，也不美观，
 - 建议参考 [`脚本使用`](./Script.md) 中的说明，
 - 将`visible`属性需要执行的代码，写在一个单独的文件中。
+
+> 文件选择器的类型限制说明
+- 通过`suffix(后缀)`限制文件选择类型，并不是Android原生的机制，因此为了实现该目的，PIO自带了文件选择器来实现此目的。
+- 而通过`mime`类型限制选择文件类型则符合Android本身的设定，但遗憾一般的文件浏览器只识别极少的`mime`类型。

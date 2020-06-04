@@ -52,8 +52,29 @@
         </action>
 
         <action>
-            <title>文件选择</title>
+            <title>文件选择 (不限类型)</title>
             <param name="test" label="文件选择" type="file"
+                value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
+            <set>echo '数值为：' $test</set>
+        </action>
+
+        <action>
+            <title>文件选择（.Zip）</title>
+            <param name="test" label="文件选择" type="file"
+                suffix="zip"
+                value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
+            <set>echo '数值为：' $test</set>
+        </action>
+        <!--
+            为了更方便的设置文件类型限制，你可以通过suffix来指定以下任一一种格式
+            zip,rar,gz,tar,taz,tgz,img,apk,jpg,jpeg,jpe,png,txt,xml,html,htm,shtml
+            如果不在以上列表，则表示你需要通过mime来指定mime类型，你可以在网络上搜索了解各种文件格式的对应mime类型
+        -->
+
+        <action>
+            <title>文件选择(application/zip)</title>
+            <param name="test" label="文件选择" type="file"
+                mime="application/zip"
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
             <set>echo '数值为：' $test</set>
         </action>
@@ -61,6 +82,12 @@
         <action>
             <title>颜色输入</title>
             <param name="test" label="颜色输入" type="color" />
+            <set>echo '数值为：' $test</set>
+        </action>
+
+        <action>
+            <title>提示</title>
+            <param name="test" label="颜色输入" title="输入框标题" placeholder="请输入...." type="text" />
             <set>echo '数值为：' $test</set>
         </action>
     </group>
