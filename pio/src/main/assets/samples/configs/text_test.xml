@@ -55,8 +55,9 @@
                 <slice bgcolor="#ff0000" color="#ffffff">红底白字</slice>
                 <slice break="break" underline="underline">文字带下划线</slice>
                 <slice break="break" u="1">文字带下划线（underline属性同u属性）</slice>
-                <slice break="break" link="http://vtools.omarea.com/" size="20">Scene 官网</slice>
-                <slice activity="android.settings.APN_SETTINGS" break="1" size="20">打开APN设置</slice>
+                <slice break="break" link="http://vtools.omarea.com/" size="20">Scene 官网（link）</slice>
+                <slice activity="android.settings.APN_SETTINGS" break="1" size="20">打开APN设置（activity）</slice>
+                <slice run="echo '你点击了脚本！'">运行脚本（run）</slice>
             </slices>
         </text>
     </group>

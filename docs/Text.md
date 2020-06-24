@@ -36,6 +36,7 @@
 | background **(简写: `bg`)** | 文字背景色 | #开头的十六进制色，如：`#000000` |
 | link **(或者: `href`)** | 文本链接，点击后打开网页 | 如 `http://vtools.omarea.com/` |
 | activity **(简写: `a`)** | activity，点击后打开Activity | 如 `android.settings.APN_SETTINGS` |
+| run **(同: `scrip`)** | 点击后要执行的脚本，脚本的输出内容将以弹窗显示 | 如 `echo "123"` |
 
 
 > 注意：`align`属性的`left`、`right`目前只支持`Android P`及更高版本系统
@@ -43,14 +44,21 @@
 - 使用示例
 ```xml
 <text>
+    <slice>这是默认文本内容显示</slice>
     <slice bold="true">显示为加粗</slice>
     <slice italic="true">显示为斜体</slice>
     <slice break="true">换行</slice>
     <slice bold="true" italic="true">显示为粗斜体</slice>
     <slice size="20">字体显示为20dp</slice>
     <slice color="#ff0000">显示为红色</slice>
-    <slice link="http://vtools.omarea.com/">Scene 官网</slice>
-    <slice activity="android.settings.APN_SETTINGS">打开APN设置</slice>
+    <slice align="center" break="true">居中对齐</slice>
+    <slice align="right" break="true">靠右对齐（Android P+）</slice>
+    <slice bgcolor="#ff0000" color="#ffffff">红底白字</slice>
+    <slice break="break" underline="underline">文字带下划线</slice>
+    <slice break="break" u="1">文字带下划线（underline属性同u属性）</slice>
+    <slice break="break" link="http://vtools.omarea.com/" size="20">Scene 官网（link）</slice>
+    <slice activity="android.settings.APN_SETTINGS" break="1" size="20">打开APN设置（activity）</slice>
+    <slice run="echo '你点击了脚本！'">运行脚本（run）</slice>
 </text>
 ```
 
