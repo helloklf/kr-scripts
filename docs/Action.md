@@ -37,8 +37,8 @@
 | interruptible | 是否允许中断执行，默认`true` | `true`、`false` | `false` |
 | auto-off | 执行完脚本后是否自动关闭日志界面，默认`false` | `true`、`false` | `false` |
 | auto-finish | 是否在关闭日志界面后关闭当前页面 | `true`、`false` | `false` |
-| logo | 作为快捷方式添加到桌面时使用的图标 | `true`、`false` | `false` |
-| icon | 显示在功能左侧的图标。如果未设置logo属性，它也同时会被作为logo使用 | `true`、`false` | `false` |
+| logo | 作为快捷方式添加到桌面时使用的图标 | 文件路径 |  |
+| icon | 显示在功能左侧的图标。如果未设置logo属性，它也同时会被作为logo使用 | 文件路径 |  |
 | reload | 执行完脚本后要执行的刷新操作 | `page` 、具体体功能`id` | `page` |
 | bg-task | 后台运行而不是显示日志输出界面，默认`false` | `true` `false` | `true` |
 
