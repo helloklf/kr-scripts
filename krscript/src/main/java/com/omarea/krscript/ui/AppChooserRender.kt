@@ -5,6 +5,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
+import android.widget.SimpleAdapter
+import android.widget.Spinner
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
@@ -14,33 +16,43 @@ class AppChooserRender(private var actionParamInfo: ActionParamInfo, private var
 
     fun render(): View {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_app, null)
-        val textView = layout.findViewById<TextView>(R.id.kr_param_app_text)
-        val pathView = layout.findViewById<TextView>(R.id.kr_param_app_package)
+        val pathView = layout.findViewById<Spinner>(R.id.kr_param_app_package)
         val btn = layout.findViewById<ImageButton>(R.id.kr_param_app_btn)
 
+        val packages =  ArrayList(loadPackages())
+        pathView.adapter = SimpleAdapter(
+                context,
+                packages.map {
+                    HashMap<String, Any?>().apply {
+                        put("title", it.desc)
+                        put("item", it)
+                    }
+                },
+                R.layout.kr_simple_text_list_item,
+                arrayOf("title"),
+                intArrayOf(R.id.text))
+
         btn.setOnClickListener {
-            val packages = loadPackages()
             DialogHelper.animDialog(
                     AlertDialog.Builder(context)
                             .setTitle("请选择应用")
                             .setSingleChoiceItems(
                                     packages.map { it.desc }.toTypedArray(),
-                                    packages.map { it.value }.indexOf(pathView.text)
+                                    pathView.selectedItemPosition
                             )
                             { dialog, index ->
-                                textView.text = packages[index].desc
-                                pathView.text = packages[index].value
+                                pathView.setSelection(index, true)
 
                                 dialog.dismiss()
                             })
         }
 
         if (actionParamInfo.valueFromShell != null) {
-            textView.text = actionParamInfo.valueFromShell
-            pathView.text = actionParamInfo.valueFromShell
+            // TODO
+            // pathView.text = actionParamInfo.valueFromShell
         } else if (!actionParamInfo.value.isNullOrEmpty()) {
-            textView.text = actionParamInfo.value
-            pathView.text = actionParamInfo.value
+            // TODO
+            // pathView.text = actionParamInfo.value
         }
 
         pathView.tag = actionParamInfo.name
