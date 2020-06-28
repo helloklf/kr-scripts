@@ -76,7 +76,7 @@ class ActionParamsLayoutRender {
         for (actionParamInfo in actionParamInfos) {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
-            if (options != null) {
+            if (options != null && actionParamInfo.type != "app") {
                 if (actionParamInfo.multiple) {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo, false)
@@ -95,13 +95,13 @@ class ActionParamsLayoutRender {
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
-                val checkBox = CheckBox(context)
-                checkBox.isChecked = getCheckState(actionParamInfo, false)
-                checkBox.isEnabled = !actionParamInfo.readonly
-                if (!actionParamInfo.label.isNullOrEmpty()) {
-                    checkBox.text = actionParamInfo.label
-                }
-                addToLayout(checkBox, actionParamInfo)
+                addToLayout(CheckBox(context).apply {
+                    isChecked = getCheckState(actionParamInfo, false)
+                    isEnabled = !actionParamInfo.readonly
+                    if (!actionParamInfo.label.isNullOrEmpty()) {
+                        text = actionParamInfo.label
+                    }
+                }, actionParamInfo)
             }
             // 开关渲染
             else if (actionParamInfo.type == "switch") {
@@ -123,6 +123,12 @@ class ActionParamsLayoutRender {
             // 文件选择
             else if (actionParamInfo.type == "file") {
                 val layout = FileChooserRender(actionParamInfo, context, fileChooser).render()
+
+                addToLayout(layout, actionParamInfo, false)
+            }
+            // 应用选择
+            else if (actionParamInfo.type == "app") {
+                val layout = AppChooserRender(actionParamInfo, context).render()
 
                 addToLayout(layout, actionParamInfo, false)
             }

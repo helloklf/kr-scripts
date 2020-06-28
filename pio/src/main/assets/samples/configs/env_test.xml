@@ -12,13 +12,23 @@
                 pwd
             </set>
         </action>
+
+        <action>
+            <title>toybox 测试</title>
+            <desc>测试toolkit目录中放置的toybox是否生效</desc>
+            <set>
+                echo '当前toybox版本：'
+                toybox --version
+            </set>
+        </action>
+
         <action>
             <title>zip 测试</title>
             <desc>测试toolkit目录中放置的zip是否生效</desc>
             <set>zip --help</set>
         </action>
 
-        <action>
+        <action confirm="true">
             <title>卸载系统自带的busybox</title>
             <desc>卸载安装到system分区的busybox</desc>
             <set>file:///android_asset/samples/test/delete_busybox.sh</set>

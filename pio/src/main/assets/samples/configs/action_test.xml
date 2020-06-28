@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <group>
-    <group title="各种参数类型">
+    <group title="基本参数类型和输入限制">
         <action>
             <title>单选下拉</title>
             <param name="test">
@@ -50,12 +50,14 @@
             <param name="test" label="选框" type="switch" />
             <set>echo '数值为：' $test</set>
         </action>
+    </group>
 
+    <group title="文件选择">
         <action>
             <title>文件选择 (不限类型)</title>
             <param name="test" label="文件选择" type="file"
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
-            <set>echo '数值为：' $test</set>
+            <set>echo '路径为：' $test</set>
         </action>
 
         <action>
@@ -63,7 +65,7 @@
             <param name="test" label="文件选择" type="file"
                 suffix="zip"
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
-            <set>echo '数值为：' $test</set>
+            <set>echo '路径为：' $test</set>
         </action>
         <!--
             为了更方便的设置文件类型限制，你可以通过suffix来指定以下任一一种格式
@@ -76,17 +78,41 @@
             <param name="test" label="文件选择" type="file"
                 mime="application/zip"
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
-            <set>echo '数值为：' $test</set>
+            <set>echo '路径为：' $test</set>
         </action>
+    </group>
 
+    <group title="应用选择">
+        <!--借助于type=app轻松的显示应用名称-->
+
+        <action>
+            <title>请选择一个一个应用</title>
+            <param name="package_name" label="应用选择" type="app" />
+            <set>echo '包名为：' $package_name</set>
+        </action>
+        <action>
+            <title>请选择一个一个应用</title>
+            <desc>配合options-sh轻松的限制可被选择的APP</desc>
+            <param
+                name="package_name"
+                label="应用选择"
+                type="app"
+                options-sh="pm list package -3 | cut -f2 -d ':'" />
+            <set>echo '包名为：' $package_name</set>
+        </action>
+    </group>
+
+    <group title="颜色选择">
         <action>
             <title>颜色输入</title>
             <param name="test" label="颜色输入" type="color" />
             <set>echo '数值为：' $test</set>
         </action>
+    </group>
 
+    <group title="输入提示">
         <action>
-            <title>提示</title>
+            <title>输入提示</title>
             <param name="test" label="颜色输入" title="输入框标题" placeholder="请输入...." type="text" />
             <set>echo '数值为：' $test</set>
         </action>

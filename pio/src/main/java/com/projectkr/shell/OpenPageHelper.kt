@@ -45,7 +45,7 @@ class OpenPageHelper(private var activity: Activity) {
                 if (intent == null) {
                     intent = Intent(activity, ActionPage::class.java)
                 }
-                intent.putExtra("pageConfigSh", pageNode.pageConfigSh)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
             if (!pageNode.pageConfigPath.isEmpty()) {
@@ -53,28 +53,10 @@ class OpenPageHelper(private var activity: Activity) {
                     intent = Intent(activity, ActionPage::class.java)
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra("config", pageNode.pageConfigPath)
             }
 
             intent?.run {
-                putExtra("title", pageNode.title)
-
-                if (pageNode.beforeRead.isNotBlank()) {
-                    intent.putExtra("beforeRead", pageNode.beforeRead)
-                }
-                if (pageNode.afterRead.isNotBlank()) {
-                    intent.putExtra("afterRead", pageNode.afterRead)
-                }
-                if (pageNode.loadSuccess.isNotBlank()) {
-                    intent.putExtra("loadSuccess", pageNode.loadSuccess)
-                }
-                if (pageNode.loadFail.isNotBlank()) {
-                    intent.putExtra("loadFail", pageNode.loadFail)
-                }
-                if (pageNode.parentPageConfigDir.isNotEmpty()) {
-                    intent.putExtra("parentDir", pageNode.parentPageConfigDir)
-                }
-
+                intent.putExtra("page", pageNode)
                 activity.startActivity(intent)
             }
         } catch (ex: Exception) {

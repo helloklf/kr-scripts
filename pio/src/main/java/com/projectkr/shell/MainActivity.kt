@@ -187,35 +187,7 @@ class MainActivity : AppCompatActivity() {
                 if (clickableNode is RunnableNode) {
                     intent.putExtra("autoRunItemId", clickableNode.key)
                 }
-
-                page.run {
-                    intent.putExtra("title", "" + title)
-
-                    if (activity.isNotEmpty()) {
-                        intent.putExtra("activity", activity)
-                    }
-                    if (onlineHtmlPage.isNotEmpty()) {
-                        intent.putExtra("onlineHtmlPage", onlineHtmlPage)
-                    }
-                    if (beforeRead.isNotEmpty()) {
-                        intent.putExtra("beforeRead", beforeRead)
-                    }
-                    if (pageConfigPath.isNotEmpty()) {
-                        intent.putExtra("config", pageConfigPath)
-                    }
-                    if (pageConfigSh.isNotEmpty()) {
-                        intent.putExtra("pageConfigSh", pageConfigSh)
-                    }
-                    if (afterRead.isNotEmpty()) {
-                        intent.putExtra("afterRead", afterRead)
-                    }
-                    if (loadSuccess.isNotEmpty()) {
-                        intent.putExtra("loadSuccess", loadSuccess)
-                    }
-                    if (loadFail.isNotEmpty()) {
-                        intent.putExtra("loadFail", loadFail)
-                    }
-                }
+                intent.putExtra("page", page)
 
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }

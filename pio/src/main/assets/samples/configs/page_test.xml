@@ -35,10 +35,97 @@
             <title>测试config-sh【全文输出】</title>
             <desc>通过config-sh输出配置页内容</desc>
         </page>
+    </group>
 
+    <group title="activity、link、html">
         <!--支持指定activity-->
         <page id="dev" activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS">
             <title>开发者选项</title>
         </page>
+
+        <!--支持指定网页地址-->
+        <page link="https://www.baidu.com/">
+            <title>打开百度</title>
+            <desc>使用系统浏览器打开</desc>
+        </page>
+
+        <!--支持指定网页地址(用PIO自带的浏览器打开)-->
+        <page html="https://www.baidu.com/">
+            <title>打开百度</title>
+            <desc>使用内置浏览器打开，网页将可以调用WebAPI执行脚本，请不要轻易打开不受信任的界面！</desc>
+        </page>
     </group>
+
+    <group title="页面菜单">
+        <!--
+        option 又可写为 menu-item 、 menu 、page-option
+        type 可选 refresh、finish、file、*
+             type=refresh 的option点击后刷新当前界面，refresh又可写作 reload
+             type=finish 的option 点击后关闭当前界面
+             type=file 的option 点击后先弹出文件选择，然后再执行 handler
+         此外已支持
+         auto-off(auto-close)、auto-finish、reload-page、interruptable
+         分别用于设置
+                执行handler结束以后自动关闭日志输出，
+                执行handler结束以后自动关闭当前页面，
+                是否handler结束以后自动刷新当前页面，
+                是否可中断handler执行，
+        -->
+        <page config="samples/configs/empty.xml">
+            <title>在页面右上角显示菜单</title>
+            <option type="default" id="a" auto-off="true">自定义 1</option>
+            <option type="default" id="b">自定义 2</option>
+            <option type="refresh">刷新界面</option>
+            <option type="finish">关闭页面</option>
+            <option type="file">选择文件</option>
+            <handler>
+                echo '此脚本的作用是处理菜单点击事件'
+                echo '执行时PIO会告诉你哪个菜单项被点击，就像Picker的 set 一样'
+                echo ''
+                echo '点击的菜单项' $menu_id
+                echo ''
+                echo '选择的文件' $file
+                echo ''
+            </handler>
+        </page>
+
+        <!--
+        相较于右上角菜单，悬浮菜单主要是额外增加了
+        type=fab 属性，其它属性的用法基本一致
+        但是你不能在一个页面上定义多个悬浮按钮
+        -->
+        <page config="samples/configs/empty.xml">
+            <title>在页面显示悬浮按钮</title>
+            <option type="file" style="fab">选择文件</option>
+            <handler>
+                echo '此脚本的作用是处理菜单点击事件'
+                echo '执行时PIO会告诉你哪个菜单项被点击，就像Picker的 set 一样'
+                echo ''
+                echo '点击的菜单项' $menu_id
+                echo ''
+                echo '选择的文件' $file
+                echo ''
+            </handler>
+        </page>
+
+        <!--不管是右上角菜单还是悬浮按钮，选择文件时都可以限制类型-->
+        <page config="samples/configs/empty.xml">
+            <title>选择指定类型的文件</title>
+            <option type="file" style="fab" suffix="zip">选择文件</option>
+            <handler>
+                echo '选择的文件' $file
+                echo ''
+            </handler>
+        </page>
+
+        <!--除了type=file的图标是默认固定的外，其它悬浮按钮图标你都可以自定义-->
+        <page config="samples/configs/empty.xml">
+            <title>自定义悬浮按钮的图标</title>
+            <option style="fab" icon="samples/icons/icon-test.png">测试按钮图标</option>
+            <handler>
+                echo 'emmm'
+            </handler>
+        </page>
+    </group>
+
 </root>

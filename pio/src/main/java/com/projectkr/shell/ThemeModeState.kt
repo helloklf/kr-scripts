@@ -6,6 +6,8 @@ import android.app.UiModeManager
 import android.app.WallpaperManager
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -72,6 +74,37 @@ object ThemeModeState {
 
         }
         return themeMode
+    }
+
+    private fun isDarkColor(wallPaper: Drawable): Boolean {
+        // 根据壁纸色彩设置主题
+        val bitmap = (wallPaper as BitmapDrawable).bitmap
+        val h = bitmap.height - 1
+        val w = bitmap.width - 1
+
+        var darkPoint = 0
+        var lightPoint = 0
+
+        // 采样点数
+        val pointCount = if (h > 24 && w > 24) 24 else 1
+
+        for (i in 0..pointCount) {
+            val y = h / pointCount * i
+            val x = w / pointCount * i
+            val pixel = bitmap.getPixel(x, y)
+
+            // 获取颜色
+            val redValue = Color.red(pixel)
+            val blueValue = Color.blue(pixel)
+            val greenValue = Color.green(pixel)
+
+            if (redValue > 150 && blueValue > 150 && greenValue > 150) {
+                lightPoint += 1
+            } else {
+                darkPoint += 1
+            }
+        }
+        return darkPoint > lightPoint
     }
 
     fun getThemeMode(): ThemeMode {
