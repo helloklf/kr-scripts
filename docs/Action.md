@@ -69,6 +69,8 @@
 | required | 是否为必填参数，可配置为`true`、`false` | `true` |
 | suffix | 限制可选择的文件后缀，仅限`type=file`时使用 | `zip` |
 | mime | 限制可选择的文件MIME类型，仅限`type=file`时使用 | `application/zip` |
+| multiple | 是否允许多选(设置了options或type=app时可用) | `true` |
+| separator | 多选模式下多个值的分隔符，默认为换行符 | `,` |
 
 > param 的`type`列举如下：
 
@@ -81,6 +83,7 @@
 | seekbar | 滑块，**必需**配合`min`、`max`属性使用 | `min`和`max`之间的整数 |
 | file | 文件路径选择器，建议配合`suffix`或`mime`属性使用 | 选中文件的绝对路径 |
 | color | 颜色输入和选择界面 | 输入形如`#445566`或`#ff445566`的色值 |
+| app | 应用选择器（可配置为多选） | 选取的应用包名 |
 | text | 任意文本输入（默认） | 任意自定义输入的文本 |
 
 > param的type设为`seekbar`时，必需设置`min`和`max`属性！！
@@ -215,6 +218,48 @@
             <option value="X">测试一下 X</option>
         </param>
         <set>echo '数值为：' $test</set>
+    </action>
+    ```
+
+##### param 选择应用
+- 参数类型`type=app`是在3.9版本中新增加的类型
+
+- 像下面这个例子，是它最简单的用法：
+    ```xml
+    <action>
+        <title>请选择一个应用</title>
+        <param name="package_name" type="app" />
+        <set>echo '包名为：' $package_name</set>
+    </action>
+    ```
+- 那如何限制用户只可选择哪些应用呢？其实设置`option`就好了
+    > 列表最终呈现的是包含在你的option里且用户已安装的应用
+
+    ```xml
+    <action>
+        <title>请选择一个应用</title>
+        <desc>配合options-sh轻松的限制可被选择的APP</desc>
+        <param
+            name="package_name"
+            type="app"
+            options-sh="pm list package -3 | cut -f2 -d ':'" />
+        <set>echo '包名为：' $package_name</set>
+    </action>
+    ```
+
+- 你甚至能设置为可以选择多个应用，以及默认的选中项，就像这样
+    ```xml
+    <action>
+        <title>请选择几个应用</title>
+        <desc>也可以设置允许选择多个应用，同时还可以设置默认选中项</desc>
+        <param
+            name="package_name"
+            value="com.projectkr.shell,com.android.browser"
+            separator=","
+            type="app"
+            multiple="multiple"
+            options-sh="pm list package -3 | cut -f2 -d ':'" />
+        <set>echo '包名为：' $package_name</set>
     </action>
     ```
 

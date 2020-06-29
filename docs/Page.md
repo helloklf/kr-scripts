@@ -128,6 +128,7 @@
 | id | 用于区别多个menu的标识 | 任意不重复的id | `A001` |
 | type | 用于区别多个menu的标识 | 详见下方说明 | `default` |
 | style | 菜单显示方式，设为`fab`时将显示未悬浮按钮 | `default` `fab` | `fab` |
+| icon | 悬浮按钮的图标文件路径 | 文件路径 | samples/icons/icon-test.png |
 
 - 注意：目前的版本，同一个Page只能设置一个`style=fab`的菜单按钮！
 
@@ -162,7 +163,6 @@
     echo '选择的文件' $file
 </handler>
 ```
-
 
 
 ### 补充说明

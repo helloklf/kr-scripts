@@ -26,6 +26,13 @@
 | reload | 执行完脚本后要执行的刷新操作 | `page` 、具体体功能`id` | `page` |
 | bg-task | 后台运行而不是显示日志输出界面，默认`false` | `true` `false` | `true` |
 
+- 特有属性
+
+| 属性 | 作用 | 有效值 | 示例 |
+| - | - | - | :- |
+| multiple | 是否允许多选(设置了options或type=app时可用) | `true` `false` | `true` |
+| separator | 多选模式下多个值的分隔符，默认为换行符 | 任意字符 | `,` |
+
 
 > `id` 属性建议配合 `auto-off`、`auto-finish`、`logo` 使用
 

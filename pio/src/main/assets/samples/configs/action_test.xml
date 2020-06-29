@@ -97,15 +97,15 @@
 
         <action>
             <title>请选择一个应用</title>
-            <param name="package_name" label="应用选择" type="app" />
+            <param name="package_name" type="app" />
             <set>echo '包名为：' $package_name</set>
         </action>
+
         <action>
             <title>请选择一个应用</title>
             <desc>配合options-sh轻松的限制可被选择的APP</desc>
             <param
                 name="package_name"
-                label="应用选择"
                 type="app"
                 options-sh="pm list package -3 | cut -f2 -d ':'" />
             <set>echo '包名为：' $package_name</set>
@@ -116,7 +116,6 @@
             <desc>也可以设置允许选择多个应用，同时还可以设置默认选中项</desc>
             <param
                 name="package_name"
-                label="应用选择"
                 value="com.projectkr.shell,com.android.browser"
                 separator=","
                 type="app"
