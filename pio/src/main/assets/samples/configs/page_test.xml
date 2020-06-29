@@ -118,7 +118,7 @@
             </handler>
         </page>
 
-        <!--除了type=file的图标是默认固定的外，其它悬浮按钮图标你都可以自定义-->
+        <!--你可以自己配置悬浮按钮图标-->
         <page config="samples/configs/empty.xml">
             <title>自定义悬浮按钮的图标</title>
             <option style="fab" icon="samples/icons/icon-test.png">测试按钮图标</option>

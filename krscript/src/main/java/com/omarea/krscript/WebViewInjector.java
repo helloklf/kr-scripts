@@ -58,6 +58,8 @@ public class WebViewInjector {
             webSettings.setAllowFileAccess(true);
             webSettings.setAllowUniversalAccessFromFileURLs(true);
             webSettings.setAllowFileAccessFromFileURLs(true);
+            webSettings.setAllowContentAccess(true);
+            webSettings.setUseWideViewPort(true);
 
             webView.addJavascriptInterface(
                     new KrScriptEngine(context),

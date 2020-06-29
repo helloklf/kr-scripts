@@ -1,26 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <group>
-    <action title="标题" desc-sh="echo '测试desc输出'" summary-sh="echo '测试summary输出'">
-        <param name="param1" />
-    </action>
-    <text>
-        <title>改动说明</title>
-        <desc>
-            在新的版本中，page和action、switch等节点可以混合定义了。也就是说，page_list.xml(more.xml)将不只用于定义子页，而子页也变得可以随处定义！
-        </desc>
-    </text>
+    <group title="开发文档">
+        <!--html属性不支持省略file:///android_asset/前缀-->
+        <page html="file:///android_asset/samples/docs/index.html#/document-library" title="查看PIO的详细文档" />
+    </group>
 
-    <group title="其它测试">
+    <group title="无关紧要的测试代码">
         <page
             before-load="file:///android_asset/samples/configs/miui-te-before-load.sh"
             config-sh="file:///android_asset/samples/configs/miui-thermal-engine.sh"
             title="MIUI温控查看" />
-    </group>
-
-    <group title="ADB 测试">
         <page
             config="file:///android_asset/samples/configs/adb_test.xml"
             title="ADB 测试页面" />
     </group>
-
 </group>
