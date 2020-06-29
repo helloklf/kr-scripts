@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
-class FileChooserRender(private var actionParamInfo: ActionParamInfo, private var context: Context, private var fileChooser: FileChooserInterface?) {
+class ParamsFileChooserRender(private var actionParamInfo: ActionParamInfo, private var context: Context, private var fileChooser: FileChooserInterface?) {
     interface FileChooserInterface {
         fun openFileChooser(fileSelectedInterface: FileSelectedInterface): Boolean
     }

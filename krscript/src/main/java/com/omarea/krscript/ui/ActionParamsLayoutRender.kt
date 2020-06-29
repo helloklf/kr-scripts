@@ -53,7 +53,7 @@ class ActionParamsLayoutRender {
         fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
             val status = BooleanArray(options.size)
             val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
-            val values = value?.split(if (actionParamInfo.separator.isNotEmpty()) actionParamInfo.separator else "\n")
+            val values = value?.split(actionParamInfo.separator)
 
             for (index in 0 until options.size) {
                 val item = options[index]["item"]
@@ -72,7 +72,7 @@ class ActionParamsLayoutRender {
         this.context = linearLayout.context
     }
 
-    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: FileChooserRender.FileChooserInterface?) {
+    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: ParamsFileChooserRender.FileChooserInterface?) {
         for (actionParamInfo in actionParamInfos) {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
@@ -122,13 +122,13 @@ class ActionParamsLayoutRender {
             }
             // 文件选择
             else if (actionParamInfo.type == "file") {
-                val layout = FileChooserRender(actionParamInfo, context, fileChooser).render()
+                val layout = ParamsFileChooserRender(actionParamInfo, context, fileChooser).render()
 
                 addToLayout(layout, actionParamInfo, false)
             }
             // 应用选择
             else if (actionParamInfo.type == "app") {
-                val layout = AppChooserRender(actionParamInfo, context).render()
+                val layout = ParamsAppChooserRender(actionParamInfo, context).render()
 
                 addToLayout(layout, actionParamInfo, false)
             }

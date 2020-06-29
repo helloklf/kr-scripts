@@ -28,7 +28,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.WebViewInjector
 import com.omarea.krscript.downloader.Downloader
-import com.omarea.krscript.ui.FileChooserRender
+import com.omarea.krscript.ui.ParamsFileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
 import java.util.*
 
@@ -219,16 +219,16 @@ class ActionPageOnline : AppCompatActivity() {
         kr_online_webview.loadUrl(url)
 
         WebViewInjector(kr_online_webview,
-                object : FileChooserRender.FileChooserInterface {
-                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                object : ParamsFileChooserRender.FileChooserInterface {
+                    override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
                 }).inject(this)
     }
 
-    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
-    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+    private fun chooseFilePath(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()

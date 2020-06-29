@@ -12,12 +12,9 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.TryOpenActivity
@@ -27,7 +24,7 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.DialogLogFragment
-import com.omarea.krscript.ui.FileChooserRender
+import com.omarea.krscript.ui.ParamsFileChooserRender
 import com.omarea.krscript.ui.PageMenuLoader
 import kotlinx.android.synthetic.main.activity_action_page.*
 
@@ -143,12 +140,12 @@ class ActionPage : AppCompatActivity() {
             _openPage(pageNode)
         }
 
-        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
             return chooseFilePath(fileSelectedInterface)
         }
     }
 
-    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
     private val ACTION_FILE_PATH_CHOOSER_INNER = 65300
 
@@ -261,7 +258,7 @@ class ActionPage : AppCompatActivity() {
     }
 
     private fun menuItemChooseFile(menuOption: PageMenuOption) {
-        chooseFilePath(object: FileChooserRender.FileSelectedInterface{
+        chooseFilePath(object: ParamsFileChooserRender.FileSelectedInterface{
             override fun onFileSelected(path: String?) {
                 if (path != null) {
                     handler.post {
@@ -285,7 +282,7 @@ class ActionPage : AppCompatActivity() {
         })
     }
 
-    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+    private fun chooseFilePath(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 2);
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()

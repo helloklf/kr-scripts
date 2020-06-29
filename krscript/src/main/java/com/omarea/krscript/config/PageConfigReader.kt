@@ -277,6 +277,9 @@ class PageConfigReader {
                     attrName == "multiple" -> {
                         actionParamInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
                     }
+                    attrName == "separator" -> {
+                        actionParamInfo.separator = attrValue
+                    }
                 }
             }
             if (actionParamInfo.supported && actionParamInfo.name != null && actionParamInfo.name!!.isNotEmpty()) {
@@ -382,7 +385,7 @@ class PageConfigReader {
             val attrValue = parser.getAttributeValue(i)
             when (attrName) {
                 "key", "index", "id" -> groupInfo.key = attrValue.trim()
-                "title" -> groupInfo.separator = attrValue
+                "title" -> groupInfo.title = attrValue
                 "support", "visible" -> groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
         }
