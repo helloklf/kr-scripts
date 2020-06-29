@@ -277,6 +277,9 @@ class PageConfigReader {
                     attrName == "multiple" -> {
                         actionParamInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
                     }
+                    attrName == "editable" -> {
+                        actionParamInfo.editable = attrValue == "editable" || attrValue == "true" || attrValue == "1"
+                    }
                     attrName == "separator" -> {
                         actionParamInfo.separator = attrValue
                     }

@@ -93,8 +93,14 @@
 
         <action>
             <title>目录选择器</title>
-            <param name="test" type="folder"
-                value="/sdcard/Download" />
+            <param name="test" type="folder" value="/sdcard/Download" />
+            <set>echo '路径为：' $test</set>
+        </action>
+
+        <action>
+            <title>允许用户编辑路径</title>
+            <desc>file、folder参数都不允许用户手动输入，除非你添加editable="true"</desc>
+            <param name="test" type="folder" value="/sdcard/Download" editable="true" />
             <set>echo '路径为：' $test</set>
         </action>
     </group>

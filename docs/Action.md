@@ -71,6 +71,12 @@
 | mime | 限制可选择的文件MIME类型，仅限`type=file`时使用 | `application/zip` |
 | multiple | 是否允许多选(设置了options或type=app时可用) | `true` |
 | separator | 多选模式下多个值的分隔符，默认为换行符 | `,` |
+| editable | 是否允许用户手动输入路径（type为`file`或`folder`可用） | `true` |
+
+- type设为`file` `folder` 时，用户只能调用路径选择器进行选择，
+- 此时你可以通过将`editable`属性设为`true`来允许用户手动输入路径，
+- 但这就意味着用户可能输入无效或并不存在的路径，你需要自行校验！
+
 
 > param 的`type`列举如下：
 
