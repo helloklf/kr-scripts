@@ -121,7 +121,7 @@ class ActionParamsLayoutRender {
                 addToLayout(layout, actionParamInfo, false)
             }
             // 文件选择
-            else if (actionParamInfo.type == "file") {
+            else if (actionParamInfo.type == "file" || actionParamInfo.type == "folder") {
                 val layout = ParamsFileChooserRender(actionParamInfo, context, fileChooser).render()
 
                 addToLayout(layout, actionParamInfo, false)

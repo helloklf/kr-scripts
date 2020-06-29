@@ -14,9 +14,17 @@ class ParamsFileChooserRender(private var actionParamInfo: ActionParamInfo, priv
     }
 
     interface FileSelectedInterface {
+        companion object {
+            val TYPE_FILE: Int
+                get() = 0
+            val TYPE_FOLDER: Int
+                get() = 1
+        }
+
         fun onFileSelected(path: String?)
         fun mimeType():String?
         fun suffix():String?
+        fun type(): Int
     }
 
     fun render(): View {
@@ -29,7 +37,11 @@ class ParamsFileChooserRender(private var actionParamInfo: ActionParamInfo, priv
             fileChooser?.openFileChooser(object : FileSelectedInterface {
                 override fun onFileSelected(path: String?) {
                     if (path.isNullOrEmpty()) {
-                        textView.text = context.getString(R.string.kr_please_choose_file)
+                        if (type() == FileSelectedInterface.TYPE_FOLDER) {
+                            textView.text = context.getString(R.string.kr_please_choose_folder)
+                        } else {
+                            textView.text = context.getString(R.string.kr_please_choose_file)
+                        }
                         pathView.text = ""
                     } else {
                         textView.text = path
@@ -49,6 +61,13 @@ class ParamsFileChooserRender(private var actionParamInfo: ActionParamInfo, priv
                         return actionParamInfo.suffix
                     }
                     return null
+                }
+
+                override fun type(): Int {
+                    return when(actionParamInfo.type) {
+                        "folder" -> FileSelectedInterface.TYPE_FOLDER
+                        else -> FileSelectedInterface.TYPE_FILE
+                    }
                 }
             })
         }

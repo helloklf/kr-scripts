@@ -153,6 +153,17 @@ class ActionPage : AppCompatActivity() {
         try {
             val intent = Intent(this, ActivityFileSelector::class.java)
             intent.putExtra("extension", extension)
+            intent.putExtra("mode", ActivityFileSelector.MODE_FILE)
+            startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
+        } catch (ex: Exception) {
+            Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun chooseFolderPath() {
+        try {
+            val intent = Intent(this, ActivityFileSelector::class.java)
+            intent.putExtra("mode", ActivityFileSelector.MODE_FOLDER)
             startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER_INNER)
         } catch (ex: Exception) {
             Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
@@ -266,6 +277,7 @@ class ActionPage : AppCompatActivity() {
                             put("state", menuOption.key)
                             put("menu_id", menuOption.key)
                             put("file", path)
+                            put("folder", path)
                         })
                     }
                 }
@@ -279,6 +291,14 @@ class ActionPage : AppCompatActivity() {
             override fun suffix(): String? {
                 return if (menuOption.suffix.isEmpty()) null else menuOption.suffix
             }
+
+            override fun type(): Int {
+                return when(menuOption.type) {
+                    "folder" -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FOLDER
+                    "file" -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FILE
+                    else -> ParamsFileChooserRender.FileSelectedInterface.TYPE_FILE
+                }
+            }
         })
     }
 
@@ -289,19 +309,23 @@ class ActionPage : AppCompatActivity() {
             return false
         } else {
             return try {
-                val suffix = fileSelectedInterface.suffix()
-                if (suffix != null && suffix.isNotEmpty()) {
-                    chooseFilePath(suffix)
+                if (fileSelectedInterface.type() == ParamsFileChooserRender.FileSelectedInterface.TYPE_FOLDER) {
+                    chooseFolderPath()
                 } else {
-                    val intent = Intent(Intent.ACTION_GET_CONTENT);
-                    val mimeType = fileSelectedInterface.mimeType()
-                    if (mimeType != null) {
-                        intent.type = mimeType
+                    val suffix = fileSelectedInterface.suffix()
+                    if (!suffix.isNullOrEmpty()) {
+                        chooseFilePath(suffix)
                     } else {
-                        intent.type = "*/*"
+                        val intent = Intent(Intent.ACTION_GET_CONTENT);
+                        val mimeType = fileSelectedInterface.mimeType()
+                        if (mimeType != null) {
+                            intent.type = mimeType
+                        } else {
+                            intent.type = "*/*"
+                        }
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
                     }
-                    intent.addCategory(Intent.CATEGORY_OPENABLE);
-                    startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
                 }
                 this.fileSelectedInterface = fileSelectedInterface
                 true;

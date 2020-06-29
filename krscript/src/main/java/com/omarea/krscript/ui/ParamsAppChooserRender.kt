@@ -105,7 +105,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
         } else {
             DialogHelper.animDialog(
                     AlertDialog.Builder(context)
-                            .setTitle("请选择应用")
+                            .setTitle(R.string.kr_please_choose_app)
                             .setSingleChoiceItems(
                                     labels,
                                     currentIndex

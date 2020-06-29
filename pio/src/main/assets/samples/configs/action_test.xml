@@ -90,6 +90,13 @@
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
             <set>echo '路径为：' $test</set>
         </action>
+
+        <action>
+            <title>目录选择器</title>
+            <param name="test" type="folder"
+                value="/sdcard/Download" />
+            <set>echo '路径为：' $test</set>
+        </action>
     </group>
 
     <group title="应用选择">

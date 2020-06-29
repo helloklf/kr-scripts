@@ -70,4 +70,5 @@
     <string name="error_su_timeout">等待ROOT授权超时，请检查授权管理器是否在后台运行！</string>
     <string name="transparent_ui">界面透明 </string>
     <string name="title_activity_file_selector">请选择文件</string>
+    <string name="title_activity_folder_selector">请长按选择目录</string>
 </resources>

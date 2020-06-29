@@ -178,6 +178,11 @@ public class WebViewInjector {
         public boolean fileChooser(final String callbackFunction) {
             if (fileChooser != null) {
                 return fileChooser.openFileChooser(new ParamsFileChooserRender.FileSelectedInterface() {
+                    @Override
+                    public int type() {
+                        return ParamsFileChooserRender.FileSelectedInterface.Companion.getTYPE_FILE(); // TODO
+                    }
+
                     @Nullable
                     @Override
                     public String suffix() {
