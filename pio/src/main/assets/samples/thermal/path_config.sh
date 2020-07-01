@@ -1,0 +1,5 @@
+file_name="miui-thermal"
+remote_url="https://vtools.oss-cn-beijing.aliyuncs.com/pio/$file_name"
+download_dir="$START_DIR/thermal"
+programma="$download_dir/$file_name"
+output_dir="/sdcard/backups/miui-thermal/outputs"

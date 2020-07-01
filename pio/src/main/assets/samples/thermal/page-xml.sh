@@ -1,8 +1,6 @@
-file_name="miui-thermal"
-remote_url="https://vtools.oss-cn-beijing.aliyuncs.com/pio/$file_name"
-download_dir="$START_DIR/thermal"
-programma="$download_dir/$file_name"
-output_dir="/sdcard/backups/miui-thermal/outputs"
+source $START_DIR/samples/thermal/path_config.sh
+
+# 构成界面
 
 echo '<?xml version="1.0" encoding="UTF-8" ?>'
 echo '<root>'

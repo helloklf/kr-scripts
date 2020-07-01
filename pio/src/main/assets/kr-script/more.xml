@@ -12,6 +12,7 @@
         <page
             before-load="samples/thermal/page-before-load.sh"
             config-sh="samples/thermal/page-xml.sh"
+            desc="来看一个完全使用脚本动态构成的页面，感受一下config-sh的强大"
             title="MIUI温控查看" />
 
         <page config="samples/kt/kernel_tuner.xml" title="内核调谐器" />

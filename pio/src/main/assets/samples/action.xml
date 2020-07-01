@@ -77,11 +77,6 @@
                 value="/sdcard/Download/MIUI_update_20190920_ota_sagit.zip" />
             <set>echo '路径为：' $test</set>
         </action>
-        <!--
-            为了更方便的设置文件类型限制，你可以通过suffix来指定以下任一一种格式
-            zip,rar,gz,tar,taz,tgz,img,apk,jpg,jpeg,jpe,png,txt,xml,html,htm,shtml
-            如果不在以上列表，则表示你需要通过mime来指定mime类型，你可以在网络上搜索了解各种文件格式的对应mime类型
-        -->
 
         <action>
             <title>文件选择(application/zip)</title>
