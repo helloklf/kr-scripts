@@ -28,7 +28,23 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                 if (fileInputStream != null) {
                     return fileInputStream
                 } else {
-                    return context.assets.open(filePath)
+                    try{
+                        context.assets.open(filePath).run {
+                            currentAbsPath = ASSETS_FILE + filePath
+                            return this
+                        }
+                    } catch (e:java.lang.Exception) {
+                        if (parentDir.isNotEmpty()) {
+                            val path = (if(parentDir.endsWith("/")) parentDir else (parentDir + "/")).replace(ASSETS_FILE, "") +
+                                    (if (filePath.startsWith("./")) filePath.substring(2) else filePath)
+                            context.assets.open(path).run {
+                                currentAbsPath = ASSETS_FILE + filePath
+                                return this
+                            }
+                        } else {
+                            throw e
+                        }
+                    }
                 }
             }
         } catch (ex: Exception) {
@@ -50,7 +66,7 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                     val relativePath = when {
                         !parentDir.endsWith("/") -> parentDir + "/"
                         else -> parentDir
-                    } + filePath
+                    } + (if (filePath.startsWith("./")) filePath.substring(2) else filePath)
 
                     File(relativePath).run {
                         if (exists() && canRead()) {
@@ -79,12 +95,18 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                 relativePath = when {
                     !parentDir.endsWith("/") -> parentDir + "/"
                     else -> parentDir
-                } + filePath
+                } + (if (filePath.startsWith("./")) filePath.substring(2) else filePath)
             }
 
             when {
-                RootFile.fileExists(filePath) -> filePath
-                relativePath != null && RootFile.fileExists(relativePath) -> relativePath
+                RootFile.fileExists(filePath) -> {
+                    currentAbsPath = filePath
+                    filePath
+                }
+                relativePath != null && RootFile.fileExists(relativePath) -> {
+                    currentAbsPath = relativePath
+                    relativePath
+                }
                 else -> null
             }.run {
                 val dir = File(FileWrite.getPrivateFilePath(context, "kr-script"))

@@ -99,11 +99,11 @@ class PageConfigReader {
                                     }
                                 }
                             } else if ("action" == parser.name) {
-                                action = runnableNode(ActionNode(), parser) as ActionNode?
+                                action = runnableNode(ActionNode(pageConfigAbsPath), parser) as ActionNode?
                             } else if ("switch" == parser.name) {
-                                switch = runnableNode(SwitchNode(), parser) as SwitchNode?
+                                switch = runnableNode(SwitchNode(pageConfigAbsPath), parser) as SwitchNode?
                             } else if ("picker" == parser.name) {
-                                picker = runnableNode(PickerNode(), parser) as PickerNode?
+                                picker = runnableNode(PickerNode(pageConfigAbsPath), parser) as PickerNode?
                                 if (picker != null) {
                                     pickerNode(picker, parser)
                                 }
@@ -332,7 +332,7 @@ class PageConfigReader {
             "config" -> node.pageConfigPath = parser.nextText()
             "handler-sh", "handler", "set", "getstate", "script" -> node.pageHandlerSh = parser.nextText()
             "option", "page-option", "menu", "menu-item" -> {
-                val option = runnableNode(PageMenuOption(), parser) as PageMenuOption?
+                val option = runnableNode(PageMenuOption(pageConfigAbsPath), parser) as PageMenuOption?
                 if (option != null) {
                     for (i in 0 until parser.attributeCount) {
                         when (parser.getAttributeName(i)) {

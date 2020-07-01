@@ -22,7 +22,7 @@
         </script>
     </action>
 
-    <action logo="samples/icons/icon-test.png" id="shortcut_003">
+    <action logo="./icons/icon-test.png" id="shortcut_003">
         <title>图标定义</title>
         <desc>通过logo-path 或 logo 属性可以自定义快捷方式图标，最后尝试着长按这个功能，添加到桌面</desc>
         <script>
@@ -31,7 +31,7 @@
         </script>
     </action>
 
-    <page id="shortcut_test.xml" icon="samples/icons/icon-test.png" config="samples/configs/action_test.xml" title="page快捷方式">
+    <page id="shortcut_test.xml" icon="./icons/icon-test.png" config="samples/configs/action_test.xml" title="page快捷方式">
         <desc>理论上，page、action、picker、switch都支持快捷方式功能</desc>
     </page>
 </group>

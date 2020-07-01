@@ -75,9 +75,12 @@ class SplashActivity : Activity() {
             start_state_text.text = getString(R.string.pio_permission_checking)
             hasRoot = true
 
+            /*
             checkFileWrite(Runnable {
                 startToFinish()
             })
+            */
+            startToFinish()
         })
     }
 

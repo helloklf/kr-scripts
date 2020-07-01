@@ -156,7 +156,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), clickableNode.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     val result = ActionShortcutManager(context!!)
-                                            .addShortcut(intent, IconPathAnalysis().loadIcon(context!!, clickableNode), clickableNode)
+                                            .addShortcut(intent, IconPathAnalysis().loadLogo(context!!, clickableNode), clickableNode)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {

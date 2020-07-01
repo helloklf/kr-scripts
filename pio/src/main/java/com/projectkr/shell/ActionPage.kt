@@ -212,7 +212,7 @@ class ActionPage : AppCompatActivity() {
             if (menuOption.type == "file" && menuOption.iconPath.isEmpty()) {
                 setImageDrawable(getDrawable(R.drawable.kr_folder))
             } else if (menuOption.iconPath.isNotEmpty()) {
-                val icon = IconPathAnalysis().loadIcon(context, menuOption, false)
+                val icon = IconPathAnalysis().loadLogo(context, menuOption, false)
                 if (icon != null) {
                     setImageDrawable(icon)
                 } else {
