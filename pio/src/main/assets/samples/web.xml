@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <group>
+        <page html="https://www.lanzous.com/b838135" title="远程网页加载测试" />
+        <!--html属性不支持省略file:///android_asset/前缀-->
+        <page html="file:///android_asset/samples/html-test/index.html" title="本地网页加载测试" />
+    </group>
+
+    <group>
+        <action>
+            <title>调用内置的网页浏览界面</title>
+            <desc>am start -a android.intent.action.MAIN -n "$activity" --es url "$url"</desc>
+            <script>
+                # 使用am start启动activity的说明
+                # 添加Extras
+                # --ei 整数参数【extra integer】
+                # --es 字符串参数【extra string】
+                # --ez Boolean【extra boolean】
+
+                url="https://cn.bing.com"
+                activity="$PACKAGE_NAME/com.projectkr.shell.ActionPageOnline"
+                am start -a android.intent.action.MAIN -n "$activity" --es url "$url"
+
+                # 对应到Java中取出参数的过程
+                # Intent intent = getIntent();
+                # String webPage = intent.getStringExtra("url");
+            </script>
+        </action>
+
+        <action>
+            <title>调用内置的网页浏览界面下载文件</title>
+            <desc>am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl "$url"
+            </desc>
+            <script>
+                # intent参数
+                # --es downloadUrl 【url】下载路径
+                # --ez autoClose autoClose 【true/false】 是否下载完成后自动关闭界面
+
+                downloadUrl="https://hugeota.d.miui.com/9.8.28/miui-blockota-sagit-9.8.27-9.8.28-cfa9921c33-9.0.zip"
+                activity="$PACKAGE_NAME/com.projectkr.shell.ActionPageOnline"
+                am start -a android.intent.action.MAIN -n "$activity" --es downloadUrl "$downloadUrl"
+            </script>
+        </action>
+
+        <action>
+            <title>试验* 下载测试2</title>
+            <desc>使用封装的downloader.sh等待下载结果</desc>
+            <resource file="file:///android_asset/samples/common/downloader.sh" />
+            <script>
+                source $START_DIR/samples/common/downloader.sh
+
+                md5="cfa9921c332d7d07335ddba75399c74d" # 预期的文件md5(小写,可选)
+                downloadUrl="https://hugeota.d.miui.com/9.8.28/miui-blockota-sagit-9.8.27-9.8.28-cfa9921c33-9.0.zip"
+                downloader "$downloadUrl" $md5
+
+                if [[ ! "$downloader_result" = "" ]]; then
+                echo '下载到：'$downloader_result
+                else
+                echo '下载失败'$downloader_result
+                fi
+            </script>
+        </action>
+    </group>
+</group>

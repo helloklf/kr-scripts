@@ -2,16 +2,18 @@
 <group>
     <group title="开发文档">
         <!--html属性不支持省略file:///android_asset/前缀-->
-        <page html="file:///android_asset/samples/docs/index.html#/document-library" title="查看PIO的详细文档" />
+        <page html="file:///android_asset/docs/index.html#/document-library" title="查看PIO的详细文档" />
     </group>
 
     <group title="无关紧要的测试代码">
+        <resource dir="file:///android_asset/samples/thermal" />
+        <resource dir="file:///android_asset/samples/kt" />
+
         <page
-            before-load="file:///android_asset/samples/configs/miui-te-before-load.sh"
-            config-sh="file:///android_asset/samples/configs/miui-thermal-engine.sh"
+            before-load="samples/thermal/page-before-load.sh"
+            config-sh="samples/thermal/page-xml.sh"
             title="MIUI温控查看" />
-        <page
-            config="file:///android_asset/samples/configs/adb_test.xml"
-            title="ADB 测试页面" />
+
+        <page config="samples/kt/kernel_tuner.xml" title="内核调谐器" />
     </group>
 </group>

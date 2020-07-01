@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+    <resource dir="file:///android_asset/samples/bg_task" />
+
+    <group title="后台任务测试">
+        <action bg-task="true">
+            <title>后台任务测试</title>
+            <desc>后台任务点击后不显示日志界面，而是在通知栏中显示</desc>
+            <set>
+                echo '进度1/5'; echo "progress:[1/5]"; sleep 5;
+                echo '进度2/5'; echo "progress:[2/5]"; sleep 5;
+                echo '进度3/5'; echo "progress:[3/5]"; sleep 5;
+                echo '进度4/5'; echo "progress:[4/5]"; sleep 5;
+                echo '进度5/5'; echo "progress:[5/5]"; sleep 5;
+                echo '操作完成！'
+            </set>
+        </action>
+
+        <action>
+            <title>场景模式 Little</title>
+            <desc>模拟Scene的场景模式-动态响应功能</desc>
+            <resource dir="file:///android_asset/samples/scene-little" />
+            <set>samples/bg_task/run.sh</set>
+        </action>
+
+        <action bg-task="true">
+            <title>场景模式 Little</title>
+            <desc>模拟Scene的场景模式-动态响应功能，并在后台运行</desc>
+            <set>samples/bg_task/run.sh</set>
+        </action>
+    </group>
+</group>
