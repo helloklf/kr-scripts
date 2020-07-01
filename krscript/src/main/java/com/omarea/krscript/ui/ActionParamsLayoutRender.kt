@@ -313,8 +313,4 @@ class ActionParamsLayoutRender {
         val scale = context.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
     }
-
-    private fun executeScriptGetResult(context: Context, shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(context, shellScript);
-    }
 }

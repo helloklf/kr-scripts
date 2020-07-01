@@ -21,8 +21,8 @@ class ListItemSwitch(private val context: Context,
     override fun updateViewByShell() {
         super.updateViewByShell()
 
-        if (config.getState != null && !config.getState.isEmpty()) {
-            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState)
+        if (config.getState.isNotEmpty()) {
+            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState, config)
             config.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
         }
         checked = config.checked

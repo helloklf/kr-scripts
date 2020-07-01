@@ -108,7 +108,7 @@ class PageConfigReader {
                                     pickerNode(picker, parser)
                                 }
                             } else if ("text" == parser.name) {
-                                text = mainNode(TextNode(), parser) as TextNode?
+                                text = mainNode(TextNode(pageConfigAbsPath), parser) as TextNode?
                             } else if (page != null) {
                                 tagStartInPage(page, parser)
                             } else if (action != null) {
@@ -382,7 +382,7 @@ class PageConfigReader {
     }
 
     private fun groupNode(parser: XmlPullParser): GroupNode {
-        val groupInfo = GroupNode()
+        val groupInfo = GroupNode(pageConfigAbsPath)
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
             val attrValue = parser.getAttributeValue(i)
@@ -681,7 +681,12 @@ class PageConfigReader {
     private fun tagEndInText(textNode: TextNode?, parser: XmlPullParser) {
     }
 
+    private var vitualRootNode: NodeInfoBase? = null
     private fun executeResultRoot(context: Context, scriptIn: String): String {
-        return ScriptEnvironmen.executeResultRoot(context, scriptIn);
+        if (vitualRootNode == null) {
+            vitualRootNode = NodeInfoBase(pageConfigAbsPath)
+        }
+
+        return ScriptEnvironmen.executeResultRoot(context, scriptIn, vitualRootNode);
     }
 }

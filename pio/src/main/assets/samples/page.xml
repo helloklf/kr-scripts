@@ -50,20 +50,6 @@
     </group>
 
     <group title="页面菜单">
-        <!--
-        option 又可写为 menu-item 、 menu 、page-option
-        type 可选 refresh、finish、file、*
-             type=refresh 的option点击后刷新当前界面，refresh又可写作 reload
-             type=finish 的option 点击后关闭当前界面
-             type=file 的option 点击后先弹出文件选择，然后再执行 handler
-         此外已支持
-         auto-off(auto-close)、auto-finish、reload-page、interruptable
-         分别用于设置
-                执行handler结束以后自动关闭日志输出，
-                执行handler结束以后自动关闭当前页面，
-                是否handler结束以后自动刷新当前页面，
-                是否可中断handler执行，
-        -->
         <page config="samples/empty.xml">
             <title>在页面右上角显示菜单</title>
             <option type="default" id="a" auto-off="true">自定义 1</option>
@@ -83,9 +69,9 @@
         </page>
 
         <!--
-        相较于右上角菜单，悬浮菜单主要是额外增加了
-        type=fab 属性，其它属性的用法基本一致
-        但是你不能在一个页面上定义多个悬浮按钮
+            相较于右上角菜单，悬浮菜单主要是额外增加了
+            type=fab 属性，其它属性的用法基本一致
+            但是你不能在一个页面上定义多个悬浮按钮
         -->
         <page config="samples/empty.xml">
             <title>在页面显示悬浮按钮</title>

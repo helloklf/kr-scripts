@@ -21,6 +21,7 @@ import com.omarea.common.ui.DialogHelper;
 import com.omarea.krscript.downloader.Downloader;
 import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
+import com.omarea.krscript.model.NodeInfoBase;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.ParamsFileChooserRender;
 
@@ -97,6 +98,7 @@ public class WebViewInjector {
 
     private class KrScriptEngine {
         private Context context;
+        private NodeInfoBase vitualRootNode = new NodeInfoBase("");
 
         private KrScriptEngine(Context context) {
             this.context = context;
@@ -121,7 +123,7 @@ public class WebViewInjector {
         @JavascriptInterface
         public String executeShell(String script) {
             if (script != null && !script.isEmpty()) {
-                return ScriptEnvironmen.executeResultRoot(context, script);
+                return ScriptEnvironmen.executeResultRoot(context, script, vitualRootNode);
             }
             return "";
         }

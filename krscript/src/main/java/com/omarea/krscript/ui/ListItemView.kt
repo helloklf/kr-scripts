@@ -69,12 +69,12 @@ open class ListItemView(private val context: Context,
 
     open fun updateViewByShell() {
         if (config.descSh.isNotEmpty()) {
-            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh)
+            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh, config)
             desc = config.desc
         }
 
         if (config.summarySh.isNotEmpty()) {
-            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh)
+            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh, config)
             summary = config.summary
         }
     }

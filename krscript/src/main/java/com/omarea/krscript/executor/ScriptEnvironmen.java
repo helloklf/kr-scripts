@@ -11,6 +11,8 @@ import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShell;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.krscript.FileOwner;
+import com.omarea.krscript.model.ClickableNode;
+import com.omarea.krscript.model.NodeInfoBase;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -101,7 +103,7 @@ public class ScriptEnvironmen {
         }
     }
 
-    public static String md5(String string) {
+    private static String md5(String string) {
         if (string.isEmpty()) {
             return "";
         }
@@ -165,7 +167,7 @@ public class ScriptEnvironmen {
         return FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
     }
 
-    public static String executeResultRoot(Context context, String script) {
+    public static String executeResultRoot(Context context, String script, NodeInfoBase nodeInfoBase) {
         if (!inited) {
             init(context);
         }
@@ -181,15 +183,29 @@ public class ScriptEnvironmen {
         } else {
             path = createShellCache(context, script);
         }
-        return executeShell(context, path);
-    }
 
-    private static String executeShell(Context context, String scriptPath) {
         if (!inited) {
             init(context);
         }
 
-        return privateShell.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("\n");
+        if (nodeInfoBase != null && !nodeInfoBase.getCurrentPageConfigPath().isEmpty()) {
+            stringBuilder.append("export PAGE_CONFIG_DIR='");
+            stringBuilder.append(nodeInfoBase.getPageConfigDir());
+            stringBuilder.append("'\n");
+            stringBuilder.append("export PAGE_CONFIG_FILE='");
+            stringBuilder.append(nodeInfoBase.getCurrentPageConfigPath());
+            stringBuilder.append("'\n");
+        } else {
+            stringBuilder.append("export PAGE_CONFIG_DIR=''\n");
+            stringBuilder.append("export PAGE_CONFIG_FILE=''\n");
+        }
+
+        stringBuilder.append("\n\n");
+        stringBuilder.append(environmentPath + " \"" + path + "\"" + " \"" + getStartPath(context) + "\"");
+        return privateShell.doCmdSync(stringBuilder.toString());
     }
 
     private static String getStartPath(Context context) {
@@ -319,7 +335,7 @@ public class ScriptEnvironmen {
         return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
     }
 
-    public static Process getRuntime() {
+    static Process getRuntime() {
         try {
             if (rooted) {
                 return Runtime.getRuntime().exec("su");

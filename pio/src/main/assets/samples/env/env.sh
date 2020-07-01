@@ -90,4 +90,17 @@ function environment() {
     sleep 1
 }
 
+function config_path() {
+    echo '这是3.9.2新加入的全新变量'
+    echo '它表示的是配置XML存储路径'
+
+    echo PAGE_CONFIG_DIR
+    echo $PAGE_CONFIG_DIR
+    echo ''
+
+    echo 'PAGE_CONFIG_FILE'
+    echo $PAGE_CONFIG_FILE
+    echo ''
+}
+
 $1
