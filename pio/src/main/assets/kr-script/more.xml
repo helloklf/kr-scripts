@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<group>
+<page>
     <group title="开发文档">
         <!--html属性不支持省略file:///android_asset/前缀-->
         <page html="file:///android_asset/docs/index.html#/document-library" title="查看PIO的详细文档" />
@@ -17,4 +17,8 @@
 
         <page config="samples/kt/kernel_tuner.xml" title="内核调谐器" />
     </group>
-</group>
+
+    <group title="试验阶段">
+        <page title="相对路径测试" config="samples/relative_path/relative_path.xml" />
+    </group>
+</page>

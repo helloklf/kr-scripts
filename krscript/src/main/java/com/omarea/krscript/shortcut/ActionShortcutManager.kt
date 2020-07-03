@@ -13,7 +13,7 @@ import android.os.Build
 import android.util.Log
 import com.omarea.krscript.model.NodeInfoBase
 import com.omarea.krscript.model.PageNode
-import com.omarea.store.ObjectStorage
+import com.omarea.common.shared.ObjectStorage
 import java.util.*
 
 class ActionShortcutManager(private var context: Context) {

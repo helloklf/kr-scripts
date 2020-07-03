@@ -551,14 +551,10 @@ class PageConfigReader {
         for (i in 0 until parser.attributeCount) {
             if (parser.getAttributeName(i) == "file") {
                 val file = parser.getAttributeValue(i).trim()
-                if (file.startsWith(ASSETS_FILE)) {
-                    ExtractAssets(context).extractResource(file)
-                }
+                ExtractAssets(context).extractResource(file)
             } else if (parser.getAttributeName(i) == "dir") {
                 val file = parser.getAttributeValue(i).trim()
-                if (file.startsWith(ASSETS_FILE)) {
-                    ExtractAssets(context).extractResources(file)
-                }
+                ExtractAssets(context).extractResources(file)
             }
         }
     }

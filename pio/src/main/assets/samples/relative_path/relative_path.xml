@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<page>
+    <group title="相对路径测试">
+        <resource dir="samples/relative_path" />
+
+        <action>
+            <title>【配置文件】路径信息</title>
+            <desc>查看当前配置文件XML提取路径和提取目录</desc>
+            <set>samples/relative_path/relative_path.sh config_path</set>
+        </action>
+    </group>
+</page>

@@ -61,15 +61,7 @@ public class ShellExecutor {
                 shellHandlerBase.onStart(forceStopRunnable);
                 dataOutputStream.writeBytes("sleep 0.2;\n");
 
-                // 页面配置文件路径
-                String parentPageConfigDir = nodeInfo.getPageConfigDir();
-                if (params == null) {
-                    params = new HashMap<>();
-                }
-                params.put("PAGE_CONFIG_DIR", parentPageConfigDir);
-                params.put("PAGE_CONFIG_FILE", nodeInfo.getCurrentPageConfigPath());
-
-                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params);
+                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params, nodeInfo);
             } catch (Exception ex) {
                 process.destroy();
             }

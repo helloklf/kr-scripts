@@ -1,4 +1,4 @@
-package com.omarea.store
+package com.omarea.common.shared
 
 import android.content.Context
 import android.widget.Toast

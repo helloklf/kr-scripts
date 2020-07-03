@@ -192,15 +192,23 @@ public class ScriptEnvironmen {
 
         stringBuilder.append("\n");
         if (nodeInfoBase != null && !nodeInfoBase.getCurrentPageConfigPath().isEmpty()) {
-            stringBuilder.append("export PAGE_CONFIG_DIR='");
-            stringBuilder.append(nodeInfoBase.getPageConfigDir());
-            stringBuilder.append("'\n");
-            stringBuilder.append("export PAGE_CONFIG_FILE='");
-            stringBuilder.append(nodeInfoBase.getCurrentPageConfigPath());
-            stringBuilder.append("'\n");
+            String parentPageConfigDir = nodeInfoBase.getPageConfigDir();
+            String currentPageConfigPath = nodeInfoBase.getCurrentPageConfigPath();
+            stringBuilder.append("export PAGE_CONFIG_DIR='" + parentPageConfigDir + "'\n");
+            stringBuilder.append("export PAGE_CONFIG_FILE='" + currentPageConfigPath + "'\n");
+
+            if (currentPageConfigPath.startsWith("file:///android_asset/")) {
+                stringBuilder.append("export PAGE_WORK_DIR='" + new ExtractAssets(context).getExtractPath(parentPageConfigDir) + "'\n");
+                stringBuilder.append("export PAGE_WORK_FILE='" + new ExtractAssets(context).getExtractPath(currentPageConfigPath) + "'\n");
+            } else {
+                stringBuilder.append("export PAGE_WORK_DIR='" + parentPageConfigDir + "'\n");
+                stringBuilder.append("export PAGE_WORK_FILE='" + currentPageConfigPath + "'\n");
+            }
         } else {
             stringBuilder.append("export PAGE_CONFIG_DIR=''\n");
             stringBuilder.append("export PAGE_CONFIG_FILE=''\n");
+            stringBuilder.append("export PAGE_WORK_DIR=''\n");
+            stringBuilder.append("export PAGE_WORK_DIR=''\n");
         }
 
         stringBuilder.append("\n\n");
@@ -359,7 +367,33 @@ public class ScriptEnvironmen {
             Context context,
             DataOutputStream dataOutputStream,
             String cmds,
-            HashMap<String, String> params) {
+            HashMap<String, String> params,
+            NodeInfoBase nodeInfo) {
+
+        if (params == null) {
+            params = new HashMap<>();
+        }
+
+        // 页面配置文件路径
+        if (nodeInfo != null) {
+            String parentPageConfigDir = nodeInfo.getPageConfigDir();
+            String currentPageConfigPath = nodeInfo.getCurrentPageConfigPath();
+            params.put("PAGE_CONFIG_DIR", parentPageConfigDir);
+            params.put("PAGE_CONFIG_FILE", currentPageConfigPath);
+            if (currentPageConfigPath.startsWith("file:///android_asset/")) {
+                params.put("PAGE_WORK_DIR", new ExtractAssets(context).getExtractPath(parentPageConfigDir));
+                params.put("PAGE_WORK_FILE", new ExtractAssets(context).getExtractPath(currentPageConfigPath));
+            } else {
+                params.put("PAGE_WORK_DIR", parentPageConfigDir);
+                params.put("PAGE_WORK_FILE", currentPageConfigPath);
+            }
+        } else {
+            params.put("PAGE_CONFIG_DIR", "");
+            params.put("PAGE_CONFIG_FILE", "");
+            params.put("PAGE_WORK_DIR", "");
+            params.put("PAGE_WORK_FILE", "");
+        }
+
         ArrayList<String> envp = getVariables(params);
         StringBuilder envpCmds = new StringBuilder();
         if (envp.size() > 0) {
