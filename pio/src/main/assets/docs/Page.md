@@ -61,13 +61,13 @@
 </page>
 
 <!--输出配置文件绝对路径-->
-<page config-sh="echo '/sdcard/text_test.xml'">
+<page config-sh="echo '/sdcard/text.xml'">
     <title>测试config-sh【路径输出】</title>
     <desc>通过config-sh输出配置页所在位置</desc>
 </page>
 
 <!--输出配置文件内容（框架识别到输出内容以“<?xml”开头 且以“>”结尾，按照此模式解析）-->
-<page config-sh="cat /sdcard/text_test.xml">
+<page config-sh="cat /sdcard/text.xml">
     <title>测试config-sh【全文输出】</title>
     <desc>通过config-sh输出配置页内容</desc>
 </page>

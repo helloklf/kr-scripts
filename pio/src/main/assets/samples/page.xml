@@ -12,19 +12,19 @@
             4. 页面加载【失败】：[load-fail] / [after-error]
         -->
         <page after-read="sleep 2" before-read="sleep 5"
-            config="samples/configs/kernel_tuner.xml">
+            config="samples/kt/kernel_tuner.xml">
             <title>page功能测试</title>
             <desc>来试试page的新功能</desc>
         </page>
 
         <!--直接输出配置文件所在的绝对路径-->
-        <page after-read="sleep 1" before-read="sleep 1" config-sh="echo '/sdcard/text_test.xml'">
+        <page after-read="sleep 1" before-read="sleep 1" config-sh="echo '/sdcard/text.xml'">
             <title>测试config-sh【路径输出】</title>
             <desc>通过config-sh输出配置页所在位置</desc>
         </page>
 
         <!--直接输出配置文件内容，当识别到 内容以“<?xml”开头且以“>”结尾，自动作为xml配置内容解析-->
-        <page after-read="sleep 1" before-read="sleep 1" config-sh="cat /sdcard/text_test.xml">
+        <page after-read="sleep 1" before-read="sleep 1" config-sh="cat /sdcard/text.xml">
             <title>测试config-sh【全文输出】</title>
             <desc>通过config-sh输出配置页内容</desc>
         </page>
