@@ -12,7 +12,7 @@
             4. 页面加载【失败】：[load-fail] / [after-error]
         -->
         <page after-read="sleep 2" before-read="sleep 5"
-            config="samples/kt/kernel_tuner.xml">
+            config="kt/kernel_tuner.xml">
             <title>page功能测试</title>
             <desc>来试试page的新功能</desc>
         </page>
@@ -50,7 +50,7 @@
     </group>
 
     <group title="页面菜单">
-        <page config="samples/empty.xml">
+        <page config="empty.xml">
             <title>在页面右上角显示菜单</title>
             <option type="default" id="a" auto-off="true">自定义 1</option>
             <option type="default" id="b">自定义 2</option>
@@ -73,7 +73,7 @@
             type=fab 属性，其它属性的用法基本一致
             但是你不能在一个页面上定义多个悬浮按钮
         -->
-        <page config="samples/empty.xml">
+        <page config="empty.xml">
             <title>在页面显示悬浮按钮</title>
             <option type="file" style="fab">选择文件</option>
             <handler>
@@ -88,7 +88,7 @@
         </page>
 
         <!--不管是右上角菜单还是悬浮按钮，选择文件时都可以限制类型-->
-        <page config="samples/empty.xml">
+        <page config="empty.xml">
             <title>选择指定类型的文件</title>
             <option type="file" style="fab" suffix="zip">选择文件</option>
             <handler>
@@ -98,7 +98,7 @@
         </page>
 
         <!--你可以自己配置悬浮按钮图标-->
-        <page config="samples/empty.xml">
+        <page config="empty.xml">
             <title>自定义悬浮按钮的图标</title>
             <option style="fab" icon="samples/icons/icon-test.png">测试按钮图标</option>
             <handler>

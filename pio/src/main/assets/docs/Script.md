@@ -77,6 +77,22 @@
 | APP_USER_ID | 安卓中每个应用都有一个单独的UserID |
 | ROOT_PERMISSION | 是否已经获得ROOT权限，值为true/false |
 
+#### 特殊(动态)变量
+- 这几个较为特殊的变量是在3.9.2版本中新增的
+- 用于定位XML配置来源路径和释放路径
+
+| 参数名 | 说明 |
+| - | - |
+| PAGE_CONFIG_DIR | 页面(Page)的配置文件源目录 |
+| PAGE_CONFIG_FILE | 页面(Page)的配置文件源文件 |
+| PAGE_WORK_DIR | 页面(Page)的配置文件提取目录 |
+| PAGE_WORK_FILE | 页面(Page)的配置文件提取路径 |
+
+> 有何作用？<br />
+> 两个源路径可以帮助你判断PIO是否加载正确的配置文件<br />
+> 而后两个`WORK`变量，则是为了尽可能减少写死的固定路径，便于逻辑脚本和配置xml一同迁移目录
+
+
 ## 相关说明
 > 如果你在脚本里创建了目录，建议将所有者设置为 `$APP_USER_ID` <br/>
 > 原因和用法见 [resource](#/doc?doc=/docs/Resource.md) 的 **警告** 部分

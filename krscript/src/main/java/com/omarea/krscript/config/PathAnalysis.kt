@@ -34,10 +34,24 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
     // TODO:处理 ../ 、 ./
     private fun pathConcat(parent: String, target: String): String {
         val isAssets = parent.startsWith(ASSETS_FILE)
-        val parentDir = if (isAssets) parentDir.substring(ASSETS_FILE.length) else parent
+        val parentDir = if (isAssets) parent.substring(ASSETS_FILE.length) else parent
+        val parentSlices = ArrayList(parentDir.split("/"))
+        if (target.startsWith("../") && parentSlices.size > 0) {
+            val targetSlices = ArrayList(target.split("/"))
+            while (true) {
+                val step = targetSlices.firstOrNull()
+                if (step != null && step == ".." && parentSlices.size > 0) {
+                    parentSlices.removeAt(parentSlices.size - 1)
+                    targetSlices.removeAt(0)
+                } else {
+                    break
+                }
+            }
+            return pathConcat((if (isAssets) ASSETS_FILE  else "" )+ parentSlices.joinToString("/"), targetSlices.joinToString("/"))
+        }
 
         return (if (isAssets) ASSETS_FILE  else "" )+ ( when {
-            !parentDir.endsWith("/") -> parentDir + "/"
+            !(parentDir.isEmpty() || parentDir.endsWith("/")) -> parentDir + "/"
             else -> parentDir
         } + (if (target.startsWith("./")) target.substring(2) else target))
     }

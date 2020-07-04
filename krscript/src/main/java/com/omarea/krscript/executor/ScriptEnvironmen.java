@@ -194,15 +194,15 @@ public class ScriptEnvironmen {
         if (nodeInfoBase != null && !nodeInfoBase.getCurrentPageConfigPath().isEmpty()) {
             String parentPageConfigDir = nodeInfoBase.getPageConfigDir();
             String currentPageConfigPath = nodeInfoBase.getCurrentPageConfigPath();
-            stringBuilder.append("export PAGE_CONFIG_DIR='" + parentPageConfigDir + "'\n");
-            stringBuilder.append("export PAGE_CONFIG_FILE='" + currentPageConfigPath + "'\n");
+            stringBuilder.append("export PAGE_CONFIG_DIR='").append(parentPageConfigDir).append("'\n");
+            stringBuilder.append("export PAGE_CONFIG_FILE='").append(currentPageConfigPath).append("'\n");
 
             if (currentPageConfigPath.startsWith("file:///android_asset/")) {
-                stringBuilder.append("export PAGE_WORK_DIR='" + new ExtractAssets(context).getExtractPath(parentPageConfigDir) + "'\n");
-                stringBuilder.append("export PAGE_WORK_FILE='" + new ExtractAssets(context).getExtractPath(currentPageConfigPath) + "'\n");
+                stringBuilder.append("export PAGE_WORK_DIR='").append(new ExtractAssets(context).getExtractPath(parentPageConfigDir)).append("'\n");
+                stringBuilder.append("export PAGE_WORK_FILE='").append(new ExtractAssets(context).getExtractPath(currentPageConfigPath)).append("'\n");
             } else {
-                stringBuilder.append("export PAGE_WORK_DIR='" + parentPageConfigDir + "'\n");
-                stringBuilder.append("export PAGE_WORK_FILE='" + currentPageConfigPath + "'\n");
+                stringBuilder.append("export PAGE_WORK_DIR='").append(parentPageConfigDir).append("'\n");
+                stringBuilder.append("export PAGE_WORK_FILE='").append(currentPageConfigPath).append("'\n");
             }
         } else {
             stringBuilder.append("export PAGE_CONFIG_DIR=''\n");
