@@ -2,12 +2,9 @@
 
 # 参数说明
 # $1 脚本路径
-# $2 执行的目录
 
 # 将要执行的具体脚本，执行 executor.sh 时传入，如 ./executor.sh test.sh
 script_path="$1"
-# 脚本执行目录（目前该参数已被废弃使用）
-execute_path="$2"
 
 # 全局变量 - 会由脚本引擎为其赋值
 # 框架并不需要这些变量，如果你不需要可以将其删除
@@ -43,10 +40,10 @@ if [[ -f "$TOOLKIT/install_busybox.sh" ]]; then
     sh "$TOOLKIT/install_busybox.sh"
 fi
 
-# 判断是否有指定执行目录
-if [[ "$execute_path" != "" ]] && [[ -d "$execute_path" ]]
+# 判断是否有指定执行目录，跳转到起始目录
+if [[ "$START_DIR" != "" ]] && [[ -d "$START_DIR" ]]
 then
-    cd "$execute_path"
+    cd "$START_DIR"
 fi
 
 # 运行脚本

@@ -191,7 +191,7 @@ class SplashActivity : Activity() {
                 if (process != null) {
                     val outputStream = DataOutputStream(process.outputStream)
 
-                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params, null)
+                    ScriptEnvironmen.executeShell(context, outputStream, config.beforeStartSh, params, null, "pio-splash")
 
                     StreamReadThread(process.inputStream.bufferedReader(), updateLogViewHandler).start()
                     StreamReadThread(process.errorStream.bufferedReader(), updateLogViewHandler).start()

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.krscript.model.RunnableNode;
 import com.omarea.krscript.model.ShellHandlerBase;
 
@@ -17,6 +18,10 @@ import java.util.HashMap;
  */
 public class ShellExecutor {
     private boolean started = false;
+    private String sessionTag = "" + System.currentTimeMillis();
+    private void killProcess() {
+        KeepShellPublic.INSTANCE.doCmdSync("kill -s 1 `pgrep -f "+ sessionTag + "`");
+    }
 
     /**
      * 执行脚本
@@ -36,6 +41,31 @@ public class ShellExecutor {
             final Runnable forceStopRunnable = nodeInfo.getInterruptable()? (new Runnable() {
                 @Override
                 public void run() {
+                    /*
+                    // 没啥用，这个pid和在shell创建的子进程不是父子关系，杀死此进程对shell里创建的进程毫无影响
+                    int pid = -1;
+                    if (process.getClass().getName().equals("java.lang.UNIXProcess")) {
+                        try {
+                            Class cl = process.getClass();
+                            Field field = cl.getDeclaredField("pid");
+                            field.setAccessible(true);
+                            Object pidObject = field.get(process);
+                            pid = (Integer) pidObject;
+                        } catch (Exception ignored) {}
+                    }
+                    */
+                    killProcess();
+
+                    try {
+                        process.getInputStream().close();
+                    } catch (Exception ignored) {}
+                    try {
+                        process.getOutputStream().close();
+                    } catch (Exception ignored) {}
+                    try {
+                        process.getErrorStream().close();
+                    } catch (Exception ignored) {}
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
                             process.destroyForcibly();
@@ -61,7 +91,7 @@ public class ShellExecutor {
                 shellHandlerBase.onStart(forceStopRunnable);
                 dataOutputStream.writeBytes("sleep 0.2;\n");
 
-                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params, nodeInfo);
+                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params, nodeInfo, sessionTag);
             } catch (Exception ex) {
                 process.destroy();
             }
