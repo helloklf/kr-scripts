@@ -1,15 +1,16 @@
-package com.projectkr.shell
+package com.omarea.krscript.config
 
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.R
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.NodeInfoBase
+import com.omarea.krscript.model.PageNode
 import java.io.ByteArrayInputStream
 
-class PageConfigSh(private var activity: Activity, private var pageConfigSh: String) {
+class PageConfigSh(private var activity: Activity, private var pageConfigSh: String, private var parentConfig: PageNode?) {
     private var handler = Handler(Looper.getMainLooper())
 
     private fun pageConfigShError(content: String) {
@@ -27,10 +28,10 @@ class PageConfigSh(private var activity: Activity, private var pageConfigSh: Str
     fun execute(): ArrayList<NodeInfoBase>? {
         var items: ArrayList<NodeInfoBase>? = null
 
-        val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh, null)?.trim()
+        val result = ScriptEnvironmen.executeResultRoot(activity, pageConfigSh, parentConfig)?.trim()
         if (result != null) {
             if (result.endsWith(".xml")) {
-                items = PageConfigReader(activity, result).readConfigXml()
+                items = PageConfigReader(activity, result, parentConfig?.pageConfigDir).readConfigXml()
                 if (items == null) {
                     noReadPermission()
                 }

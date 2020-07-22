@@ -5,7 +5,6 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.krscript.model.RunnableNode;
 import com.omarea.krscript.model.ShellHandlerBase;
 
@@ -18,15 +17,19 @@ import java.util.HashMap;
  */
 public class ShellExecutor {
     private boolean started = false;
-    private String sessionTag = "" + System.currentTimeMillis();
-    private void killProcess() {
-        KeepShellPublic.INSTANCE.doCmdSync("kill -s 1 `pgrep -f "+ sessionTag + "`");
+    private String sessionTag = "pio_" + System.currentTimeMillis();
+    private void killProcess(Context context) {
+        ScriptEnvironmen.executeResultRoot(
+                context,
+                String.format("kill -s 1 `pgrep -f %s`", sessionTag),
+                null);
+        // KeepShellPublic.INSTANCE.doCmdSync(String.format("kill -s 1 `pgrep -f %s`", sessionTag));
     }
 
     /**
      * 执行脚本
      */
-    public Process execute(Context context, RunnableNode nodeInfo, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
+    public Process execute(final Context context, RunnableNode nodeInfo, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
         if (started) {
             return null;
         }
@@ -54,7 +57,7 @@ public class ShellExecutor {
                         } catch (Exception ignored) {}
                     }
                     */
-                    killProcess();
+                    killProcess(context);
 
                     try {
                         process.getInputStream().close();

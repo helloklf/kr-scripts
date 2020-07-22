@@ -27,6 +27,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.config.PageConfigSh
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.ParamsFileChooserRender
@@ -109,10 +110,10 @@ class MainActivity : AppCompatActivity() {
         var items: ArrayList<NodeInfoBase>? = null
 
         if (pageNode.pageConfigSh.isNotEmpty()) {
-            items = PageConfigSh(this, pageNode.pageConfigSh).execute()
+            items = PageConfigSh(this, pageNode.pageConfigSh, null).execute()
         }
         if (items == null && pageNode.pageConfigPath.isNotEmpty()) {
-            items = PageConfigReader(this.applicationContext, pageNode.pageConfigPath).readConfigXml()
+            items = PageConfigReader(this.applicationContext, pageNode.pageConfigPath, null).readConfigXml()
         }
 
         return items

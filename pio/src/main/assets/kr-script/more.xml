@@ -18,7 +18,16 @@
         <page config="samples/kt/kernel_tuner.xml" title="内核调谐器" />
     </group>
 
-    <group title="试验阶段">
-        <page title="相对路径测试" config="samples/relative_path/relative_path.xml" />
+    <group title="路径测试">
+        <resource dir="samples/relative_path" />
+        <resource dir="samples/relative_path2" />
+
+        <page title="相对路径测试1" config="samples/relative_path/relative_path.xml" />
+
+
+        <!--这里通过sh输出了一个磁盘文件的绝对路径，这会让子页面工作目录切换到磁盘上-->
+        <page
+            title="相对路径测试2"
+            config-sh="echo $START_DIR/samples/relative_path2/page.xml" />
     </group>
 </page>
