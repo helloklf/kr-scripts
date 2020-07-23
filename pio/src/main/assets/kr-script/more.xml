@@ -30,4 +30,18 @@
             title="相对路径测试2"
             config-sh="echo $START_DIR/samples/relative_path2/page.xml" />
     </group>
+
+    <group title="Ansole 联动">
+        <action title="打开命令行">
+            <resource dir="samples/ansole" />
+            <script>
+                test_sh="$START_DIR/samples/ansole/test.sh"
+                if [[ `pm list package com.romide.terminal` != "" ]]; then
+                    am start -a jackpal.androidterm.RUN_SCRIPT --es cmd "su -c $test_sh" --es title "PIO > Ansole" --activity-multiple-task
+                else
+                    echo '你没有安装定制版Ansole'
+                fi
+            </script>
+        </action>
+    </group>
 </page>
