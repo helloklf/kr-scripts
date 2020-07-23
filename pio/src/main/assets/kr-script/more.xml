@@ -39,7 +39,7 @@
                 if [[ `pm list package com.romide.terminal` != "" ]]; then
                     am start -a jackpal.androidterm.RUN_SCRIPT --es cmd "su -c $test_sh" --es title "PIO > Ansole" --activity-multiple-task
                 else
-                    echo '你没有安装定制版Ansole'
+                    echo '你没有安装可用的Ansole'
                 fi
             </script>
         </action>
