@@ -14,3 +14,15 @@ getprop ro.product.system.name
 echo ''
 echo ''
 echo '********************************************'
+echo ''
+echo ''
+
+echo '当前用户：'
+id
+
+
+echo ''
+echo ''
+echo '********************************************'
+su
+
