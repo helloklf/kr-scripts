@@ -1,5 +1,5 @@
 #!/system/bin/sh
 
-source ./samples/scene-little/scene-little-main.sh
+source $PAGE_WORK_DIR/scene-little-main.sh
 
 watcher_start

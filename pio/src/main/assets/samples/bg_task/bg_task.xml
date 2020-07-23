@@ -19,14 +19,13 @@
         <action>
             <title>场景模式 Little</title>
             <desc>模拟Scene的场景模式-动态响应功能</desc>
-            <resource dir="file:///android_asset/samples/scene-little" />
-            <set>samples/bg_task/run.sh</set>
+            <set>$PAGE_WORK_DIR/scene-little-run.sh</set>
         </action>
 
         <action bg-task="true">
             <title>场景模式 Little</title>
             <desc>模拟Scene的场景模式-动态响应功能，并在后台运行</desc>
-            <set>samples/bg_task/run.sh</set>
+            <set>$PAGE_WORK_DIR/scene-little-run.sh</set>
         </action>
     </group>
 </group>

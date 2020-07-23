@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -36,8 +37,8 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         private var someIgnored = false
         private var forceStop: Runnable? = null
         private var isFinished = false
-        private var STOP_CLICK_ACTION_NAME = ".KrScriptTaskForceStop"
-        private val stopIntent = PendingIntent.getBroadcast(context, 0, Intent(context.packageName + STOP_CLICK_ACTION_NAME).apply {
+        private var STOP_CLICK_ACTION_NAME = context.packageName + ".TaskStop." + "N" + notificationID
+        private val stopIntent = PendingIntent.getBroadcast(context, 0, Intent(STOP_CLICK_ACTION_NAME).apply {
             putExtra("id", notificationID)
         }, PendingIntent.FLAG_UPDATE_CURRENT)
         private val receiver = object : BroadcastReceiver() {
@@ -59,7 +60,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             }
 
             val expandView = RemoteViews(context.getPackageName(), R.layout.kr_task_notification)
-            expandView.setTextViewText(R.id.kr_task_title, notificationTitle)
+            expandView.setTextViewText(R.id.kr_task_title, notificationTitle + "(" + notificationID + ")")
             expandView.setTextViewText(R.id.kr_task_log, notificationMessageRows.joinToString("", if (someIgnored) "……\n" else "").trim())
             expandView.setProgressBar(R.id.kr_task_progress, progressTotal, progressCurrent, progressTotal < 0)
             expandView.setViewVisibility(R.id.kr_task_progress, if (progressTotal == progressCurrent) View.GONE else View.VISIBLE)
@@ -69,7 +70,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             }
 
             val notificationBuilder = Notification.Builder(context)
-                    .setContentTitle("" + notificationTitle)
+                    .setContentTitle("" + notificationTitle + "(" + notificationID + ")")
                     .setContentText("" + notificationMShortMsg + " >> " + notificationMessageRows.lastOrNull())
                     .setSmallIcon(R.drawable.kr_run)
                     .setAutoCancel(true)
@@ -103,6 +104,10 @@ class ScriptTaskThread(private var process: Process) : Thread() {
                 notification.bigContentView = expandView
             }
 
+            if (!isFinished) {
+                notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+            }
+
             notificationManager.notify(notificationID, notification); // 发送通知
         }
 
@@ -129,7 +134,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
 
         override fun onExit(msg: Any?) {
             try {
-                context.unregisterReceiver(receiver)
+                // context.unregisterReceiver(receiver)
             } catch (ex: java.lang.Exception) {
             }
             isFinished = true
@@ -146,7 +151,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
 
         override fun onStart(forceStop: Runnable?) {
             this.forceStop = forceStop
-            context.registerReceiver(receiver, IntentFilter(context.packageName + FINISHED_ACTION_NAME))
+            context.registerReceiver(receiver, IntentFilter(STOP_CLICK_ACTION_NAME))
 
             updateNotification()
         }
@@ -165,20 +170,14 @@ class ScriptTaskThread(private var process: Process) : Thread() {
     companion object {
         private var channelCreated = false
         private val channelId = "kr_script_task_notification"
-        private val FINISHED_ACTION_NAME = ".KrScriptTaskFinished"
         private var notificationCounter = 34050
 
         fun startTask(context: Context, script: String, params: HashMap<String, String>?, nodeInfo: RunnableNode, onExit: Runnable, onDismiss: Runnable) {
             val applicationContext = context.applicationContext
             notificationCounter += 1
-            val notificationID = notificationCounter
-
-            val finishedIntent = Intent(context.packageName + FINISHED_ACTION_NAME).apply {
-                putExtra("id", notificationID)
-            }
 
             val handler = ServiceShellHandler(applicationContext, nodeInfo, notificationCounter)
-            val process = ShellExecutor().execute(
+            ShellExecutor().execute(
                     context,
                     nodeInfo,
                     script,

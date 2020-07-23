@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-source ./samples/scene-little/scene-little-config.sh
+source $PAGE_WORK_DIR/scene-little-config.sh
 
 cd /cache
 rm -rf ./.scene_watcher
@@ -13,6 +13,12 @@ scene_current_app=$(getprop vtools.powercfg_app)
 
 scene_powercfg_sh="/data/powercfg.sh"
 scene_powercfg_base_sh="/data/powercfg_base.sh"
+if [[ -f /data/data/com.omarea.vtools/files/powercfg.sh ]]; then
+    scene_powercfg_sh='/data/data/com.omarea.vtools/files/powercfg.sh'
+fi
+if [[ -f /data/data/com.omarea.vtools/files/powercfg_base.sh ]]; then
+    scene_powercfg_base_sh='/data/data/com.omarea.vtools/files/powercfg_base.sh'
+fi
 
 if [[ ! -f "$scene_powercfg_sh" ]]; then
     echo "调度切换所需的["  $scene_powercfg_sh "]文件不存在！" 1>&2

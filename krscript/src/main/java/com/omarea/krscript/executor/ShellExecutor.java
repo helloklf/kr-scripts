@@ -41,7 +41,7 @@ public class ShellExecutor {
                 onExit.run();
             }
         } else {
-            final Runnable forceStopRunnable = nodeInfo.getInterruptable()? (new Runnable() {
+            final Runnable forceStopRunnable = (nodeInfo.getInterruptable() || nodeInfo.getBackgroundTask())? (new Runnable() {
                 @Override
                 public void run() {
                     /*
