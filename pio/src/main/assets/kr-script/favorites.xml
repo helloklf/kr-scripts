@@ -6,39 +6,24 @@
         </page>
     </group>
 
-    <group title="Action 功能测试">
-        <page config="samples/action.xml" title="Action用法" />
+    <group title="功能节点">
+        <page config="samples/action.xml" title="Action（动作）" />
+        <page config="samples/switch.xml" title="Switch（开关）" />
+        <page config="samples/picker.xml" title="Picker（选择）" />
+        <page config="samples/page.xml" title="Page（子页面）" />
     </group>
 
-    <group title="Switch 功能测试">
-        <page config="samples/switch.xml" title="Switch用法" />
+    <group title="文字节点">
+        <page config="samples/text.xml" title="Text（文字节点）" />
     </group>
 
-    <group title="Picker 功能测试">
-        <page config="samples/picker.xml" title="Picker用法" />
-    </group>
-
-    <group title="Text 功能测试">
-        <page config="samples/text.xml" title="Text用法" />
-    </group>
-
-    <group title="Page 功能测试">
-        <page config="samples/page.xml" title="Page用法" />
-    </group>
-
-    <group title="关联刷新测试">
-        <page config="samples/reload.xml" title="reload 属性" />
-    </group>
-
-    <group title="后台任务">
+    <group title="其它">
+        <page config="samples/shortcut.xml" title="快捷方式&amp;图标" desc="配置功能节点可配置为快捷方式，并设置图标" />
+        <page config="samples/reload.xml" title="reload 属性" desc="配置节点显示内容关联刷新" />
         <page config="samples/bg_task/bg_task.xml" title="后台任务" />
     </group>
 
     <group title="Web引擎">
         <page config="samples/web.xml" title="网页引擎测试" />
-    </group>
-
-    <group title="快捷方式">
-        <page config="samples/shortcut.xml" title="快捷方式测试" />
     </group>
 </items>
