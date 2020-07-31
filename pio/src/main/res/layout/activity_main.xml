@@ -60,7 +60,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:statusBarColor" />
+                android:background="?android:navigationBarColor" />
         </LinearLayout>
     </TabHost>
 </RelativeLayout>

@@ -4,6 +4,9 @@
     <color name="window_bg_light">#F2F2F2</color>
     <color name="window_bg_dark">#000000</color>
     <color name="status_bg_dark">#222222</color>
+    <color name="status_bg_light">@android:color/white</color>
+    <color name="cardBgDark">#222222</color>
+    <color name="cardBgLight">#ffffff</color>
 
     <color name="color_load_none">#00d5d9</color>
     <color name="color_load_low">#02d98d</color>

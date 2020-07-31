@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepclassmembers class * implements java.io.Serializable{*;}
+
+-keep class com.omarea.krscript.model.**{*;}

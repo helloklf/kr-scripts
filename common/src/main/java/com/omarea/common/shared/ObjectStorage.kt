@@ -2,7 +2,6 @@ package com.omarea.common.shared
 
 import android.content.Context
 import android.widget.Toast
-import com.omarea.common.shared.FileWrite
 import java.io.*
 
 open class ObjectStorage<T : Serializable>(private val context: Context) {
