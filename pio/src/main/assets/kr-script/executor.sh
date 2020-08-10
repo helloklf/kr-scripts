@@ -10,25 +10,27 @@ script_path="$1"
 # 框架并不需要这些变量，如果你不需要可以将其删除
 # 如有需要，你也可以增加一些自己的变量定义
 # 但这个文件每次运行脚本都会被执行，不建议写太复杂的过程
-export EXECUTOR_PATH=$({EXECUTOR_PATH})
-export START_DIR=$({START_DIR})
-export TEMP_DIR=$({TEMP_DIR})
-export ANDROID_UID=$({ANDROID_UID})
-export ANDROID_SDK=$({ANDROID_SDK})
-export SDCARD_PATH=$({SDCARD_PATH})
-export PACKAGE_NAME=$({PACKAGE_NAME})
-export PACKAGE_VERSION_NAME=$({PACKAGE_VERSION_NAME})
-export PACKAGE_VERSION_CODE=$({PACKAGE_VERSION_CODE})
-export APP_USER_ID=$({APP_USER_ID})
+export EXECUTOR_PATH="$({EXECUTOR_PATH})"
+export START_DIR="$({START_DIR})"
+export TEMP_DIR="$({TEMP_DIR})"
+export ANDROID_UID="$({ANDROID_UID})"
+export ANDROID_SDK="$({ANDROID_SDK})"
+export SDCARD_PATH="$({SDCARD_PATH})"
+export BUSYBOX="$({BUSYBOX})"
+export MAGISK_PATH="$({MAGISK_PATH})"
+export PACKAGE_NAME="$({PACKAGE_NAME})"
+export PACKAGE_VERSION_NAME="$({PACKAGE_VERSION_NAME})"
+export PACKAGE_VERSION_CODE="$({PACKAGE_VERSION_CODE})"
+export APP_USER_ID="$({APP_USER_ID})"
 
 # ROOT_PERMISSION 取值为：true 或 false
 export ROOT_PERMISSION=$({ROOT_PERMISSION})
 
 # 修复非ROOT权限执行脚本时，无法写入默认的缓存目录 /data/local/tmp
-export TMPDIR=$TEMP_DIR
+export TMPDIR="$TEMP_DIR"
 
 # toolkit工具目录
-export TOOLKIT=$({TOOLKIT})
+export TOOLKIT="$({TOOLKIT})"
 # 添加toolkit添加为应用程序目录
 if [[ ! "$TOOLKIT" = "" ]]; then
     # export PATH="$PATH:$TOOLKIT"

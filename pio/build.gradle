@@ -10,8 +10,8 @@ android {
         resConfigs "zh"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 101
-        versionName "3.9.5"
+        versionCode 102
+        versionName "3.9.6"
     }
     buildTypes {
         release {
@@ -29,7 +29,7 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation project(':common') // 添加依赖模块
     implementation project(':krscript') // 添加依赖模块
