@@ -24,7 +24,7 @@
 | logo | 作为快捷方式添加到桌面时使用的图标 | 文件路径 |  |
 | icon | 显示在功能左侧的图标。如果未设置logo属性，它也同时会被作为logo使用 | 文件路径 |  |
 | reload | 执行完脚本后要执行的刷新操作 | `page` 、具体体功能`id` | `page` |
-| bg-task | 后台运行而不是显示日志输出界面，默认`false` | `true` `false` | `true` |
+| shell | 执行脚本时的交互界面，可设置为：日志输出(default)、静默执行(hidden)、后台执行(bg-task) | `default` `hidden` `bg-task` | `bg-task` |
 
 - 特有属性
 
