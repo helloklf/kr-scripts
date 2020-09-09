@@ -11,7 +11,6 @@
     <string name="execute_success">执行完成！</string>
     <string name="yes">是</string>
     <string name="no">否</string>
-    <string name="reboot_confirm">确定重启吗？</string>
     <string name="custom">定制</string>
     <string name="switchs">开关</string>
     <string name="btn_exit">退出</string>
@@ -23,7 +22,6 @@
     <string name="mhz">Mhz</string>
     <string name="core">核心</string>
     <string name="title_activity_action_page">功能分页</string>
-    <string name="command_reboot">svc power reboot || reboot</string>
 
     <string name="author_name">xxx</string>
     <string name="about_title">关于 · PIO</string>
@@ -61,4 +59,18 @@
     <string name="transparent_ui">界面透明 </string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="title_activity_folder_selector">请长按选择目录</string>
+
+    <string name="power_shutdown">快速关机</string>
+    <string name="power_reboot">快速重启</string>
+    <string name="power_hot_reboot">热重启</string>
+    <string name="power_fastboot">进入Fastboot</string>
+    <string name="power_recovery">进入Recovery</string>
+    <string name="power_emergency">进入9008模式</string>
+    <string name="power_menu">请选择操作</string>
+    <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
+    <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
+    <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>
+    <string name="power_fastboot_cmd">sync;reboot bootloader;</string>
+    <string name="power_recovery_cmd">sync;reboot recovery;</string>
+    <string name="power_emergency_cmd">sync;reboot edl;</string>
 </resources>

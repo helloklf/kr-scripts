@@ -21,6 +21,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shell.KeepShellPublic
@@ -79,14 +80,14 @@ class MainActivity : AppCompatActivity() {
 
                 if (favorites != null && favorites.size > 0) {
                     updateFavoritesTab(favorites, favoritesConfig)
-                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), getDrawable(R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
+                    tabIconHelper.newTabSpec(getString(R.string.tab_favorites), ContextCompat.getDrawable(this, R.drawable.tab_favorites)!!, R.id.main_tabhost_2)
                 } else {
                     main_tabhost_2.visibility = View.GONE
                 }
 
                 if (pages != null && pages.size > 0) {
                     updateMoreTab(pages, page2Config)
-                    tabIconHelper.newTabSpec(getString(R.string.tab_pages), getDrawable(R.drawable.tab_pages)!!, R.id.main_tabhost_3)
+                    tabIconHelper.newTabSpec(getString(R.string.tab_pages), ContextCompat.getDrawable(this, R.drawable.tab_pages)!!, R.id.main_tabhost_3)
                 } else {
                     main_tabhost_3.visibility = View.GONE
                 }
@@ -314,12 +315,7 @@ class MainActivity : AppCompatActivity() {
                 )
             }
             R.id.option_menu_reboot -> {
-                DialogHelper.animDialog(AlertDialog.Builder(this)
-                        .setTitle(R.string.reboot_confirm)
-                        .setPositiveButton(R.string.yes) { _, _ ->
-                            KeepShellPublic.doCmdSync(getString(R.string.command_reboot))
-                        }
-                        .setNegativeButton(R.string.no) { _, _ -> })
+                DialogPower(this).showPowerMenu()
             }
             R.id.action_graph -> {
                 if (FloatMonitor.isShown == true) {

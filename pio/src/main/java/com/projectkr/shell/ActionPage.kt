@@ -2,7 +2,9 @@ package com.projectkr.shell
 
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -15,6 +17,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.TryOpenActivity
@@ -211,23 +214,23 @@ class ActionPage : AppCompatActivity() {
             }
 
             if (menuOption.type == "file" && menuOption.iconPath.isEmpty()) {
-                setImageDrawable(getDrawable(R.drawable.kr_folder))
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.kr_folder))
             } else if (menuOption.iconPath.isNotEmpty()) {
                 val icon = IconPathAnalysis().loadLogo(context, menuOption, false)
                 if (icon != null) {
                     setImageDrawable(icon)
                 } else {
-                    setImageDrawable(getDrawable(R.drawable.kr_fab))
+                    setImageDrawable(ContextCompat.getDrawable(context, R.drawable.kr_fab))
                 }
             } else {
-                setImageDrawable(getDrawable(R.drawable.kr_fab))
+                setImageDrawable(ContextCompat.getDrawable(context, R.drawable.kr_fab))
             }
         }
     }
 
     // 右上角菜单的点击操作
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == null || menuOptions == null) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (menuOptions == null) {
             return false
         }
 
@@ -460,5 +463,24 @@ class ActionPage : AppCompatActivity() {
 
     fun _openPage(pageNode: PageNode) {
         OpenPageHelper(this).openPage(pageNode)
+    }
+
+    override fun onDestroy() {
+        this.setExcludeFromRecents()
+        super.onDestroy()
+    }
+
+    private fun setExcludeFromRecents() {
+        if (isTaskRoot) {
+            try {
+                val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                for (task in service.appTasks) {
+                    if (task.taskInfo.id == this.taskId) {
+                        task.setExcludeFromRecents(true)
+                    }
+                }
+            } catch (ex: Exception) {
+            }
+        }
     }
 }
