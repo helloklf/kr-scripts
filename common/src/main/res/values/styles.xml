@@ -15,6 +15,29 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
+    <style name="windowAnim2">
+        <item name="android:windowEnterAnimation">@anim/dialog_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_fade_out</item>
+    </style>
+
+    <style name="custom_alert_dialog">
+        <!--<item name="android:windowLightStatusBar">true</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:background">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:backgroundDimAmount">0</item>
+        <item name="android:windowAnimationStyle">@style/windowAnim2</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:padding">0dp</item>
+        <item name="android:layout_margin">0dp</item>
+    </style>
 
     <style name="SceneSpinner">
         <item name="android:paddingStart">0dp</item>
@@ -80,7 +103,7 @@
         <item name="android:background">@null</item>
     </style>
 
-    <style name="SceneButton" parent="Widget.AppCompat.ButtonBar">
+    <style name="SceneButton" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:background">@drawable/btn_bg</item>
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">32dp</item>
@@ -88,6 +111,8 @@
         <item name="android:paddingRight">12dp</item>
         <item name="android:textSize">13dp</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">?android:colorAccent</item>
+        <item name="android:stateListAnimator">@null</item>
     </style>
 
     <style name="textTitle" parent="@style/TextAppearance.AppCompat.Title">
@@ -112,5 +137,30 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>
         <item name="android:fontFamily">sans-serif-light</item>
+    </style>
+
+    <style name="textSecondary">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:alpha">0.5</item>
+    </style>
+
+    <style name="dialogLargeBtn" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:alpha">0.8</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16dp</item>
+    </style>
+    <style name="dialogConfirmBtn" parent="dialogCancelBtn">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/btn_bg_large</item>
+    </style>
+
+    <style name="dialogCancelBtn" parent="dialogLargeBtn">
+        <item name="android:background">@drawable/btn_bg_large_secondary</item>
     </style>
 </resources>
