@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/in_card_item_inactive"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="55dp"
@@ -10,6 +11,7 @@
     <TextView
         android:id="@+id/kr_param_title"
         style="@style/textSmallTitle"
+        android:textColor="?android:attr/textColorSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
