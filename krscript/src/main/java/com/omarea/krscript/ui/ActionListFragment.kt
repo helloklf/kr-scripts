@@ -96,14 +96,13 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     override fun onSwitchClick(item: SwitchNode, onCompleted: Runnable) {
         val toValue = !item.checked
         if (item.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
-                    .setTitle(item.title)
-                    .setMessage(item.desc)
-                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                        switchExecute(item, toValue, onCompleted)
-                    }
-                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
-                    })
+            DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                switchExecute(item, toValue, onCompleted)
+            })
+        } else if (item.warning.isNotEmpty()) {
+            DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                switchExecute(item, toValue, onCompleted)
+            })
         } else {
             switchExecute(item, toValue, onCompleted)
         }
@@ -175,6 +174,20 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
      * Picker点击
      */
     override fun onPickerClick(item: PickerNode, onCompleted: Runnable) {
+        if (item.confirm) {
+            DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                pickerExecute(item, onCompleted)
+            })
+        } else if (item.warning.isNotEmpty()) {
+            DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                pickerExecute(item, onCompleted)
+            })
+        } else {
+            pickerExecute(item, onCompleted)
+        }
+    }
+
+    private fun pickerExecute(item: PickerNode, onCompleted: Runnable) {
         val paramInfo = ActionParamInfo()
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
@@ -257,13 +270,13 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
      */
     override fun onActionClick(item: ActionNode, onCompleted: Runnable) {
         if (item.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
-                    .setTitle(item.title)
-                    .setMessage(item.desc)
-                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                        actionExecute(item, onCompleted)
-                    }
-                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> })
+            DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                actionExecute(item, onCompleted)
+            })
+        } else if (item.warning.isNotEmpty() && item.params?.size == 0) {
+            DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                actionExecute(item, onCompleted)
+            })
         } else {
             actionExecute(item, onCompleted)
         }
@@ -348,6 +361,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 dialogView.findViewById<TextView>(R.id.desc).visibility = View.GONE
                             } else {
                                 dialogView.findViewById<TextView>(R.id.desc).text = action.desc
+                            }
+                            if (action.warning.isEmpty()) {
+                                dialogView.findViewById<TextView>(R.id.warn).visibility = View.GONE
+                            } else {
+                                dialogView.findViewById<TextView>(R.id.warn).text = action.warning
                             }
 
                             dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {

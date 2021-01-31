@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<page>
+    <group>
+        <action warning="我了个去，你还真点啊，此功能的主要作用是防止用户误触或提示功能危险性，相当于以前的 [confirm=true] 属性优化版本">
+            <title>测试操作警告</title>
+            <desc>当你点击此功能时，会显示自定义提示：[我勒个去，你还真点啊...]</desc>
+        </action>
+        <text>
+            <slice br="true">目前Action、Switch、Picker均已支持[warning]属性</slice>
+            <slice br="true">在执行有参数输入界面的Action时，警告内容会显示在参数输入界面顶部，而不再单独弹出</slice>
+        </text>
+    </group>
+
+    <group>
+        <switch>
+            <title>操作锁</title>
+            <desc>操作锁用于设置某个功能的禁用状态，例如：某个功能点击过一次之后，需要用户重启手机才能再次操作，操作锁将会提供帮助</desc>
+            <summary>该功能将在后续实现</summary>
+            <set>
+                echo '--操作锁尚未实现--'
+            </set>
+            <lock>
+                echo '在重启手机之前，此功能已锁定'
+            </lock>
+        </switch>
+    </group>
+</page>

@@ -18,6 +18,11 @@
         <TextView
             android:id="@+id/desc"
             style="@style/dialogDesc" />
+
+        <TextView
+            android:id="@+id/warn"
+            style="@style/dialogWarn"
+            android:text="" />
     </LinearLayout>
 
     <RelativeLayout

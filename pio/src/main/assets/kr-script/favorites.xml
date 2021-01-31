@@ -21,9 +21,11 @@
         <page config="samples/shortcut.xml" title="快捷方式&amp;图标" desc="配置功能节点可配置为快捷方式，并设置图标" />
         <page config="samples/reload.xml" title="reload 属性" desc="配置节点显示内容关联刷新" />
         <page config="samples/bg_task/bg_task.xml" title="后台任务" />
+        <page config="samples/new.xml" title="新功能测试" />
     </group>
 
     <group title="Web引擎">
         <page config="samples/web.xml" title="网页引擎测试" />
     </group>
+
 </items>
