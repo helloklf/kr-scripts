@@ -80,16 +80,7 @@ class ActionParamsLayoutRender {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo, false)
                 } else {
-                    val spinner = Spinner(context)
-                    val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
-
-                    spinner.adapter = SimpleAdapter(context, options, R.layout.kr_simple_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
-                    spinner.isEnabled = !actionParamInfo.readonly
-
-                    addToLayout(spinner, actionParamInfo)
-                    if (selectedIndex > -1 && selectedIndex < options.size) {
-                        spinner.setSelection(selectedIndex)
-                    }
+                    addToLayout(ParamsSpinner(actionParamInfo, context).render(), actionParamInfo)
                 }
             }
             // 选择框渲染
