@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.omarea.krscript.R
-import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ActionParamInfo
 import com.omarea.krscript.model.ParamInfoFilter
 
@@ -95,28 +94,15 @@ class ActionParamsLayoutRender {
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
-                addToLayout(CheckBox(context).apply {
-                    isChecked = getCheckState(actionParamInfo, false)
-                    isEnabled = !actionParamInfo.readonly
-                    if (!actionParamInfo.label.isNullOrEmpty()) {
-                        text = actionParamInfo.label
-                    }
-                }, actionParamInfo)
+                addToLayout(ParamsCheckbox(actionParamInfo, context).render(), actionParamInfo, false)
             }
             // 开关渲染
             else if (actionParamInfo.type == "switch") {
-                val switch = Switch(context)
-                switch.isChecked = getCheckState(actionParamInfo, false)
-                switch.isEnabled = !actionParamInfo.readonly
-                if (!actionParamInfo.label.isNullOrEmpty()) {
-                    switch.text = actionParamInfo.label
-                }
-                switch.setPadding(dp2px(context, 8f), 0, 0, 0)
-                addToLayout(switch, actionParamInfo)
+                addToLayout(ParamsSwitch(actionParamInfo, context).render(), actionParamInfo, false)
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
-                val layout = SeekBarRender(actionParamInfo, context).render()
+                val layout = ParamsSeekBar(actionParamInfo, context).render()
 
                 addToLayout(layout, actionParamInfo, false)
             }
@@ -140,26 +126,7 @@ class ActionParamsLayoutRender {
             }
             // 文本框渲染
             else {
-                val editText = EditText(context)
-                if (actionParamInfo.valueFromShell != null)
-                    editText.setText(actionParamInfo.valueFromShell)
-                else if (actionParamInfo.value != null)
-                    editText.setText(actionParamInfo.value)
-                editText.background = ColorDrawable(Color.TRANSPARENT)
-                editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
-                editText.isEnabled = !actionParamInfo.readonly
-                editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (actionParamInfo.placeholder.isNotEmpty()) {
-                    editText.hint = actionParamInfo.placeholder
-                } else if (
-                        (actionParamInfo.type == "int" || actionParamInfo.type == "number")
-                        &&
-                        (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)
-                ) {
-                    editText.hint = "${actionParamInfo.min} ~ ${actionParamInfo.max}"
-                }
-
-                addToLayout(editText, actionParamInfo)
+                addToLayout(ParamsEditText(actionParamInfo, context).render(), actionParamInfo, false)
             }
         }
     }

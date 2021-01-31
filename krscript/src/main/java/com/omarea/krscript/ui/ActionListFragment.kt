@@ -335,15 +335,20 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
                             val darkMode = themeMode != null && themeMode!!.isDarkMode
 
-                            val builder = if (isLongList) AlertDialog.Builder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light) else AlertDialog.Builder(this.context)
-                            val dialog = builder.setView(dialogView).create()
-                            if (!isLongList) {
-                                DialogHelper.animDialog(dialog)
+                            val dialog = (if (isLongList) {
+                                val builder = AlertDialog.Builder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
+                                builder.setView(dialogView).create().apply { show() }
                             } else {
-                                dialog.show()
-                            }
+                                // AlertDialog.Builder(this.context).create()
+                                DialogHelper.customDialogBlurBg(activity!!, dialogView).dialog
+                            })
 
                             dialogView.findViewById<TextView>(R.id.title).text = action.title
+                            if (action.desc.isEmpty()) {
+                                dialogView.findViewById<TextView>(R.id.desc).visibility = View.GONE
+                            } else {
+                                dialogView.findViewById<TextView>(R.id.desc).text = action.desc
+                            }
 
                             dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                                 try {

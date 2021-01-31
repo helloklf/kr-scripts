@@ -28,7 +28,7 @@
 
         <action>
             <title>自定义多选下拉分隔符</title>
-            <param name="test" label="多选下拉" multiple="multiple" separator="@">
+            <param name="test" title="多选下拉" multiple="multiple" separator="@">
                 <option value="Z">测试一下 Z</option>
                 <option value="X">测试一下 X</option>
                 <option value="Y">测试一下 Y</option>

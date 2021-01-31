@@ -36,5 +36,6 @@
         android:padding="5dp"
         android:scaleType="centerInside"
         android:textColor="?android:colorAccent"
+        android:textAlignment="viewEnd"
         android:textStyle="bold" />
 </LinearLayout>

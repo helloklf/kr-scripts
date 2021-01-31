@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp">
+
+    <Switch
+        android:id="@+id/kr_param_switch"
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
