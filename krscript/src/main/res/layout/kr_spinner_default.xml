@@ -5,5 +5,5 @@
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
     android:layout_height="wrap_content"
-    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-    android:textColor="?android:attr/textColorPrimary" />
+    android:textColor="?android:attr/textColorPrimary"
+    android:textSize="15dp" />

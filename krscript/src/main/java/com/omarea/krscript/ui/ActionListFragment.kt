@@ -273,7 +273,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
                 actionExecute(item, onCompleted)
             })
-        } else if (item.warning.isNotEmpty() && item.params?.size == 0) {
+        } else if (item.warning.isNotEmpty() && (item.params == null || item.params?.size == 0)) {
             DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
                 actionExecute(item, onCompleted)
             })
@@ -281,7 +281,6 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             actionExecute(item, onCompleted)
         }
     }
-
 
     /**
      * action执行参数界面

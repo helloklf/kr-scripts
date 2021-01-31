@@ -78,66 +78,58 @@ class ActionParamsLayoutRender {
             if (options != null && !(actionParamInfo.type == "app" || actionParamInfo.type == "packages")) {
                 if (actionParamInfo.multiple) {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
-                    addToLayout(view, actionParamInfo, false)
+                    addToLayout(view, actionParamInfo)
                 } else {
                     addToLayout(ParamsSpinner(actionParamInfo, context).render(), actionParamInfo)
                 }
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
-                addToLayout(ParamsCheckbox(actionParamInfo, context).render(), actionParamInfo, false)
+                addToLayout(ParamsCheckbox(actionParamInfo, context).render(), actionParamInfo)
             }
             // 开关渲染
             else if (actionParamInfo.type == "switch") {
-                addToLayout(ParamsSwitch(actionParamInfo, context).render(), actionParamInfo, false)
+                addToLayout(ParamsSwitch(actionParamInfo, context).render(), actionParamInfo)
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
                 val layout = ParamsSeekBar(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 文件选择
             else if (actionParamInfo.type == "file" || actionParamInfo.type == "folder") {
                 val layout = ParamsFileChooserRender(actionParamInfo, context, fileChooser).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 应用选择
             else if (actionParamInfo.type == "app" || actionParamInfo.type == "packages") {
                 val layout = ParamsAppChooserRender(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 颜色输入
             else if (actionParamInfo.type == "color") {
                 val layout = ParamsColorPicker(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo, false)
+                addToLayout(layout, actionParamInfo)
             }
             // 文本框渲染
             else {
-                addToLayout(ParamsEditText(actionParamInfo, context).render(), actionParamInfo, false)
+                addToLayout(ParamsEditText(actionParamInfo, context).render(), actionParamInfo)
             }
         }
     }
 
-    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo, setTag: Boolean = true) {
-        if (setTag) {
-            inputView.tag = actionParamInfo.name
-        }
-
+    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo) {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
+        } else if (!actionParamInfo.label.isNullOrEmpty()) {
+            layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.label
         } else {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
-        }
-
-        if (!actionParamInfo.label.isNullOrEmpty() && (actionParamInfo.type != "bool" && actionParamInfo.type != "checkbox" && actionParamInfo.type != "switch")) {
-            layout.findViewById<TextView>(R.id.kr_param_label).text = actionParamInfo.label
-        } else {
-            layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
         }
 
         if (!actionParamInfo.desc.isNullOrEmpty()) {
