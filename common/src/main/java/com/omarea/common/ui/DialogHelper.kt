@@ -3,7 +3,9 @@ package com.omarea.common.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
@@ -155,6 +157,15 @@ class DialogHelper {
             return dialog
         }
 
+        private fun getWindowBackground(context: Context): Int {
+            val defaultColor = Color.WHITE
+            val attrsArray = intArrayOf(android.R.attr.background)
+            val typedArray = context.obtainStyledAttributes(attrsArray)
+            val color = typedArray.getColor(0, defaultColor)
+            typedArray.recycle()
+            return color
+        }
+
         fun confirmBlur(context: Activity,
                     title: String = "",
                     message: String = "",
@@ -184,10 +195,12 @@ class DialogHelper {
                     .create()
 
             dialog.window?.run {
-                setBackgroundDrawableResource(android.R.color.transparent)
                 setWindowAnimations(R.style.windowAnim2)
             }
             dialog.show()
+            dialog.window?.run {
+                setBackgroundDrawableResource(android.R.color.transparent)
+            }
 
             return DialogWrap(dialog)
         }
@@ -203,9 +216,8 @@ class DialogHelper {
                     .setCancelable(cancelable)
                     .create()
 
+            dialog.show()
             dialog.window?.run {
-                setBackgroundDrawableResource(android.R.color.transparent)
-
                 // TODO:处理模糊背景
                 // BlurBackground(activity).setScreenBgLight(dialog)
 
@@ -214,7 +226,19 @@ class DialogHelper {
                 // attributes =attrs
                 // decorView.setPadding(0, 0, 0, 0)
 
-                setBackgroundDrawable(BitmapDrawable(activity.getResources(), FastBlurUtility.getBlurBackgroundDrawer(activity)))
+                val blurBitmap = FastBlurUtility.getBlurBackgroundDrawer(activity)
+                if (blurBitmap != null) {
+                    setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
+                } else {
+                    // setBackgroundDrawableResource(android.R.color.transparent)
+                    try {
+                        val d = ColorDrawable(getWindowBackground(activity))
+                        setBackgroundDrawable(d)
+                    } catch (ex: java.lang.Exception) {
+                        val d = ColorDrawable(Color.WHITE)
+                        setBackgroundDrawable(d)
+                    }
+                }
                 decorView.run {
                     systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                 }
@@ -237,7 +261,6 @@ class DialogHelper {
                 // setWindowAnimations(R.style.windowAnim2)
             }
 
-            dialog.show()
             return DialogWrap(dialog)
         }
 
