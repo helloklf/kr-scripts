@@ -27,6 +27,7 @@
         <switch shell="hidden">
             <title>测试开关3</title>
             <desc>设置shell="hidden"后，错误信息依然会被提示</desc>
+            <summary sh="echo '嗯哼'" />
             <get>getprop test.switch.bbb</get>
             <set>
                 setprop test.switch.bbb $state
