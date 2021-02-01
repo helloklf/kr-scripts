@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <page>
+
+
     <group>
         <action warning="我了个去，你还真点啊，此功能的主要作用是防止用户误触或提示功能危险性，相当于以前的 [confirm=true] 属性优化版本">
             <title>测试操作警告</title>
@@ -11,17 +13,36 @@
         </text>
     </group>
 
-    <group>
+
+
+
+    <group title="操作锁">
+        <text>
+            <slice br="true">操作锁用于设置某个功能的禁用状态，例如：某个功能点击过一次之后，需要用户重启手机才能再次操作，操作锁将会提供帮助</slice>
+        </text>
+
+        <switch locked="true">
+            <title>静态锁</title>
+            <desc>在Page、Switch、Action、Picker节点上添加 locked="true" 将功能锁定，避免被点击</desc>
+            <summary>静态锁定无法自定义提示内容</summary>
+        </switch>
+
         <switch>
-            <title>操作锁</title>
-            <desc>操作锁用于设置某个功能的禁用状态，例如：某个功能点击过一次之后，需要用户重启手机才能再次操作，操作锁将会提供帮助</desc>
-            <summary>该功能将在后续实现</summary>
-            <set>
-                echo '--操作锁尚未实现--'
-            </set>
+            <title>动态锁</title>
+            <desc>在Page、Switch、Action、Picker内添加lock节点来动态判断功能锁定状态</desc>
+            <summary>动态锁在脚本里输出提示内容</summary>
+            <set>echo '诶嘿~'</set>
             <lock>
-                echo '在重启手机之前，此功能已锁定'
+                if [[ `getprop ro.build.version.sdk` -gt 28 ]]; then
+                    echo '你不能在 > Android 9.0(SDK28)的系统上使用本功能！'
+                else
+                    // 输出 unlocked、unlock、false、0 均可表示功能处于解锁状态
+                    // 输出其它内容则会被视作提示文本显示
+                    echo 'unlocked'
+                fi
             </lock>
         </switch>
     </group>
+
+
 </page>
