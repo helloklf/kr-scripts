@@ -67,6 +67,7 @@
     <string name="power_recovery">进入Recovery</string>
     <string name="power_emergency">进入9008模式</string>
     <string name="power_menu">请选择操作</string>
+
     <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
     <string name="power_hot_reboot_cmd">sync;am restart || busybox killall system_server;</string>

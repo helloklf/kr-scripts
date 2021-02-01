@@ -2,7 +2,6 @@ package com.projectkr.shell
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -24,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import com.omarea.common.shared.FilePathResolver
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
@@ -310,9 +308,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 transparentUi.isChecked = themeConfig.getAllowTransparentUI()
 
-                DialogHelper.animDialog(
-                        AlertDialog.Builder(this).setView(layout)
-                )
+                DialogHelper.customDialogBlurBg(this, layout)
             }
             R.id.option_menu_reboot -> {
                 DialogPower(this).showPowerMenu()

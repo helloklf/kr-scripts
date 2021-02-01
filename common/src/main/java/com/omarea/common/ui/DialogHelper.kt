@@ -8,6 +8,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.omarea.common.R
@@ -192,11 +193,11 @@ class DialogHelper {
             return dialog
         }
 
-        fun customDialog(context: Context, view: View): DialogWrap {
+        fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {
             val dialog = AlertDialog
                     .Builder(context)
                     .setView(view)
-                    .setCancelable(true)
+                    .setCancelable(cancelable)
                     .create()
 
             dialog.window?.run {
@@ -215,39 +216,48 @@ class DialogHelper {
         }
 
         fun customDialogBlurBg(activity: Activity, view: View, cancelable: Boolean): DialogWrap {
-            val dialog = AlertDialog
-                    .Builder(activity, R.style.custom_alert_dialog)
-                    .setView(view)
-                    .setCancelable(cancelable)
-                    .create()
+            val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
+            if (wallpaperMode) {
+                return customDialog(activity, view, cancelable)
+            } else {
+                val dialog = AlertDialog
+                        .Builder(activity, R.style.custom_alert_dialog)
+                        .setView(view)
+                        .setCancelable(cancelable)
+                        .create()
 
-            dialog.show()
-            dialog.window?.run {
-                // TODO:处理模糊背景
-                // BlurBackground(activity).setScreenBgLight(dialog)
+                dialog.show()
+                dialog.window?.run {
+                    // TODO:处理模糊背景
+                    // BlurBackground(activity).setScreenBgLight(dialog)
 
-                // val attrs = attributes
-                // attrs.alpha = 0.1f
-                // attributes =attrs
-                // decorView.setPadding(0, 0, 0, 0)
+                    // val attrs = attributes
+                    // attrs.alpha = 0.1f
+                    // attributes =attrs
+                    // decorView.setPadding(0, 0, 0, 0)
 
-                val blurBitmap = FastBlurUtility.getBlurBackgroundDrawer(activity)
-                if (blurBitmap != null) {
-                    setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
-                } else {
-                    // setBackgroundDrawableResource(android.R.color.transparent)
-                    try {
-                        val d = ColorDrawable(getWindowBackground(activity))
-                        setBackgroundDrawable(d)
-                    } catch (ex: java.lang.Exception) {
-                        val d = ColorDrawable(Color.WHITE)
-                        setBackgroundDrawable(d)
+                    val blurBitmap = if (wallpaperMode) {
+                        null
+                    } else {
+                        FastBlurUtility.getBlurBackgroundDrawer(activity)
                     }
-                }
-                decorView.run {
-                    systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-                /*
+
+                    if (blurBitmap != null) {
+                        setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
+                    } else {
+                        // setBackgroundDrawableResource(android.R.color.transparent)
+                        try {
+                            val d = ColorDrawable(getWindowBackground(activity))
+                            setBackgroundDrawable(d)
+                        } catch (ex: java.lang.Exception) {
+                            val d = ColorDrawable(Color.WHITE)
+                            setBackgroundDrawable(d)
+                        }
+                    }
+                    decorView.run {
+                        systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    }
+                    /*
                 // 隐藏状态栏和导航栏
                 decorView.run {
                     systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -263,10 +273,11 @@ class DialogHelper {
                 }
                 */
 
-                // setWindowAnimations(R.style.windowAnim2)
-            }
+                    // setWindowAnimations(R.style.windowAnim2)
+                }
 
-            return DialogWrap(dialog)
+                return DialogWrap(dialog)
+            }
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {

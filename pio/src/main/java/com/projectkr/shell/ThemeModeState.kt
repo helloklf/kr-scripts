@@ -27,9 +27,7 @@ object ThemeModeState {
             if (ThemeConfig(activity).getAllowTransparentUI() && checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 val wallpaper = WallpaperManager.getInstance(activity)
                 val wallpaperInfo = wallpaper.wallpaperInfo
-                // 动态壁纸
-                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                }
+
                 if (nightMode) {
                     themeMode.isDarkMode = true
                     activity.setTheme(R.style.AppThemeWallpaper)
@@ -37,8 +35,15 @@ object ThemeModeState {
                     themeMode.isDarkMode = false
                     activity.setTheme(R.style.AppThemeWallpaperLight)
                 }
-                // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
-                activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
+
+                // 动态壁纸
+                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+                    // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
+                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
+                } else {
+                    val wallpaperDrawable = wallpaper.drawable
+                    activity.window.setBackgroundDrawable(wallpaperDrawable)
+                }
             } else {
                 if (nightMode) {
                     themeMode.isDarkMode = true
