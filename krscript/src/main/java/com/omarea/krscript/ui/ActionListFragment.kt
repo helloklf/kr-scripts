@@ -115,11 +115,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         if (nodeUnlocked(item)) {
             val toValue = !item.checked
             if (item.confirm) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
                     switchExecute(item, toValue, onCompleted)
                 })
             } else if (item.warning.isNotEmpty()) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
                     switchExecute(item, toValue, onCompleted)
                 })
             } else {
@@ -198,11 +198,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     override fun onPickerClick(item: PickerNode, onCompleted: Runnable) {
         if (nodeUnlocked(item)) {
             if (item.confirm) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
                     pickerExecute(item, onCompleted)
                 })
             } else if (item.warning.isNotEmpty()) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
                     pickerExecute(item, onCompleted)
                 })
             } else {
@@ -295,11 +295,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     override fun onActionClick(item: ActionNode, onCompleted: Runnable) {
         if (nodeUnlocked(item)) {
             if (item.confirm) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.desc, {
+                DialogHelper.warningBlur(activity!!, item.title, item.desc, {
                     actionExecute(item, onCompleted)
                 })
             } else if (item.warning.isNotEmpty() && (item.params == null || item.params?.size == 0)) {
-                DialogHelper.confirmBlur(activity!!, item.title, item.warning, {
+                DialogHelper.warningBlur(activity!!, item.title, item.warning, {
                     actionExecute(item, onCompleted)
                 })
             } else {
@@ -375,7 +375,14 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
                             val dialog = (if (isLongList) {
                                 val builder = AlertDialog.Builder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light)
-                                builder.setView(dialogView).create().apply { show() }
+                                builder.setView(dialogView).create().apply {
+                                    show()
+                                    val window = this.window
+                                    val activity = activity
+                                    if (window != null && activity != null) {
+                                        DialogHelper.setWindowBlurBg(window, activity)
+                                    }
+                                }
                             } else {
                                 // AlertDialog.Builder(this.context).create()
                                 DialogHelper.customDialogBlurBg(activity!!, dialogView).dialog
@@ -508,8 +515,8 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             val darkMode = themeMode != null && themeMode!!.isDarkMode
 
             val dialog = DialogLogFragment.create(nodeInfo, onExit, onDismiss, script, params, darkMode)
-            dialog.show(fragmentManager!!, "")
             dialog.isCancelable = false
+            dialog.show(fragmentManager!!, "")
         }
     }
 }

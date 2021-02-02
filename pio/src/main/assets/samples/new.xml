@@ -45,4 +45,12 @@
     </group>
 
 
+    <group>
+        <action>
+            <title>测试</title>
+            <set>
+                sleep 10
+            </set>
+        </action>
+    </group>
 </page>
