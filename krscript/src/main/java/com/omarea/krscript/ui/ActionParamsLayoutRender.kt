@@ -120,6 +120,8 @@ class ActionParamsLayoutRender {
         }
     }
 
+    // 隐藏label的参数类型
+    private val hideLabelTypes = arrayOf("bool", "checkbox", "switch")
     private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo) {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {
@@ -128,7 +130,7 @@ class ActionParamsLayoutRender {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
         }
 
-        if (!actionParamInfo.label.isNullOrEmpty()) {
+        if ((!actionParamInfo.label.isNullOrEmpty()) && !hideLabelTypes.contains(actionParamInfo.type)) {
             layout.findViewById<TextView>(R.id.kr_param_label).run {
                 text = actionParamInfo.label
             }

@@ -19,7 +19,7 @@ class ParamsCheckbox(private var actionParamInfo: ActionParamInfo, private var c
             tag = actionParamInfo.name
             isChecked = getCheckState(actionParamInfo, false)
             if (!actionParamInfo.label.isNullOrEmpty()) {
-                // text = actionParamInfo.label
+                text = actionParamInfo.label
             }
 
             setOnClickListener {
