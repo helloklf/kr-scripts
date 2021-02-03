@@ -45,11 +45,20 @@
     </group>
 
 
-    <group>
-        <action>
-            <title>测试</title>
+    <group title="系统版本限定">
+        <action min-sdk="28" max-sdk="28">
+            <title>SDK版本限制-范围</title>
+            <desc>通过[min-sdk]和[max-sdk]属性，可以很方便的设置系统版本范围限制</desc>
             <set>
-                sleep 10
+                echo '....'
+            </set>
+        </action>
+
+        <action target-sdk="28">
+            <title>SDK版本限制-指定单个版本</title>
+            <desc>通过[target-sdk]属性，可以很方便的设置系统版本限制</desc>
+            <set>
+                echo '....'
             </set>
         </action>
     </group>
