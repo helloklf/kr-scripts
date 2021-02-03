@@ -1,11 +1,13 @@
 package com.omarea.krscript.ui
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import androidx.fragment.app.FragmentActivity
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
@@ -23,6 +25,7 @@ class ActionParamsLayoutRender {
             val valList = ArrayList<String>()
             if (actionParamInfo.valueFromShell != null)
                 valList.add(actionParamInfo.valueFromShell!!)
+            // TODO:这里可能有点争议
             if (actionParamInfo.value != null) {
                 valList.add(actionParamInfo.value!!)
             }
@@ -49,8 +52,7 @@ class ActionParamsLayoutRender {
          */
         fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
             val status = BooleanArray(options.size)
-            val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
-            val values = value?.split(actionParamInfo.separator)
+            val values = getParamValues(actionParamInfo)
 
             for (index in 0 until options.size) {
                 val item = options[index]["item"]
@@ -59,14 +61,21 @@ class ActionParamsLayoutRender {
             }
             return status
         }
+
+        // 获取多选下拉的选中值列表
+        fun getParamValues (actionParamInfo: ActionParamInfo): List<String>? {
+            val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
+            val values = value?.split(actionParamInfo.separator)
+            return values
+        }
     }
 
     private var linearLayout: LinearLayout
-    private var context: Context
+    private var context: FragmentActivity
 
-    constructor(linearLayout: LinearLayout) {
+    constructor(linearLayout: LinearLayout, activity: FragmentActivity) {
         this.linearLayout = linearLayout
-        this.context = linearLayout.context
+        this.context = activity
     }
 
     fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: ParamsFileChooserRender.FileChooserInterface?) {
@@ -249,25 +258,5 @@ class ActionParamsLayoutRender {
                 // TODO:刷新界面显示
             }
         }
-    }
-
-    /**
-     * 获取选中状态
-     */
-    private fun getCheckState(actionParamInfo: ActionParamInfo, defaultValue: Boolean): Boolean {
-        if (actionParamInfo.valueFromShell != null) {
-            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.toLowerCase() == "true"
-        } else if (actionParamInfo.value != null) {
-            return actionParamInfo.value == "1" || actionParamInfo.value!!.toLowerCase() == "true"
-        }
-        return defaultValue
-    }
-
-    /**
-     * dp转换成px
-     */
-    private fun dp2px(context: Context, dpValue: Float): Int {
-        val scale = context.resources.displayMetrics.density
-        return (dpValue * scale + 0.5f).toInt()
     }
 }

@@ -26,7 +26,6 @@ import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 
 class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.OnItemClickListener {
-
     companion object {
         fun create(
                 actionInfos: ArrayList<NodeInfoBase>?,
@@ -361,7 +360,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                         progressBarDialog.showDialog(this.context!!.getString(R.string.kr_params_render))
                     }
                     handler.post {
-                        val render = ActionParamsLayoutRender(linearLayout)
+                        val render = ActionParamsLayoutRender(linearLayout, activity!!)
                         render.renderList(actionParamInfos, object : ParamsFileChooserRender.FileChooserInterface {
                             override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                                 return if (krScriptActionHandler == null) {
