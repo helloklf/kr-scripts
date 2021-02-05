@@ -10,15 +10,15 @@ import android.widget.EditText
 import android.widget.Filterable
 import com.omarea.common.R
 
-class DialogAppChooser(
+class DialogItemChooser(
         private val darkMode: Boolean,
-        private var packages: ArrayList<AdapterAppChooser.AppInfo>,
+        private var items: ArrayList<AdapterItemChooser.Item>,
         private val multiple: Boolean = false,
-        private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_app_chooser, darkMode) {
+        private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_item_chooser, darkMode) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val absListView = view.findViewById<AbsListView>(R.id.app_list)
+        val absListView = view.findViewById<AbsListView>(R.id.item_list)
         setup(absListView)
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
@@ -37,17 +37,19 @@ class DialogAppChooser(
     }
 
     private fun setup(gridView: AbsListView) {
-        gridView.adapter = AdapterAppChooser(gridView.context, packages, multiple)
+        gridView.adapter = AdapterItemChooser(gridView.context, items, multiple)
     }
 
     interface Callback {
-        fun onConfirm(apps: List<AdapterAppChooser.AppInfo>)
+        fun onConfirm(selected: List<AdapterItemChooser.Item>, status: BooleanArray)
     }
 
     private fun onConfirm(gridView: AbsListView) {
-        val apps = (gridView.adapter as AdapterAppChooser).getSelectedItems()
+        val adapter = (gridView.adapter as AdapterItemChooser)
+        val items = adapter.getSelectedItems()
+        val status = adapter.getSelectStatus()
 
-        callback?.onConfirm(apps)
+        callback?.onConfirm(items, status)
 
         this.dismiss()
     }

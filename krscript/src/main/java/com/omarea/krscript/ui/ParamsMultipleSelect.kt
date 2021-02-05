@@ -1,15 +1,15 @@
 package com.omarea.krscript.ui
 
-import android.app.AlertDialog
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.omarea.common.ui.DialogHelper
+import androidx.fragment.app.FragmentActivity
+import com.omarea.common.ui.AdapterItemChooser
+import com.omarea.common.ui.DialogItemChooser
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
-class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private val context: Context) {
+class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private val context: FragmentActivity) {
     private var options: ArrayList<HashMap<String, Any>>? = null
     private var status = booleanArrayOf()
     private var labels: Array<String?> = arrayOf()
@@ -64,6 +64,25 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
 
     private fun openDialog(textView: TextView, valueView: TextView, countView: TextView) {
         options?.run {
+            val items = ArrayList<AdapterItemChooser.Item>()
+            for (i in labels.indices) {
+                items.add(AdapterItemChooser.Item().apply {
+                    title = "" + labels[i]
+                    selected = status[i]
+                })
+            }
+            // TODO:深色模式、浅色模式
+            DialogItemChooser(true, ArrayList(items), true, object : DialogItemChooser.Callback {
+                override fun onConfirm(selected: List<AdapterItemChooser.Item>, result: BooleanArray) {
+                    result.forEachIndexed { index, value ->
+                        status[index] = value
+                    }
+                    setView(textView, valueView, countView)
+                }
+            }).show(context.supportFragmentManager, "params-multi-select")
+        }
+        /*
+        options?.run {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(context.getString(R.string.kr_please_select))
                     .setMultiChoiceItems(labels, status) { _, index, isChecked ->
@@ -74,5 +93,6 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
                         setView(textView, valueView, countView)
                     })
         }
+        */
     }
 }

@@ -37,6 +37,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
     private fun openAppChooser() {
         setSelectStatus()
 
+        // TODO:深色模式、浅色模式
         DialogAppChooser(true, packages, actionParamInfo.multiple, this).show(context.supportFragmentManager, "app-chooser")
     }
 
