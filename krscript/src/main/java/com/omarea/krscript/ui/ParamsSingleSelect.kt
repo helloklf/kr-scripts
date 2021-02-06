@@ -11,7 +11,14 @@ import com.omarea.common.ui.DialogItemChooser
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
-class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private var context: FragmentActivity) {
+class ParamsSingleSelect(
+        private var actionParamInfo: ActionParamInfo,
+        private var context: FragmentActivity
+) {
+
+    private val systemUiVisibility = context.window?.decorView?.systemUiVisibility
+    private var darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
+
     val options = actionParamInfo.optionsFromShell!!
     var selectedIndex = ActionParamsLayoutRender.getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 
@@ -26,7 +33,6 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
     }
 
     fun render(): View {
-
         if (options.size > 5) {
             val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_single_select, null)
             val textView = layout.findViewById<TextView>(R.id.kr_param_single_select)
@@ -44,6 +50,7 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
         } else {
             val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_spinner, null)
 
+            // TODO:设置Spinner默认不选中任何项
             layout.findViewById<Spinner>(R.id.kr_param_spinner).run {
                 tag = actionParamInfo.name
 
@@ -62,7 +69,7 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
     }
 
     private fun openSingleSelectDialog(valueView: TextView, textView: TextView) {
-        DialogItemChooser(true, ArrayList(options.mapIndexed{index, item->
+        DialogItemChooser(darkMode, ArrayList(options.mapIndexed{index, item->
             SelectItem().apply {
                 title = item.title
                 selected = index == selectedIndex
@@ -73,18 +80,5 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
                 updateValueView(valueView, textView)
             }
         }).show(context.supportFragmentManager, "params-single-select")
-    }
-
-
-    /**
-     * 获取选中状态
-     */
-    private fun getCheckState(actionParamInfo: ActionParamInfo, defaultValue: Boolean): Boolean {
-        if (actionParamInfo.valueFromShell != null) {
-            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.toLowerCase() == "true"
-        } else if (actionParamInfo.value != null) {
-            return actionParamInfo.value == "1" || actionParamInfo.value!!.toLowerCase() == "true"
-        }
-        return defaultValue
     }
 }

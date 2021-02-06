@@ -10,7 +10,7 @@ import com.omarea.common.model.SelectItem
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
-class ActionParamsLayoutRender {
+class ActionParamsLayoutRender(private var linearLayout: LinearLayout, activity: FragmentActivity) {
     companion object {
         /**
          * 获取当前选中项索引（单选）
@@ -68,13 +68,7 @@ class ActionParamsLayoutRender {
         }
     }
 
-    private var linearLayout: LinearLayout
-    private var context: FragmentActivity
-
-    constructor(linearLayout: LinearLayout, activity: FragmentActivity) {
-        this.linearLayout = linearLayout
-        this.context = activity
-    }
+    private var context: FragmentActivity = activity
 
     fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: ParamsFileChooserRender.FileChooserInterface?) {
         for (actionParamInfo in actionParamInfos) {

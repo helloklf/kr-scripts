@@ -12,6 +12,9 @@ import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
 class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, private var context: FragmentActivity) : DialogAppChooser.Callback {
+    private val systemUiVisibility = context.window?.decorView?.systemUiVisibility
+    private var darkMode = systemUiVisibility != null && (systemUiVisibility and View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR) == 0
+
     private lateinit var valueView: TextView
     private lateinit var nameView: TextView
     private lateinit var packages: ArrayList<AdapterAppChooser.AppInfo>
@@ -39,7 +42,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
         setSelectStatus()
 
         // TODO:深色模式、浅色模式
-        DialogAppChooser(true, packages, actionParamInfo.multiple, this).show(context.supportFragmentManager, "app-chooser")
+        DialogAppChooser(darkMode, packages, actionParamInfo.multiple, this).show(context.supportFragmentManager, "app-chooser")
     }
 
     private fun loadPackages(includeMissing: Boolean = false): List<AdapterAppChooser.AppInfo> {
