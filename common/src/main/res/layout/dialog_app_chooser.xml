@@ -31,6 +31,7 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:src="@drawable/dialog_search_clear"
+            android:tint="?android:textColorPrimary"
             android:scaleType="centerInside"
             android:padding="15dp"
             android:layout_width="40dp"

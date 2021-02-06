@@ -41,6 +41,7 @@ class DialogAppChooser(
                 }
             })
         }
+        clearBtn.visibility = if (searchBox.text.isNullOrEmpty()) View.GONE else View.VISIBLE
         clearBtn.setOnClickListener {
             searchBox.text = null
         }
