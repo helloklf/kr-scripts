@@ -121,11 +121,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
             !clickableNode.locked
         })
         if (!unlocked) {
-            DialogHelper.helpInfo(context!!, getString(R.string.kr_lock_title), if (message.isNotEmpty()) {
+            Toast.makeText(context, if (message.isNotEmpty()) {
                 message
             } else {
                 getString(R.string.kr_lock_message)
-            })
+            }, Toast.LENGTH_LONG).show()
         }
         return unlocked
     }
