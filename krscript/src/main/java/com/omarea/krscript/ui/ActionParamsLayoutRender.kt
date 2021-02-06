@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import androidx.fragment.app.FragmentActivity
+import com.omarea.common.model.SelectItem
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
@@ -16,7 +17,7 @@ class ActionParamsLayoutRender {
          * @param ActionParamInfo actionParamInfo 参数信息
          * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
          */
-        fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): Int {
+        fun getParamOptionsCurrentIndex(actionParamInfo: ActionParamInfo, options: ArrayList<SelectItem>): Int {
             var selectedIndex = -1
             var index = 0
 
@@ -30,7 +31,7 @@ class ActionParamsLayoutRender {
             if (valList.size > 0) {
                 for (j in valList.indices) {
                     for (option in options) {
-                        if ((option["item"] as ActionParamInfo.ActionParamOption).value == valList[j]) {
+                        if (option.value == valList[j]) {
                             selectedIndex = index
                             break
                         }
@@ -48,13 +49,12 @@ class ActionParamsLayoutRender {
          * @param ActionParamInfo actionParamInfo 参数信息
          * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
          */
-        fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
+        fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<SelectItem>): BooleanArray {
             val status = BooleanArray(options.size)
             val values = getParamValues(actionParamInfo)
 
             for (index in 0 until options.size) {
-                val item = options[index]["item"]
-                val option = item as ActionParamInfo.ActionParamOption
+                val option = options[index]
                 status[index] = (values != null && values.contains(option.value))
             }
             return status
@@ -220,9 +220,8 @@ class ActionParamsLayoutRender {
             } else if (view is Spinner) {
                 val item = view.selectedItem
                 when {
-                    item is HashMap<*, *> -> {
-                        val opt = item["item"] as ActionParamInfo.ActionParamOption
-                        actionParamInfo.value = opt.value
+                    item is SelectItem -> {
+                        actionParamInfo.value = item.value
                     }
                     item != null -> actionParamInfo.value = item.toString()
                     else -> actionParamInfo.value = ""

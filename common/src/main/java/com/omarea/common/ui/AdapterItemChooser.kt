@@ -49,7 +49,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
 
                 for (i in 0 until count) {
                     val value = values[i]
-                    val valueText = value.title.toLowerCase()
+                    val valueText = if (value.title == null) "" else value.title!!.toLowerCase()
 
                     // First match against the whole, non-splitted value
                     if (valueText.contains(prefixString)) {
@@ -150,8 +150,8 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
 
         viewHolder.itemTitle?.text = item.title
         viewHolder.itemDesc?.run{
-            if (item.desc.isNotEmpty()) {
-                text = item.desc
+            if (item.title.isNullOrEmpty()) {
+                text = item.title
             } else {
                 visibility = View.GONE
             }

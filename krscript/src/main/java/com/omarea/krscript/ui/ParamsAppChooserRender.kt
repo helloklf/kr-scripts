@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
+import com.omarea.common.model.SelectItem
 import com.omarea.common.ui.AdapterAppChooser
 import com.omarea.common.ui.DialogAppChooser
 import com.omarea.krscript.R
@@ -44,7 +45,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
     private fun loadPackages(includeMissing: Boolean = false): List<AdapterAppChooser.AppInfo> {
         val pm = context.packageManager
         val filter = actionParamInfo.optionsFromShell?.map {
-            (it.get("item") as ActionParamInfo.ActionParamOption).value
+            it.value
         }
 
         val packages = pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES).filter {
@@ -60,10 +61,10 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
         // 是否包含丢失的应用程序
         if (includeMissing && actionParamInfo.optionsFromShell != null) {
-            for (item in actionParamInfo.optionsFromShell!!.map { (it.get("item") as ActionParamInfo.ActionParamOption) }) {
+            for (item in actionParamInfo.optionsFromShell!!) {
                 if (options.filter { it.packageName == item.value }.isEmpty()) {
                     options.add(AdapterAppChooser.AppInfo().apply {
-                        appName = "" + item.desc
+                        appName = "" + item.title
                         packageName = "" + item.value
                     })
                 }
@@ -119,12 +120,9 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
             } else {
                 // TODO: 这里有过多的数据包装盒解包，需要进行优化
                 val validOptions = ArrayList(packages.map {
-                    HashMap<String, Any>().apply {
-                        put("title", "" + it.packageName)
-                        put("item", ActionParamInfo.ActionParamOption().apply {
-                            desc = it.appName
-                            value = it.packageName
-                        })
+                    SelectItem().apply {
+                        title = it.appName
+                        value = it.packageName
                     }
                 }.toList())
 

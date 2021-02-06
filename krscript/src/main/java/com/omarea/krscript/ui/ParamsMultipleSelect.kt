@@ -11,7 +11,7 @@ import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
 
 class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private val context: FragmentActivity) {
-    private var options: ArrayList<HashMap<String, Any>>? = null
+    private var options: ArrayList<SelectItem>? = null
     private var status = booleanArrayOf()
     private var labels: Array<String?> = arrayOf()
     private var values: Array<String?> = arrayOf()
@@ -19,8 +19,8 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
     fun render(): View {
         options = actionParamInfo.optionsFromShell
         options?.run {
-            labels = map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray()
-            values = map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray()
+            labels = map { it.title }.toTypedArray()
+            values = map { it.value }.toTypedArray()
             status = ActionParamsLayoutRender.getParamOptionsSelectedStatus(actionParamInfo, this)
         }
 

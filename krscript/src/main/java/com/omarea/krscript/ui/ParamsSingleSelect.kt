@@ -2,6 +2,7 @@ package com.omarea.krscript.ui
 
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.SimpleAdapter
 import android.widget.Spinner
 import android.widget.TextView
@@ -17,8 +18,8 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
 
     private fun updateValueView(valueView: TextView, textView: TextView) {
         if (selectedIndex > -1) {
-            valueView.text = (options[(selectedIndex)].get("item") as ActionParamInfo.ActionParamOption?)?.value
-            textView.text = options[(selectedIndex)].get("title")?.toString()
+            valueView.text = options[(selectedIndex)].value
+            textView.text = options[(selectedIndex)].title
         } else {
             valueView.text = ""
             textView.text = ""
@@ -47,7 +48,7 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
             layout.findViewById<Spinner>(R.id.kr_param_spinner).run {
                 tag = actionParamInfo.name
 
-                adapter = SimpleAdapter(context, options, R.layout.kr_spinner_default, arrayOf("title"), intArrayOf(R.id.text)).apply {
+                adapter = ArrayAdapter(context, R.layout.kr_spinner_default, R.id.text, options).apply {
                     setDropDownViewResource(R.layout.kr_spinner_dropdown)
                 }
                 isEnabled = !actionParamInfo.readonly
@@ -64,7 +65,7 @@ class ParamsSingleSelect(private var actionParamInfo: ActionParamInfo, private v
     private fun openSingleSelectDialog(valueView: TextView, textView: TextView) {
         DialogItemChooser(true, ArrayList(options.mapIndexed{index, item->
             SelectItem().apply {
-                title = "" + item.get("title")?.toString()
+                title = item.title
                 selected = index == selectedIndex
             }
         }), false, object : DialogItemChooser.Callback {
