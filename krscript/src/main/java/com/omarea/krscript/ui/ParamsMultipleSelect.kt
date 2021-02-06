@@ -5,7 +5,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.FragmentActivity
 import com.omarea.common.model.SelectItem
-import com.omarea.common.ui.AdapterItemChooser
 import com.omarea.common.ui.DialogItemChooser
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionParamInfo
