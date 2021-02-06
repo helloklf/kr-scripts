@@ -2,7 +2,6 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <solid android:color="?cardBg" />
     <size android:height="25dp" />
-    <padding android:left="15dp" android:right="15dp" />
     <corners
         android:bottomLeftRadius="25dp"
         android:bottomRightRadius="25dp"
