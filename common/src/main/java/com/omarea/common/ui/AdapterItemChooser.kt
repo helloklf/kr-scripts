@@ -7,22 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.R
+import com.omarea.common.model.SelectItem
 import java.util.*
 
-class AdapterItemChooser(private val context: Context, private var items: ArrayList<Item>, private val multiple: Boolean) : BaseAdapter(), Filterable {
-    class Item {
-        var title: String = ""
-        var desc: String = ""
-        var selected: Boolean = false
-    }
-
+class AdapterItemChooser(private val context: Context, private var items: ArrayList<SelectItem>, private val multiple: Boolean) : BaseAdapter(), Filterable {
     private var filter: Filter? = null
-    internal var filterItems: ArrayList<Item> = items
+    internal var filterItems: ArrayList<SelectItem> = items
     private val mLock = Any()
 
     private class ArrayFilter(private var adapter: AdapterItemChooser) : Filter() {
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-            adapter.filterItems = results!!.values as ArrayList<Item>
+            adapter.filterItems = results!!.values as ArrayList<SelectItem>
             if (results.count > 0) {
                 adapter.notifyDataSetChanged()
             } else {
@@ -35,22 +30,22 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
             val prefix: String = if (constraint == null) "" else constraint.toString()
 
             if (prefix.isEmpty()) {
-                val list: ArrayList<Item>
+                val list: ArrayList<SelectItem>
                 synchronized(adapter.mLock) {
-                    list = ArrayList<Item>(adapter.items)
+                    list = ArrayList<SelectItem>(adapter.items)
                 }
                 results.values = list
                 results.count = list.size
             } else {
                 val prefixString = prefix.toLowerCase()
 
-                val values: ArrayList<Item>
+                val values: ArrayList<SelectItem>
                 synchronized(adapter.mLock) {
-                    values = ArrayList<Item>(adapter.items)
+                    values = ArrayList<SelectItem>(adapter.items)
                 }
 
                 val count = values.size
-                val newValues = ArrayList<Item>()
+                val newValues = ArrayList<SelectItem>()
 
                 for (i in 0 until count) {
                     val value = values[i]
@@ -98,7 +93,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         return filterItems.size
     }
 
-    override fun getItem(position: Int): Item {
+    override fun getItem(position: Int): SelectItem {
         return filterItems[position]
     }
 
@@ -119,13 +114,13 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         return convertView
     }
 
-    fun updateRow(position: Int, listView: OverScrollGridView, Item: Item) {
+    fun updateRow(position: Int, listView: OverScrollGridView, SelectItem: SelectItem) {
         try {
             val visibleFirstPosi = listView.firstVisiblePosition
             val visibleLastPosi = listView.lastVisiblePosition
 
             if (position >= visibleFirstPosi && position <= visibleLastPosi) {
-                filterItems[position] = Item
+                filterItems[position] = SelectItem
                 val view = listView.getChildAt(position - visibleFirstPosi)
                 updateRow(position, view)
             }
@@ -164,7 +159,7 @@ class AdapterItemChooser(private val context: Context, private var items: ArrayL
         viewHolder.checkBox?.isChecked = item.selected
     }
 
-    fun getSelectedItems(): List<Item> {
+    fun getSelectedItems(): List<SelectItem> {
         return items.filter { it.selected }
     }
 

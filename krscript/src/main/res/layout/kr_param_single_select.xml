@@ -5,9 +5,15 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <Spinner
-        android:id="@+id/kr_param_spinner"
+    <TextView
+        android:id="@+id/kr_param_value"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
+    <TextView
+        android:id="@+id/kr_param_single_select"
+        android:minHeight="35dp"
         android:hint="@string/kr_please_select"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

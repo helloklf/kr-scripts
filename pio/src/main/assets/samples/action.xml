@@ -9,6 +9,22 @@
             </param>
             <set>echo '数值为：' $test</set>
         </action>
+        <action>
+            <title>单选下拉</title>
+            <desc>选项较多时，选择界面会自动调整为全屏弹窗风格</desc>
+            <param name="test" value="X">
+                <option value="Z">测试一下 Z</option>
+                <option value="X">测试一下 X</option>
+                <option value="Y">测试一下 Y</option>
+                <option value="F">测试一下 F</option>
+                <option value="E">测试一下 E</option>
+                <option value="D">测试一下 D</option>
+                <option value="C">测试一下 C</option>
+                <option value="B">测试一下 B</option>
+                <option value="A">测试一下 A</option>
+            </param>
+            <set>echo '数值为：' $test</set>
+        </action>
 
         <action warn="右侧数字显示的时选中项个数">
             <title>多选下拉</title>

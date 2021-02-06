@@ -1,7 +1,5 @@
 package com.omarea.krscript.ui
 
-import android.app.Activity
-import android.content.Context
 import android.graphics.Color
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -87,7 +85,7 @@ class ActionParamsLayoutRender {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo)
                 } else {
-                    addToLayout(ParamsSpinner(actionParamInfo, context).render(), actionParamInfo)
+                    addToLayout(ParamsSingleSelect(actionParamInfo, context).render(), actionParamInfo)
                 }
             }
             // 选择框渲染

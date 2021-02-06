@@ -9,10 +9,11 @@ import android.widget.AbsListView
 import android.widget.EditText
 import android.widget.Filterable
 import com.omarea.common.R
+import com.omarea.common.model.SelectItem
 
 class DialogItemChooser(
         private val darkMode: Boolean,
-        private var items: ArrayList<AdapterItemChooser.Item>,
+        private var items: ArrayList<SelectItem>,
         private val multiple: Boolean = false,
         private var callback: Callback? = null) : DialogFullScreen(R.layout.dialog_item_chooser, darkMode) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,7 +42,7 @@ class DialogItemChooser(
     }
 
     interface Callback {
-        fun onConfirm(selected: List<AdapterItemChooser.Item>, status: BooleanArray)
+        fun onConfirm(selected: List<SelectItem>, status: BooleanArray)
     }
 
     private fun onConfirm(gridView: AbsListView) {
