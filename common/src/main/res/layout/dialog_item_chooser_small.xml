@@ -43,6 +43,8 @@
 
     <ListView
         android:overScrollMode="never"
+        android:background="@drawable/confirm_dialog_bg"
+        android:paddingEnd="5dp"
         android:id="@+id/item_list"
         android:scrollbars="none"
         android:divider="@null"
