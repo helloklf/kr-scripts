@@ -11,7 +11,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 20210207
-        versionName "3.14.0"
+        versionName "3.14.1"
     }
     buildTypes {
         release {
