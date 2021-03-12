@@ -15,11 +15,14 @@ import android.widget.TextView
 import com.omarea.common.R
 
 class DialogHelper {
+    class DialogButton(private val text: String, private val onClick: Runnable) {
+    }
+
     class DialogWrap(private val d: AlertDialog) {
         public val context = dialog.context
 
         public val dialog: AlertDialog
-            get () {
+            get() {
                 return d
             }
 
@@ -100,44 +103,12 @@ class DialogHelper {
             return animDialog(alert)
         }
 
-        private fun openContinueAlert (context: Context,
-                                 title: String = "",
-                                 message: String = "",
-                                 onConfirm: Runnable? = null,
-                                 onCancel: Runnable? = null,
-                                       layout: Int): DialogWrap {
-            val view = LayoutInflater.from(context).inflate(layout, null)
-
-            if (title.isEmpty()) {
-                view.findViewById<TextView>(R.id.confirm_title).visibility = View.GONE
-            } else {
-                view.findViewById<TextView>(R.id.confirm_title).setText(title)
-            }
-            if (message.isEmpty()) {
-                view.findViewById<TextView>(R.id.confirm_message).visibility = View.GONE
-            } else {
-                view.findViewById<TextView>(R.id.confirm_message).setText(message)
-            }
-
-            val dialog = customDialog(context, view)
-            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
-                dialog.dismiss()
-                onCancel?.run()
-            }
-            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
-                dialog.dismiss()
-                onConfirm?.run()
-            }
-
-            return dialog
-        }
-
         fun confirm(context: Context,
                     title: String = "",
                     message: String = "",
                     onConfirm: Runnable? = null,
                     onCancel: Runnable? = null): DialogWrap {
-            return openContinueAlert(context, title, message, onConfirm, onCancel, R.layout.dialog_confirm)
+            return openContinueAlert(context, R.layout.dialog_confirm, title, message, onConfirm, onCancel)
         }
 
         fun warning(context: Context,
@@ -145,7 +116,37 @@ class DialogHelper {
                     message: String = "",
                     onConfirm: Runnable? = null,
                     onCancel: Runnable? = null): DialogWrap {
-            return openContinueAlert(context, title, message, onConfirm, onCancel, R.layout.dialog_warning)
+            return openContinueAlert(context, R.layout.dialog_warning, title, message, onConfirm, onCancel)
+        }
+
+        private fun getCustomDialogView(context: Context,
+                                        layout: Int,
+                                        title: String = "",
+                                        message: String = "",
+                                        contentView: View? = null): View {
+
+            val view = LayoutInflater.from(context).inflate(layout, null)
+            view.findViewById<TextView?>(R.id.confirm_title)?.run {
+                if (title.isEmpty()) {
+                    visibility = View.GONE
+                } else {
+                    setText(title)
+                }
+            }
+
+            view.findViewById<TextView?>(R.id.confirm_message)?.run {
+                if (message.isEmpty()) {
+                    visibility = View.GONE
+                } else {
+                    setText(message)
+                }
+            }
+
+            if (contentView != null) {
+                view.findViewById<FrameLayout?>(R.id.confirm_custom_view)?.addView(contentView)
+            }
+
+            return view
         }
 
         fun confirm(context: Context,
@@ -154,20 +155,8 @@ class DialogHelper {
                     contentView: View? = null,
                     onConfirm: Runnable? = null,
                     onCancel: Runnable? = null): DialogWrap {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_confirm, null)
-            if (title.isEmpty()) {
-                view.findViewById<TextView>(R.id.confirm_title).visibility = View.GONE
-            } else {
-                view.findViewById<TextView>(R.id.confirm_title).setText(title)
-            }
-            if (message.isEmpty()) {
-                view.findViewById<TextView>(R.id.confirm_message).visibility = View.GONE
-            } else {
-                view.findViewById<TextView>(R.id.confirm_message).setText(message)
-            }
-            if (contentView != null) {
-                view.findViewById<FrameLayout>(R.id.confirm_custom_view).addView(contentView)
-            }
+            val view = getCustomDialogView(context, R.layout.dialog_confirm, title, message, contentView)
+
             val dialog = customDialog(context, view)
             view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                 dialog.dismiss()
@@ -190,21 +179,29 @@ class DialogHelper {
             return color
         }
 
-        private fun openContinueAlertBlur(context: Activity,
+        private fun getStatusBarColor(context: Context): Int {
+            val defaultColor = Color.WHITE
+            val attrsArray = intArrayOf(android.R.attr.statusBarColor)
+            val typedArray = context.obtainStyledAttributes(attrsArray)
+            val color = typedArray.getColor(0, defaultColor)
+            typedArray.recycle()
+            return color
+        }
+
+        private fun openContinueAlert(context: Context,
+                                      layout: Int,
                                       title: String = "",
                                       message: String = "",
                                       onConfirm: Runnable? = null,
-                                      onCancel: Runnable? = null,
-                                      layout: Int): DialogWrap {
-            val view = LayoutInflater.from(context).inflate(layout, null)
-            view.findViewById<TextView>(R.id.confirm_title).setText(title)
-            view.findViewById<TextView>(R.id.confirm_message).setText(message)
-            val dialog = customDialogBlurBg(context, view)
-            view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
+                                      onCancel: Runnable? = null): DialogWrap {
+            val view = getCustomDialogView(context, layout, title, message, null)
+
+            val dialog = customDialog(context, view)
+            view.findViewById<View?>(R.id.btn_cancel)?.setOnClickListener {
                 dialog.dismiss()
                 onCancel?.run()
             }
-            view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
+            view.findViewById<View?>(R.id.btn_confirm)?.setOnClickListener {
                 dialog.dismiss()
                 onConfirm?.run()
             }
@@ -217,7 +214,7 @@ class DialogHelper {
                         message: String = "",
                         onConfirm: Runnable? = null,
                         onCancel: Runnable? = null): DialogWrap {
-            return openContinueAlertBlur(context, title, message, onConfirm, onCancel, R.layout.dialog_confirm)
+            return openContinueAlert(context, R.layout.dialog_confirm, title, message, onConfirm, onCancel)
         }
 
         fun warningBlur(context: Activity,
@@ -225,48 +222,33 @@ class DialogHelper {
                         message: String = "",
                         onConfirm: Runnable? = null,
                         onCancel: Runnable? = null): DialogWrap {
-            return openContinueAlertBlur(context, title, message, onConfirm, onCancel, R.layout.dialog_warning)
+            return openContinueAlert(context, R.layout.dialog_warning, title, message, onConfirm, onCancel)
+        }
+
+        fun alert(context: Context,
+                  title: String = "",
+                  message: String = "",
+                  onConfirm: Runnable? = null): DialogWrap {
+            return openContinueAlert(context, R.layout.dialog_alert, title, message, onConfirm, null)
         }
 
         fun customDialog(context: Context, view: View, cancelable: Boolean = true): DialogWrap {
-            val dialog = AlertDialog
-                    .Builder(context)
-                    .setView(view)
-                    .setCancelable(cancelable)
-                    .create()
+            val useBlur = context is Activity
 
-            dialog.window?.run {
-                setWindowAnimations(R.style.windowAnim2)
-            }
-            dialog.show()
-            dialog.window?.run {
-                setBackgroundDrawableResource(android.R.color.transparent)
-            }
-
-            return DialogWrap(dialog)
-        }
-
-        fun customDialogBlurBg(activity: Activity, view: View): DialogWrap {
-            return customDialogBlurBg(activity, view, true)
-        }
-
-        fun customDialogBlurBg(activity: Activity, view: View, cancelable: Boolean): DialogWrap {
-            val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
-            if (wallpaperMode) {
-                return customDialog(activity, view, cancelable)
+            val dialog = (if (useBlur) {
+                AlertDialog.Builder(context, R.style.custom_alert_dialog)
             } else {
-                val dialog = AlertDialog
-                        .Builder(activity, R.style.custom_alert_dialog)
-                        .setView(view)
-                        .setCancelable(cancelable)
-                        .create()
+                AlertDialog.Builder(context)
+            }).setView(view).setCancelable(cancelable).create()
 
+            if (context is Activity) {
                 dialog.show()
                 dialog.window?.run {
-                    setWindowBlurBg(this, activity)
+                    setWindowBlurBg(this, context)
                     decorView.run {
-                        systemUiVisibility = activity.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        systemUiVisibility = context.window.decorView.systemUiVisibility // View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
                     }
+
                     /*
                     // 隐藏状态栏和导航栏
                     decorView.run {
@@ -285,9 +267,17 @@ class DialogHelper {
 
                     // setWindowAnimations(R.style.windowAnim2)
                 }
-
-                return DialogWrap(dialog)
+            } else {
+                dialog.window?.run {
+                    setWindowAnimations(R.style.windowAnim2)
+                }
+                dialog.show()
+                dialog.window?.run {
+                    setBackgroundDrawableResource(android.R.color.transparent)
+                }
             }
+
+            return DialogWrap(dialog)
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): DialogWrap {
@@ -300,7 +290,7 @@ class DialogHelper {
             return animDialog(dialog)
         }
 
-        fun setWindowBlurBg (window: Window, activity: Activity) {
+        fun setWindowBlurBg(window: Window, activity: Activity) {
             val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
 
             window.run {
@@ -319,12 +309,18 @@ class DialogHelper {
                 }
 
                 if (blurBitmap != null) {
-                    setBackgroundDrawable(BitmapDrawable(activity.getResources(), blurBitmap))
+                    setBackgroundDrawable(BitmapDrawable(activity.resources, blurBitmap))
                 } else {
                     // setBackgroundDrawableResource(android.R.color.transparent)
                     try {
-                        val d = ColorDrawable(getWindowBackground(activity))
-                        setBackgroundDrawable(d)
+                        val bg = getWindowBackground(activity)
+                        if (wallpaperMode && bg == -1) {
+                            val d = ColorDrawable(Color.argb(245, 25, 25, 33))
+                            setBackgroundDrawable(d)
+                        } else {
+                            val d = ColorDrawable(bg)
+                            setBackgroundDrawable(d)
+                        }
                     } catch (ex: java.lang.Exception) {
                         val d = ColorDrawable(Color.WHITE)
                         setBackgroundDrawable(d)

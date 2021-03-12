@@ -10,10 +10,19 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.R
 import com.omarea.common.shell.AsynSuShellUnit
+import java.util.LinkedHashSet
 
-open class ProgressBarDialog(private var context: Activity) {
+open class ProgressBarDialog(private var context: Activity, private var uniqueId: String? = null) {
     private var alert: DialogHelper.DialogWrap? = null
     private var textView: TextView? = null
+
+    companion object {
+        private val dialogs = LinkedHashMap<String, DialogHelper.DialogWrap>()
+    }
+
+    init {
+        hideDialog()
+    }
 
     class DefaultHandler(private var alertDialog: DialogHelper.DialogWrap?) : Handler(Looper.myLooper()!!) {
         override fun handleMessage(msg: Message) {
@@ -51,7 +60,7 @@ open class ProgressBarDialog(private var context: Activity) {
         val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_text) as TextView)
         textView.text = context.getString(R.string.execute_wait)
-        alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+        alert = DialogHelper.customDialog(context, dialog, false)
         // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
             AsynSuShellUnit(DefaultHandler(alert)).exec(cmd).waitFor()
@@ -77,10 +86,16 @@ open class ProgressBarDialog(private var context: Activity) {
             }
         } catch (ex: Exception) {
         }
+
+        uniqueId?.run {
+            if (dialogs.containsKey(this)) {
+                dialogs.remove(this)
+            }
+        }
     }
 
     @SuppressLint("InflateParams")
-    public fun showDialog(text: String = "正在加载，请稍等..."): DialogHelper.DialogWrap? {
+    public fun showDialog(text: String = "正在加载，请稍等..."): ProgressBarDialog {
         if (textView != null && alert != null) {
             textView!!.text = text
         } else {
@@ -89,9 +104,19 @@ open class ProgressBarDialog(private var context: Activity) {
             val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             textView = (dialog.findViewById(R.id.dialog_text) as TextView)
             textView!!.text = text
-            alert = DialogHelper.customDialogBlurBg(context, dialog, false)
+            alert = DialogHelper.customDialog(context, dialog, false)
             // AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         }
-        return alert
+
+        uniqueId?.run {
+            if (dialogs.containsKey(this)) {
+                dialogs.remove(this)
+            }
+            if (alert != null) {
+                dialogs.put(this, alert!!)
+            }
+        }
+
+        return this
     }
 }

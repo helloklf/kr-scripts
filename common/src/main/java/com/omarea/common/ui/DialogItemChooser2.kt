@@ -12,9 +12,10 @@ import android.widget.TextView
 import com.omarea.common.R
 import com.omarea.common.model.SelectItem
 
-class DialogItemChooser(
+class DialogItemChooser2(
         private val darkMode: Boolean,
         private var items: ArrayList<SelectItem>,
+        private var selectedItems: ArrayList<SelectItem>,
         private val multiple: Boolean = false,
         private var callback: Callback? = null) : DialogFullScreen(
         (if (items.size > 5) {
@@ -24,6 +25,7 @@ class DialogItemChooser(
         }),
         darkMode
 ) {
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -92,14 +94,14 @@ class DialogItemChooser(
         }
     }
 
-    public fun setTitle(title: String): DialogItemChooser {
+    public fun setTitle(title: String): DialogItemChooser2 {
         this.title = title
         updateTitle()
 
         return this
     }
 
-    public fun setMessage(message: String): DialogItemChooser {
+    public fun setMessage(message: String): DialogItemChooser2 {
         this.message = message
         updateMessage()
 
@@ -107,7 +109,7 @@ class DialogItemChooser(
     }
 
     private fun setup(gridView: AbsListView) {
-        gridView.adapter = AdapterItemChooser(gridView.context, items, multiple)
+        gridView.adapter = AdapterItemChooser2(gridView.context, items, selectedItems, multiple)
     }
 
     interface Callback {
@@ -115,7 +117,7 @@ class DialogItemChooser(
     }
 
     private fun onConfirm(gridView: AbsListView) {
-        val adapter = (gridView.adapter as AdapterItemChooser)
+        val adapter = (gridView.adapter as AdapterItemChooser2)
         val items = adapter.getSelectedItems()
         val status = adapter.getSelectStatus()
 

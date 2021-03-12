@@ -28,7 +28,7 @@
     <string name="appliction_desc">这是框架演示应用</string>
     <string name="appliction_name">PIO 示例架</string>
     <string name="appliction_author">作者：嘟嘟ski</string>
-    <string name="engine_version_name">基于[Kr-Script3.13.1]创作</string>
+    <string name="engine_version_name">基于[Kr-Script3.14.2]创作</string>
     <string name="system_ram">系统内存</string>
     <string name="hardware_ram">物理内存</string>
     <string name="swap">交换分区</string>

@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 transparentUi.isChecked = themeConfig.getAllowTransparentUI()
 
-                DialogHelper.customDialogBlurBg(this, layout)
+                DialogHelper.customDialog(this, layout)
             }
             R.id.option_menu_reboot -> {
                 DialogPower(this).showPowerMenu()
