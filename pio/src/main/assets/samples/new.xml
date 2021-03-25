@@ -21,13 +21,13 @@
             <slice br="true">操作锁用于设置某个功能的禁用状态，例如：某个功能点击过一次之后，需要用户重启手机才能再次操作，操作锁将会提供帮助</slice>
         </text>
 
-        <switch locked="true">
+        <action locked="true">
             <title>静态锁</title>
             <desc>在Page、Switch、Action、Picker节点上添加 locked="true" 将功能锁定，避免被点击</desc>
             <summary>静态锁定无法自定义提示内容</summary>
-        </switch>
+        </action>
 
-        <switch>
+        <action>
             <title>动态锁</title>
             <desc>在Page、Switch、Action、Picker内添加lock节点来动态判断功能锁定状态</desc>
             <summary>动态锁在脚本里输出提示内容</summary>
@@ -41,7 +41,7 @@
                     echo 'unlocked'
                 fi
             </lock>
-        </switch>
+        </action>
     </group>
 
 
