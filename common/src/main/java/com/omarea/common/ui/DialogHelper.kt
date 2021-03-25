@@ -2,7 +2,9 @@ package com.omarea.common.ui
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.app.UiModeManager
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
@@ -12,14 +14,25 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.R
 
 class DialogHelper {
-    class DialogButton(private val text: String, private val onClick: Runnable) {
+    class DialogButton(public val text: String, public val onClick: Runnable? = null, public val dismiss: Boolean = true) {
     }
 
     class DialogWrap(private val d: AlertDialog) {
         public val context = dialog.context
+
+        public fun setCancelable(cancelable: Boolean) {
+            d.setCancelable(cancelable)
+        }
+
+        public fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener): DialogWrap {
+            d.setOnDismissListener(onDismissListener)
+
+            return this
+        }
 
         public val dialog: AlertDialog
             get() {
@@ -47,6 +60,9 @@ class DialogHelper {
     }
 
     companion object {
+        // 是否禁用模糊背景
+        public var disableBlurBg = false
+
         fun animDialog(dialog: AlertDialog?): DialogWrap? {
             if (dialog != null && !dialog.isShowing) {
                 dialog.window?.run {
@@ -170,8 +186,64 @@ class DialogHelper {
             return dialog
         }
 
-        private fun getWindowBackground(context: Context): Int {
-            val defaultColor = Color.WHITE
+        fun confirm(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    onConfirm: DialogButton? = null,
+                    onCancel: DialogButton? = null): DialogWrap {
+            return confirm(context, title, message, null, onConfirm, onCancel)
+        }
+
+        fun confirm(context: Context,
+                    title: String = "",
+                    message: String = "",
+                    contentView: View? = null,
+                    onConfirm: DialogButton? = null,
+                    onCancel: DialogButton? = null): DialogWrap {
+            val view = getCustomDialogView(context, R.layout.dialog_confirm, title, message, contentView)
+
+            val dialog = customDialog(context, view)
+
+            val btnConfirm = view.findViewById<TextView?>(R.id.btn_confirm)
+            if (onConfirm != null) {
+                btnConfirm?.text = onConfirm.text
+            }
+            btnConfirm?.setOnClickListener {
+                if (onConfirm != null) {
+                    if (onConfirm.dismiss) {
+                        dialog.dismiss()
+                    }
+                    onConfirm.onClick?.run()
+                } else {
+                    dialog.dismiss()
+                }
+            }
+
+
+            val btnCancel = view.findViewById<TextView?>(R.id.btn_cancel)
+            if (onCancel != null) {
+                btnCancel?.text = onCancel.text
+            }
+            btnCancel.setOnClickListener {
+                if (onCancel != null) {
+                    if (onCancel.dismiss) {
+                        dialog.dismiss()
+                    }
+                    onCancel.onClick?.run()
+                } else {
+                    dialog.dismiss()
+                }
+            }
+
+            return dialog
+        }
+
+        fun confirm(context: Context, contentView: View? = null, onConfirm: DialogButton? = null, onCancel: DialogButton? = null): DialogWrap {
+            return this.confirm(context, "", "", contentView, onConfirm, onCancel)
+        }
+
+        private fun getWindowBackground(context: Context, defaultColor:Int = Color.TRANSPARENT): Int {
+            // val attrsArray = intArrayOf(android.R.attr.windowBackground)
             val attrsArray = intArrayOf(android.R.attr.background)
             val typedArray = context.obtainStyledAttributes(attrsArray)
             val color = typedArray.getColor(0, defaultColor)
@@ -215,14 +287,6 @@ class DialogHelper {
                         onConfirm: Runnable? = null,
                         onCancel: Runnable? = null): DialogWrap {
             return openContinueAlert(context, R.layout.dialog_confirm, title, message, onConfirm, onCancel)
-        }
-
-        fun warningBlur(context: Activity,
-                        title: String = "",
-                        message: String = "",
-                        onConfirm: Runnable? = null,
-                        onCancel: Runnable? = null): DialogWrap {
-            return openContinueAlert(context, R.layout.dialog_warning, title, message, onConfirm, onCancel)
         }
 
         fun alert(context: Context,
@@ -290,7 +354,19 @@ class DialogHelper {
             return animDialog(dialog)
         }
 
+        private fun isNightMode(context: Context): Boolean {
+            if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+                return true
+            } else if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+                val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+                return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
+            } else {
+                return false
+            }
+        }
+
         fun setWindowBlurBg(window: Window, activity: Activity) {
+            // 是否使用了动态壁纸
             val wallpaperMode = activity.window.attributes.flags and WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER != 0
 
             window.run {
@@ -302,27 +378,34 @@ class DialogHelper {
                 // attributes =attrs
                 // decorView.setPadding(0, 0, 0, 0)
 
-                val blurBitmap = if (wallpaperMode) {
+                val blurBitmap = if (disableBlurBg || wallpaperMode) {
                     null
                 } else {
                     FastBlurUtility.getBlurBackgroundDrawer(activity)
                 }
 
+                // window.setDimAmount(0f)
                 if (blurBitmap != null) {
                     setBackgroundDrawable(BitmapDrawable(activity.resources, blurBitmap))
                 } else {
                     // setBackgroundDrawableResource(android.R.color.transparent)
                     try {
                         val bg = getWindowBackground(activity)
-                        if (wallpaperMode && bg == -1) {
-                            val d = ColorDrawable(Color.argb(245, 25, 25, 33))
-                            setBackgroundDrawable(d)
+                        if (bg == Color.TRANSPARENT) {
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            if (wallpaperMode || isNightMode(context)) {
+                                val d = ColorDrawable(Color.argb(255, 18, 18, 18))
+                                setBackgroundDrawable(d)
+                            } else {
+                                val d = ColorDrawable(Color.argb(255, 245, 245, 245))
+                                setBackgroundDrawable(d)
+                            }
                         } else {
                             val d = ColorDrawable(bg)
                             setBackgroundDrawable(d)
                         }
                     } catch (ex: java.lang.Exception) {
-                        val d = ColorDrawable(Color.WHITE)
+                        val d = ColorDrawable(Color.argb(255, 245, 245, 245))
                         setBackgroundDrawable(d)
                     }
                 }

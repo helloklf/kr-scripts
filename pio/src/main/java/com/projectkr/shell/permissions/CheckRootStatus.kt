@@ -76,21 +76,20 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                 if (!completed) {
                     KeepShellPublic.tryExit()
                     myHandler.post {
-                        DialogHelper.animDialog(AlertDialog.Builder(context)
-                                .setCancelable(false)
-                                .setTitle(R.string.error_root)
-                                .setMessage(R.string.error_su_timeout)
-                                .setNegativeButton(R.string.btn_retry) { _, _ ->
-                                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                                        therad!!.interrupt()
-                                        therad = null
-                                    }
-                                    forceGetRoot()
-                                }
-                                .setNeutralButton(R.string.btn_exit) { _, _ ->
-                                    exitProcess(0)
-                                    //android.os.Process.killProcess(android.os.Process.myPid())
-                                })
+                        DialogHelper.confirm(context,
+                        context.getString(R.string.error_root),
+                        context.getString(R.string.error_su_timeout),
+                        null,
+                        DialogHelper.DialogButton(context.getString(R.string.btn_retry), {
+                            if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                                therad!!.interrupt()
+                                therad = null
+                            }
+                            forceGetRoot()
+                        }),
+                        DialogHelper.DialogButton(context.getString(R.string.btn_exit), {
+                            exitProcess(0)
+                        }))
                     }
                 }
             }).start()
