@@ -22,7 +22,7 @@
 
     <style name="custom_alert_dialog">
         <!--<item name="android:windowLightStatusBar">true</item>-->
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:windowFrame">@null</item>
@@ -182,10 +182,12 @@
         <item name="android:padding">12dp</item>
     </style>
 
-    <style name="dialogTitle" parent="@style/textTitle">
+    <style name="dialogTitle">
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
         <item name="android:paddingTop">16dp</item>
+        <item name="fontFamily">sans-serif-condensed-light</item>
+        <item name="android:textSize">28dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>

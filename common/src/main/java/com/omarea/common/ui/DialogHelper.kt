@@ -24,8 +24,9 @@ class DialogHelper {
     class DialogWrap(private val d: AlertDialog) {
         public val context = dialog.context
 
-        public fun setCancelable(cancelable: Boolean) {
+        public fun setCancelable(cancelable: Boolean): DialogWrap {
             d.setCancelable(cancelable)
+            return this
         }
 
         public fun setOnDismissListener(onDismissListener: DialogInterface.OnDismissListener): DialogWrap {
