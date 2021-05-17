@@ -159,13 +159,12 @@ class ActionPageOnline : AppCompatActivity() {
                 DialogHelper.animDialog(
                         AlertDialog.Builder(this@ActionPageOnline)
                                 .setMessage(message)
-                                .setCancelable(false)
                                 .setPositiveButton(R.string.btn_confirm, { _, _ -> })
                                 .setOnDismissListener {
                                     result?.confirm()
                                 }
                                 .create()
-                )
+                )?.setCancelable(false)
                 return true // super.onJsAlert(view, url, message, result)
             }
 
@@ -173,7 +172,6 @@ class ActionPageOnline : AppCompatActivity() {
                 DialogHelper.animDialog(
                         AlertDialog.Builder(this@ActionPageOnline)
                                 .setMessage(message)
-                                .setCancelable(false)
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     result?.confirm()
                                 }
@@ -181,7 +179,7 @@ class ActionPageOnline : AppCompatActivity() {
                                     result?.cancel()
                                 }
                                 .create()
-                )
+                )?.setCancelable(false)
                 return true // super.onJsConfirm(view, url, message, result)
             }
         }
