@@ -6,21 +6,10 @@
     <bool name="force_root">false</bool>
 
     <string name="app_name">PIO</string>
-    <string name="shell_executor">脚本执行</string>
-    <string name="cannot_get_root_access">没有获取到ROOT权限！</string>
-    <string name="execute_success">执行完成！</string>
-    <string name="yes">是</string>
-    <string name="no">否</string>
-    <string name="custom">定制</string>
-    <string name="switchs">开关</string>
     <string name="btn_exit">退出</string>
-    <string name="btn_hide">隐藏</string>
     <string name="float_monitor_tips">双击悬浮窗即可关闭，或按住拖动调整位置</string>
     <string name="permission_float">请授权显示悬浮窗权限！</string>
     <string name="please_wait">请稍等</string>
-    <string name="load_ratio">负载：</string>
-    <string name="mhz">Mhz</string>
-    <string name="core">核心</string>
     <string name="title_activity_action_page">功能分页</string>
 
     <string name="author_name">xxx</string>
@@ -28,13 +17,7 @@
     <string name="appliction_desc">这是框架演示应用</string>
     <string name="appliction_name">PIO 示例架</string>
     <string name="appliction_author">作者：嘟嘟ski</string>
-    <string name="engine_version_name">基于[Kr-Script3.14.2]创作</string>
-    <string name="system_ram">系统内存</string>
-    <string name="hardware_ram">物理内存</string>
-    <string name="swap">交换分区</string>
-    <string name="total_load">整体负载</string>
-    <string name="core_load">核心数</string>
-    <string name="core_details">核心详细</string>
+    <string name="engine_version_name">基于[Kr-Script4.0.3]创作</string>
 
     <string name="tab_home">首页</string>
     <string name="tab_favorites">收藏夹</string>
@@ -45,9 +28,7 @@
     <string name="monitor_cache_cleared">已回收用于缓存的RAM</string>
     <string name="monitor_ram_cleared">RAM碎片已整理</string>
 
-    <string name="btn_copy">复制输出</string>
     <string name="copy_success">复制成功</string>
-    <string name="copy_fail">复制失败</string>
     <string name="btn_retry">重试</string>
 
     <string name="pio_starting">PIO·STARTING</string>
@@ -59,14 +40,6 @@
     <string name="transparent_ui">界面透明 </string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="title_activity_folder_selector">请长按选择目录</string>
-
-    <string name="power_shutdown">快速关机</string>
-    <string name="power_reboot">快速重启</string>
-    <string name="power_hot_reboot">热重启</string>
-    <string name="power_fastboot">进入Fastboot</string>
-    <string name="power_recovery">进入Recovery</string>
-    <string name="power_emergency">进入9008模式</string>
-    <string name="power_menu">请选择操作</string>
 
     <string name="power_shutdown_cmd">sync;svc power shutdown || reboot -p;</string>
     <string name="power_reboot_cmd">sync;svc power reboot || reboot;</string>
