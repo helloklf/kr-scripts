@@ -74,7 +74,6 @@ class DialogItemChooserMini(
         setup(absListView)
 
         view.findViewById<View>(R.id.btn_cancel).setOnClickListener {
-            callback?.onCancel()
             dismiss()
         }
         view.findViewById<View>(R.id.btn_confirm).setOnClickListener {
@@ -171,7 +170,6 @@ class DialogItemChooserMini(
 
     interface Callback {
         fun onConfirm(selected: List<SelectItem>, status: BooleanArray)
-        fun onCancel()
     }
 
     private fun onConfirm(gridView: AbsListView) {
