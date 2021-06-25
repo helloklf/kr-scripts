@@ -32,31 +32,19 @@ import com.omarea.krscript.ui.ParamsFileChooserRender
 import kotlinx.android.synthetic.main.activity_action_page_online.*
 import java.util.*
 
-class ActionPageOnline : AppCompatActivity() {
+class ActionPageOnlineFS : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
 
-    private lateinit var themeMode: ThemeMode
+    private var themeMode: ThemeMode = ThemeMode()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        themeMode = ThemeModeState.switchTheme(this)
+        // themeMode = ThemeModeState.switchTheme(this)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_action_page_online)
-
-        if (!isTaskRoot) {
-            val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-            setSupportActionBar(toolbar)
-            setTitle(R.string.app_name)
-
-            // 显示返回按钮
-            supportActionBar!!.setHomeButtonEnabled(true)
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            toolbar.setNavigationOnClickListener {
-                finish()
-            }
-        }
+        setContentView(R.layout.activity_action_page_online_fs)
 
         loadIntentData()
+        hideWindowTitle()
     }
 
     private fun hideWindowTitle() {
@@ -65,9 +53,11 @@ class ActionPageOnline : AppCompatActivity() {
             val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             decorView.systemUiVisibility = option
             window.statusBarColor = Color.TRANSPARENT
+
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         }
         val actionBar = supportActionBar
-        actionBar!!.hide()
+        actionBar?.hide()
     }
 
     private fun setWindowTitleBar() {
@@ -122,7 +112,8 @@ class ActionPageOnline : AppCompatActivity() {
                     }
                 }
                 */
-                setWindowTitleBar()
+                // setWindowTitleBar()
+
                 when {
                     extras.containsKey("config") -> initWebview(extras.getString("config"))
                     extras.containsKey("url") -> initWebview(extras.getString("url"))
@@ -160,7 +151,7 @@ class ActionPageOnline : AppCompatActivity() {
         kr_online_webview.webChromeClient = object : WebChromeClient() {
             override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
                 DialogHelper.animDialog(
-                        AlertDialog.Builder(this@ActionPageOnline)
+                        AlertDialog.Builder(this@ActionPageOnlineFS)
                                 .setMessage(message)
                                 .setPositiveButton(R.string.btn_confirm, { _, _ -> })
                                 .setOnDismissListener {
@@ -173,7 +164,7 @@ class ActionPageOnline : AppCompatActivity() {
 
             override fun onJsConfirm(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
                 DialogHelper.animDialog(
-                        AlertDialog.Builder(this@ActionPageOnline)
+                        AlertDialog.Builder(this@ActionPageOnlineFS)
                                 .setMessage(message)
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     result?.confirm()
@@ -224,7 +215,7 @@ class ActionPageOnline : AppCompatActivity() {
                     override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
-                }).inject(this, url?.startsWith("file:///android_asset") == true)
+                }).inject(this, true)
     }
 
     private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
@@ -307,13 +298,13 @@ class ActionPageOnline : AppCompatActivity() {
             val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val myClip = ClipData.newPlainText("text", kr_download_name.text.toString())
             myClipboard.setPrimaryClip(myClip)
-            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ActionPageOnlineFS, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
         }
         kr_download_url_copy.setOnClickListener {
             val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val myClip = ClipData.newPlainText("text", kr_download_url.text.toString())
             myClipboard.setPrimaryClip(myClip)
-            Toast.makeText(this@ActionPageOnline, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ActionPageOnlineFS, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
         }
 
         val handler = Handler()
@@ -334,7 +325,7 @@ class ActionPageOnline : AppCompatActivity() {
                         try {
                             val nameColumn = cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI)
                             fileName = cursor.getString(nameColumn)
-                            absPath = FilePathResolver().getPath(this@ActionPageOnline, Uri.parse(fileName))
+                            absPath = FilePathResolver().getPath(this@ActionPageOnlineFS, Uri.parse(fileName))
                             if (!absPath.isEmpty()) {
                                 fileName = absPath
                             }
