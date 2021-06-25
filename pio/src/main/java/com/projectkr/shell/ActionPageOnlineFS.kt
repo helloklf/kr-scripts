@@ -21,6 +21,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.webkit.*
+import android.widget.RelativeLayout
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
@@ -58,6 +59,9 @@ class ActionPageOnlineFS : AppCompatActivity() {
         }
         val actionBar = supportActionBar
         actionBar?.hide()
+
+        val params = kr_online_webview.layoutParams as RelativeLayout.LayoutParams
+        params.topMargin = 0
     }
 
     private fun setWindowTitleBar() {

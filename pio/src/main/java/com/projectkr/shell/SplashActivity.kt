@@ -156,7 +156,7 @@ class SplashActivity : Activity() {
             try {
                 startActivity(Intent(this, ActionPageOnlineFS::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra("config", "http://10.20.10.67:8002/#/refresh-rate")
+                    putExtra("config", "file:///android_asset/ui/index.html#/refresh-rate")
                 })
             } catch (ex: Exception) {
             }
