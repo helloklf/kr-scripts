@@ -38,9 +38,9 @@ class ActionPageOnline : AppCompatActivity() {
     private lateinit var themeMode: ThemeMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         themeMode = ThemeModeState.switchTheme(this)
 
-        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page_online)
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
