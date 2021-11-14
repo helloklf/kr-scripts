@@ -87,14 +87,12 @@ class DialogHelper {
         }
 
         fun helpInfo(context: Context, message: String, onDismiss: Runnable? = null): DialogWrap {
-            return helpInfo(context, "", message, onDismiss)
+            return helpInfo(context, "说明提示", message, onDismiss)
         }
 
         fun helpInfo(context: Context, title: String, message: String, onDismiss: Runnable? = null): DialogWrap {
             val layoutInflater = LayoutInflater.from(context)
             val dialog = layoutInflater.inflate(R.layout.dialog_help_info, null)
-            val alert = AlertDialog.Builder(context).setView(dialog)
-            alert.setCancelable(true)
 
             (dialog.findViewById(R.id.dialog_help_title) as TextView).run {
                 if (title.isNotEmpty()) {
@@ -113,17 +111,20 @@ class DialogHelper {
                     visibility = View.GONE
                 }
             }
-            if (onDismiss != null) {
-                alert.setPositiveButton(R.string.btn_confirm) { d, _ ->
+
+            val d = customDialog(context, dialog, onDismiss == null)
+            (dialog.findViewById(R.id.btn_confirm) as View).run {
+                if (onDismiss != null) {
+                    d.setOnDismissListener {
+                        onDismiss.run()
+                    }
+                }
+                setOnClickListener {
                     d.dismiss()
                 }
-                alert.setCancelable(false)
-            }
-            alert.setOnDismissListener {
-                onDismiss?.run()
             }
 
-            return animDialog(alert)
+            return d
         }
 
         fun confirm(context: Context,
@@ -396,8 +397,8 @@ class DialogHelper {
             if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
                 return true
             } else if (
-                nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
-                nightMode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
+                    nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM ||
+                    nightMode == AppCompatDelegate.MODE_NIGHT_UNSPECIFIED
             ) {
                 val uiModeManager = context.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
                 return uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
@@ -433,7 +434,7 @@ class DialogHelper {
                     try {
                         val bg = getWindowBackground(activity)
                         if (bg == Color.TRANSPARENT) {
-                            // AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                             if (wallpaperMode || isNightMode(context)) {
                                 val d = ColorDrawable(Color.argb(255, 18, 18, 18))
                                 setBackgroundDrawable(d)
