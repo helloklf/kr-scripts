@@ -62,4 +62,12 @@
             </set>
         </action>
     </group>
+
+    <action>
+        <title>测试shell输出resource字符串</title>
+        <desc sh="echo '@string:float_monitor_tips'" />
+        <set>
+            echo '@string/error_root'
+        </set>
+    </action>
 </page>
